@@ -1,0 +1,9 @@
+zh_term,en_term,name_key,note
+南瓜玉米汤,Pumpkin and Corn Soup,recipe_pumpkin_corn_soup_name,新recipe_id由工程确认，不能覆盖旧菜
+香煎蘑菇,Pan-fried Mushrooms,recipe_pan_fried_mushrooms_name,新recipe_id由工程确认
+芝士烤吐司,Cheese Toast,recipe_cheese_toast_name,保留现有recipe_id
+冰拿铁,Iced Latte,recipe_iced_latte_name,仅游戏菜名，不鼓励儿童饮用咖啡
+番茄；西红柿,Tomato,category_tomato_name,同一品类；真实NFC category_id待确认
+煮锅,Cooking pot,category_pot_name,与frying pan区分
+一档/二档/三档,Level 1/2/3,ui_heat_1 / ui_heat_2 / ui_heat_3,不把档位译成温度；烤箱档位语义待确认
+水龙头,Tap,ui_water_on / ui_water_off,面向玩具场景；不混用faucet

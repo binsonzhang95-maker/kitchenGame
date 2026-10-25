@@ -124,6 +124,7 @@ func _run() -> void:
 
 func _new_main() -> void:
 	app = Main.new()
+	app.menu_kind = "classic"
 	app.save_path = path
 	app.seed_guests = false
 	app.player_mode = true
@@ -238,7 +239,10 @@ func _restore_paused() -> void:
 	print("COOKING_GUI_PAUSED_RESTORE_OK")
 
 func _capture(name: String) -> void:
-	_check(app.cooking_view.art_status().complete and app.cooking_view.utensil_image.texture != null, "supplied kitchen artwork loaded")
+	var has_appliance := app.cooking_view.utensil_image.texture != null
+	for layer: TextureRect in app.cooking_view._art_layers:
+		has_appliance = has_appliance or layer.visible and layer.texture != null
+	_check((app.cooking_view.art_status().required_missing as Dictionary).is_empty() and has_appliance, "supplied kitchen artwork loaded")
 	_check(app.cooking_view.utensil_image.size == Vector2(512, 512) and app.cooking_session.ingredients.size() >= 2 and not app.cooking_view.action_buttons.is_empty(), "capture shows ingredients, large appliance, and current operation")
 	var error: Error = DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path("res://verification"))
 	_check(error == OK or error == ERR_ALREADY_EXISTS, "capture directory available")

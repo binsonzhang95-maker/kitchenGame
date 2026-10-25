@@ -62,6 +62,7 @@ func _run() -> void:
 
 func _new_main() -> void:
 	app = Main.new()
+	app.menu_kind = "classic"
 	app.save_path = save_path
 	app.seed_guests = false
 	app.player_mode = true
@@ -114,18 +115,21 @@ func _test_soup() -> void:
 	await _tap("add_potato")
 	await _tap("add_carrot")
 	await _tap("add_water")
-	var water_regions := await _sample_regions("pour_water", 0.27)
-	_check(water_regions.size() >= 2 and water_regions[0] != water_regions[1], "pour uses distinct Atlas regions across rendered frames")
+	var pour_start: Dictionary = app.cooking_view.animation_debug_state()
+	_check(pour_start.clip == "pour_water" and pour_start.playing and not app.cooking_view.water_flow.visible, "classic soup add-water visibly starts the original pour_water one-shot, not P0 faucet flow")
+	var pour_regions := await _sample_regions("pour_water", 0.21)
+	_check(pour_regions.size() >= 2 and pour_regions[0] != pour_regions[1], "classic soup pour_water renders distinct authored frames")
 	_capture("pour_water")
 	await _tap("pause")
-	var paused_region: Rect2 = Rect2(app.cooking_view.animation_debug_state().region)
+	var paused_pour: Dictionary = app.cooking_view.animation_debug_state()
 	await create_timer(0.36, true, false, true).timeout
 	await _frame()
-	_check(Rect2(app.cooking_view.animation_debug_state().region) == paused_region, "single-shot frame remains fixed while session is paused")
+	var held_pour: Dictionary = app.cooking_view.animation_debug_state()
+	_check(held_pour.playing and held_pour.region == paused_pour.region, "classic pour_water remains fixed while session is paused")
 	await _tap("pause")
-	await create_timer(0.30, true, false, true).timeout
+	await create_timer(0.12, true, false, true).timeout
 	await _frame()
-	_check(Rect2(app.cooking_view.animation_debug_state().region) != paused_region or not bool(app.cooking_view.animation_debug_state().playing), "single-shot resumes from its preserved frame")
+	_check(app.cooking_view.animation_debug_state().clip == "pour_water", "classic pour_water resumes from its preserved frame")
 	await _wait_action("cut")
 	var cut_point: Vector2 = _button("cut").get_global_rect().get_center()
 	_click(cut_point)
@@ -208,8 +212,7 @@ func _test_bake_static() -> void:
 	await _tap("add_cheese")
 	await _tap("oven")
 	await _frame()
-	var texture: Texture2D = app.cooking_view.utensil_image.texture
-	_check(not texture is AtlasTexture and texture != null and texture.resource_path.contains("/utensils/oven"), "oven keeps its supplied static state")
+	_check(_has_static_p0_layer("/utensils/oven"), "oven keeps its supplied static state")
 	_capture("oven_static")
 
 
@@ -219,9 +222,16 @@ func _test_drink_static() -> void:
 	await _tap("add_milk")
 	await _tap("add_ice")
 	await _frame()
-	var texture: Texture2D = app.cooking_view.utensil_image.texture
-	_check(not texture is AtlasTexture and texture != null and texture.resource_path.contains("/utensils/cup"), "iced latte never shows a soup pot or animation atlas")
+	_check(_has_static_p0_layer("/utensils/cup"), "iced latte never shows a soup pot or animation atlas")
 	_capture("drink_static")
+
+
+func _has_static_p0_layer(path_fragment: String) -> bool:
+	for layer: TextureRect in app.cooking_view._art_layers:
+		var texture: Texture2D = layer.texture
+		if layer.visible and texture != null and not texture is AtlasTexture and texture.resource_path.contains(path_fragment):
+			return true
+	return false
 
 
 func _button(action: String) -> Button:
@@ -242,11 +252,21 @@ func _tap(action: String) -> void:
 	await _wait_action(action)
 	var button := _button(action)
 	_check(button != null and button.is_visible_in_tree() and not button.disabled, "real control becomes clickable: " + action)
+	if action not in ["pause", "cancel", "clear"]:
+		_check(_button_has_image(button), "real icon-only action has a visible image: " + action)
 	if button == null or button.disabled:
 		_finish()
 		return
 	_click(button.get_global_rect().get_center())
 	await _frame()
+
+
+func _button_has_image(button: Button) -> bool:
+	if button == null: return false
+	for child: Node in button.get_children():
+		if child is TextureRect and (child as TextureRect).texture != null:
+			return true
+	return false
 
 
 func _sample_regions(expected_clip: String, delay: float) -> Array[Rect2]:

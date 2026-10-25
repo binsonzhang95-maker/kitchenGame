@@ -4,6 +4,7 @@ const SAVE_VERSION: int = 1
 const MAX_INGREDIENTS: int = 3
 const READY_WINDOW: float = 12.0
 const RecipeCatalog = preload("res://recipe_catalog.gd")
+const Localization = preload("res://localization.gd")
 ## Kept as a compatibility API for existing callers.
 const RECIPES: Dictionary = RecipeCatalog.RECIPES
 const PHASES: Array[String] = ["idle", "ingredients", "prep", "vessel", "heat", "cooking", "ready", "retry", "completed", "cancelled"]
@@ -33,7 +34,8 @@ var attempts: int = 0
 
 
 static func recipe_label(id: String) -> String:
-	return str(RECIPES[id].label) if RECIPES.has(id) else "未选择料理"
+	if not RECIPES.has(id): return Localization.text("kitchen_recipe_unselected")
+	return Localization.text(RecipeCatalog.name_key(id))
 
 
 static func action_label(action: String) -> String:
@@ -224,16 +226,16 @@ func _step_index() -> int:
 
 func _prompt() -> String:
 	match phase:
-		"ingredients": return "依次加入咖啡、牛奶和冰块。" if recipe_id == "drink" else ("加入土豆、胡萝卜和清水；清水不占食材位。" if recipe_id == "soup" else ("加入南瓜、玉米和清水；清水不占食材位。" if recipe_id == "pumpkin_corn_soup" else "选择这份配方需要的食材。"))
-		"prep": return "把番茄切一切，鸡蛋不用切。" if recipe_id == "stir_fry" else ("把土豆和胡萝卜切成小块。" if recipe_id == "soup" else "把南瓜和玉米切成小块。")
-		"vessel": return "将准备好的食材放入" + ("烤箱。" if recipe_id == "bake" else ("汤锅。" if str(_recipe().vessel) == "pot" else "炒锅。"))
-		"heat": return "选择小火、中火或大火，慢慢等它做好。"
-		"cooking": return "正在烤制，稍等一会儿。" if recipe_id == "bake" else "正在加热，稍等一会儿。"
-		"ready": return "搅拌均匀就完成啦。" if recipe_id == "drink" else ("已经做好了，取出烤盘吧。" if recipe_id == "bake" else ("翻炒一下就完成啦。" if recipe_id == "stir_fry" else ("翻面一下就完成啦。" if recipe_id == "pan_fried_mushrooms" else "汤已经煮好了，点击完成吧。")))
-		"retry": return "不用担心，保留食材重试，或清空重新准备。"
-		"completed": return "料理完成，返回餐厅继续送餐。"
-		"cancelled": return "已取消，这次不会完成订单。"
-	return "选择一份订单开始料理。"
+		"ingredients": return Localization.text("session_prompt_add_latte_ingredients") if recipe_id == "drink" else (Localization.text("session_prompt_add_soup_ingredients") if recipe_id == "soup" else (Localization.text("session_prompt_add_pumpkin_ingredients") if recipe_id == "pumpkin_corn_soup" else Localization.text("session_prompt_choose_ingredients")))
+		"prep": return Localization.text("session_prompt_chop_tomato") if recipe_id == "stir_fry" else (Localization.text("session_prompt_chop_soup_vegetables") if recipe_id == "soup" else Localization.text("session_prompt_chop_pumpkin_vegetables"))
+		"vessel": return Localization.text("session_prompt_put_in_oven") if recipe_id == "bake" else (Localization.text("session_prompt_put_in_pot") if str(_recipe().vessel) == "pot" else Localization.text("session_prompt_put_in_pan"))
+		"heat": return Localization.text("session_prompt_choose_heat")
+		"cooking": return Localization.text("session_prompt_baking") if recipe_id == "bake" else Localization.text("session_prompt_heating")
+		"ready": return Localization.text("session_prompt_stir_drink") if recipe_id == "drink" else (Localization.text("session_prompt_takeout_bake") if recipe_id == "bake" else (Localization.text("session_prompt_finish_stir_fry") if recipe_id == "stir_fry" else (Localization.text("session_prompt_finish_mushrooms") if recipe_id == "pan_fried_mushrooms" else Localization.text("session_prompt_finish_soup"))))
+		"retry": return Localization.text("session_prompt_retry")
+		"completed": return Localization.text("session_prompt_completed")
+		"cancelled": return Localization.text("session_prompt_cancelled")
+	return Localization.text("session_prompt_start")
 
 
 func status() -> Dictionary:

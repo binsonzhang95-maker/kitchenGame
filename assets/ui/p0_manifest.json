@@ -1,0 +1,4827 @@
+{
+  "source_package": "kitchen_missing_assets_p0_v1",
+  "assets": {
+    "button_normal": {
+      "file": "res://assets/ui/skin/button_normal.png",
+      "size": [
+        192,
+        80
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_skin_sheet.png",
+      "source_crop": [
+        18,
+        95,
+        326,
+        270
+      ],
+      "no_baked_text": true,
+      "nine_patch": {
+        "left": 20,
+        "top": 20,
+        "right": 20,
+        "bottom": 20,
+        "center": "stretch",
+        "edges": "stretch"
+      },
+      "text_safe_rect": [
+        24,
+        24,
+        144,
+        32
+      ],
+      "center_normalization": "Flat color sampled from generated center; preserved generated corners and edges.",
+      "atlas_rect": [
+        540,
+        920,
+        192,
+        80
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "button_pressed": {
+      "file": "res://assets/ui/skin/button_pressed.png",
+      "size": [
+        192,
+        80
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_skin_sheet.png",
+      "source_crop": [
+        331,
+        95,
+        637,
+        270
+      ],
+      "no_baked_text": true,
+      "nine_patch": {
+        "left": 20,
+        "top": 20,
+        "right": 20,
+        "bottom": 20,
+        "center": "stretch",
+        "edges": "stretch"
+      },
+      "text_safe_rect": [
+        24,
+        24,
+        144,
+        32
+      ],
+      "center_normalization": "Flat color sampled from generated center; preserved generated corners and edges.",
+      "atlas_rect": [
+        736,
+        920,
+        192,
+        80
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "panel": {
+      "file": "res://assets/ui/skin/panel.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_skin_sheet.png",
+      "source_crop": [
+        649,
+        40,
+        906,
+        286
+      ],
+      "no_baked_text": true,
+      "nine_patch": {
+        "left": 20,
+        "top": 20,
+        "right": 20,
+        "bottom": 20,
+        "center": "stretch",
+        "edges": "stretch"
+      },
+      "text_safe_rect": [
+        24,
+        24,
+        80,
+        80
+      ],
+      "center_normalization": "Flat color sampled from generated center; preserved generated corners and edges.",
+      "atlas_rect": [
+        1456,
+        656,
+        128,
+        128
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "dialog": {
+      "file": "res://assets/ui/skin/dialog.png",
+      "size": [
+        256,
+        160
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_skin_sheet.png",
+      "source_crop": [
+        915,
+        50,
+        1245,
+        286
+      ],
+      "no_baked_text": true,
+      "nine_patch": {
+        "left": 24,
+        "top": 24,
+        "right": 24,
+        "bottom": 24,
+        "center": "stretch",
+        "edges": "stretch"
+      },
+      "text_safe_rect": [
+        28,
+        28,
+        200,
+        104
+      ],
+      "center_normalization": "Flat color sampled from generated center; preserved generated corners and edges.",
+      "atlas_rect": [
+        948,
+        264,
+        256,
+        160
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "step_bar": {
+      "file": "res://assets/ui/skin/step_bar.png",
+      "size": [
+        256,
+        64
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_skin_sheet.png",
+      "source_crop": [
+        18,
+        407,
+        340,
+        520
+      ],
+      "no_baked_text": true,
+      "nine_patch": {
+        "left": 18,
+        "top": 18,
+        "right": 18,
+        "bottom": 18,
+        "center": "stretch",
+        "edges": "stretch"
+      },
+      "text_safe_rect": [
+        22,
+        22,
+        212,
+        20
+      ],
+      "center_normalization": "Flat color sampled from generated center; preserved generated corners and edges.",
+      "atlas_rect": [
+        932,
+        920,
+        256,
+        64
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "order_card": {
+      "file": "res://assets/ui/skin/order_card.png",
+      "size": [
+        160,
+        224
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_skin_sheet.png",
+      "source_crop": [
+        365,
+        319,
+        568,
+        605
+      ],
+      "no_baked_text": true,
+      "nine_patch": {
+        "left": 22,
+        "top": 22,
+        "right": 22,
+        "bottom": 22,
+        "center": "stretch",
+        "edges": "stretch"
+      },
+      "text_safe_rect": [
+        26,
+        26,
+        108,
+        172
+      ],
+      "center_normalization": "Flat color sampled from generated center; preserved generated corners and edges.",
+      "atlas_rect": [
+        784,
+        264,
+        160,
+        224
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "progress_track": {
+      "file": "res://assets/ui/skin/progress_track.png",
+      "size": [
+        256,
+        48
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_skin_sheet.png",
+      "source_crop": [
+        609,
+        407,
+        927,
+        520
+      ],
+      "no_baked_text": true,
+      "nine_patch": {
+        "left": 16,
+        "top": 16,
+        "right": 16,
+        "bottom": 16,
+        "center": "stretch",
+        "edges": "stretch"
+      },
+      "text_safe_rect": [
+        20,
+        20,
+        216,
+        8
+      ],
+      "center_normalization": "Flat color sampled from generated center; preserved generated corners and edges.",
+      "atlas_rect": [
+        548,
+        1120,
+        256,
+        48
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "progress_fill": {
+      "file": "res://assets/ui/skin/progress_fill.png",
+      "size": [
+        232,
+        24
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_skin_sheet.png",
+      "source_crop": [
+        930,
+        420,
+        1248,
+        510
+      ],
+      "no_baked_text": true,
+      "nine_patch": {
+        "left": 8,
+        "top": 8,
+        "right": 8,
+        "bottom": 8,
+        "center": "stretch",
+        "edges": "stretch"
+      },
+      "text_safe_rect": [
+        12,
+        12,
+        208,
+        0
+      ],
+      "center_normalization": "Flat color sampled from generated center; preserved generated corners and edges.",
+      "atlas_rect": [
+        1708,
+        1120,
+        232,
+        24
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "timer_track": {
+      "file": "res://assets/ui/toy/timer_track.png",
+      "size": [
+        64,
+        64
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_skin_sheet.png",
+      "source_crop": [
+        15,
+        605,
+        326,
+        916
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        4,
+        1120,
+        64,
+        64
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "timer_fill": {
+      "file": "res://assets/ui/toy/timer_fill.png",
+      "size": [
+        64,
+        64
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_skin_sheet.png",
+      "source_crop": [
+        330,
+        605,
+        632,
+        916
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        1908,
+        1052,
+        64,
+        64
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "completion": {
+      "file": "res://assets/ui/toy/completion.png",
+      "size": [
+        64,
+        64
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_skin_sheet.png",
+      "source_crop": [
+        648,
+        624,
+        910,
+        907
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        1600,
+        920,
+        64,
+        64
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "card_frame": {
+      "file": "res://assets/ui/toy/card_frame.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_skin_sheet.png",
+      "source_crop": [
+        957,
+        600,
+        1218,
+        918
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        1736,
+        264,
+        128,
+        128
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "drink_button_normal": {
+      "file": "res://assets/ui/skin/drink_button_normal.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_skin_sheet.png",
+      "source_crop": [
+        33,
+        945,
+        264,
+        1180
+      ],
+      "no_baked_text": true,
+      "nine_patch": {
+        "left": 20,
+        "top": 20,
+        "right": 20,
+        "bottom": 20,
+        "center": "stretch",
+        "edges": "stretch"
+      },
+      "text_safe_rect": [
+        24,
+        24,
+        80,
+        80
+      ],
+      "center_normalization": "Flat color sampled from generated center; preserved generated corners and edges.",
+      "atlas_rect": [
+        928,
+        524,
+        128,
+        128
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "drink_button_pressed": {
+      "file": "res://assets/ui/skin/drink_button_pressed.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_skin_sheet.png",
+      "source_crop": [
+        282,
+        943,
+        518,
+        1180
+      ],
+      "no_baked_text": true,
+      "nine_patch": {
+        "left": 20,
+        "top": 20,
+        "right": 20,
+        "bottom": 20,
+        "center": "stretch",
+        "edges": "stretch"
+      },
+      "text_safe_rect": [
+        24,
+        24,
+        80,
+        80
+      ],
+      "center_normalization": "Flat color sampled from generated center; preserved generated corners and edges.",
+      "atlas_rect": [
+        1060,
+        524,
+        128,
+        128
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "selected_ring": {
+      "file": "res://assets/ui/mobile/selected_ring.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_skin_sheet.png",
+      "source_crop": [
+        535,
+        932,
+        970,
+        1190
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        796,
+        788,
+        128,
+        128
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "loading": {
+      "file": "res://assets/ui/mobile/loading.png",
+      "size": [
+        64,
+        64
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_skin_sheet.png",
+      "source_crop": [
+        970,
+        929,
+        1248,
+        1203
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        1092,
+        1052,
+        64,
+        64
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "timer_fill_full": {
+      "file": "res://assets/ui/toy/timer_fill_full.png",
+      "size": [
+        64,
+        64
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "derived: timer_track geometry + source sage tint",
+      "derivation": "Palette tint only; complete generated ring geometry used for runtime radial masking.",
+      "atlas_rect": [
+        1976,
+        1052,
+        64,
+        64
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "card_frame_64": {
+      "file": "res://assets/ui/toy/card_frame_64.png",
+      "size": [
+        64,
+        64
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "card_frame",
+      "derivation": "Nearest-neighbor half-resolution export.",
+      "atlas_rect": [
+        1464,
+        920,
+        64,
+        64
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "screen_play_32": {
+      "file": "res://assets/ui/mobile/screen_play_32.png",
+      "size": [
+        32,
+        32
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        0,
+        0,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        1384,
+        1120,
+        32,
+        32
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "screen_play_64": {
+      "file": "res://assets/ui/mobile/screen_play_64.png",
+      "size": [
+        64,
+        64
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        0,
+        0,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        1772,
+        1052,
+        64,
+        64
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "screen_play_128": {
+      "file": "res://assets/ui/mobile/screen_play_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        0,
+        0,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        664,
+        788,
+        128,
+        128
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "toy_play_32": {
+      "file": "res://assets/ui/toy/toy_play_32.png",
+      "size": [
+        32,
+        32
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        1,
+        0,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        1492,
+        1120,
+        32,
+        32
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "toy_play_64": {
+      "file": "res://assets/ui/toy/toy_play_64.png",
+      "size": [
+        64,
+        64
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        1,
+        0,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        140,
+        1120,
+        64,
+        64
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "toy_play_128": {
+      "file": "res://assets/ui/toy/toy_play_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        1,
+        0,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        1456,
+        788,
+        128,
+        128
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "connecting_32": {
+      "file": "res://assets/ui/toy/connecting_32.png",
+      "size": [
+        32,
+        32
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        2,
+        0,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        988,
+        1120,
+        32,
+        32
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "connecting_64": {
+      "file": "res://assets/ui/toy/connecting_64.png",
+      "size": [
+        64,
+        64
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        2,
+        0,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        1804,
+        920,
+        64,
+        64
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "connecting_128": {
+      "file": "res://assets/ui/toy/connecting_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        2,
+        0,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        268,
+        524,
+        128,
+        128
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "connected_32": {
+      "file": "res://assets/ui/toy/connected_32.png",
+      "size": [
+        32,
+        32
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        3,
+        0,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        952,
+        1120,
+        32,
+        32
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "connected_64": {
+      "file": "res://assets/ui/toy/connected_64.png",
+      "size": [
+        64,
+        64
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        3,
+        0,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        1736,
+        920,
+        64,
+        64
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "connected_128": {
+      "file": "res://assets/ui/toy/connected_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        3,
+        0,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        136,
+        524,
+        128,
+        128
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "disconnected_32": {
+      "file": "res://assets/ui/toy/disconnected_32.png",
+      "size": [
+        32,
+        32
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        4,
+        0,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        1060,
+        1120,
+        32,
+        32
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "disconnected_64": {
+      "file": "res://assets/ui/toy/disconnected_64.png",
+      "size": [
+        64,
+        64
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        4,
+        0,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        1940,
+        920,
+        64,
+        64
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "disconnected_128": {
+      "file": "res://assets/ui/toy/disconnected_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        4,
+        0,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        532,
+        524,
+        128,
+        128
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "toy_controlled_32": {
+      "file": "res://assets/ui/toy/toy_controlled_32.png",
+      "size": [
+        32,
+        32
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        0,
+        1,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        1456,
+        1120,
+        32,
+        32
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "toy_controlled_64": {
+      "file": "res://assets/ui/toy/toy_controlled_64.png",
+      "size": [
+        64,
+        64
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        0,
+        1,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        72,
+        1120,
+        64,
+        64
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "toy_controlled_128": {
+      "file": "res://assets/ui/toy/toy_controlled_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        0,
+        1,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        1324,
+        788,
+        128,
+        128
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "unknown_card_32": {
+      "file": "res://assets/ui/toy/unknown_card_32.png",
+      "size": [
+        32,
+        32
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        1,
+        1,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        1528,
+        1120,
+        32,
+        32
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "unknown_card_64": {
+      "file": "res://assets/ui/toy/unknown_card_64.png",
+      "size": [
+        64,
+        64
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        1,
+        1,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        208,
+        1120,
+        64,
+        64
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "unknown_card_128": {
+      "file": "res://assets/ui/toy/unknown_card_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        1,
+        1,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        1588,
+        788,
+        128,
+        128
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "recognition_success_32": {
+      "file": "res://assets/ui/toy/recognition_success_32.png",
+      "size": [
+        32,
+        32
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        2,
+        1,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        1312,
+        1120,
+        32,
+        32
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "recognition_success_64": {
+      "file": "res://assets/ui/toy/recognition_success_64.png",
+      "size": [
+        64,
+        64
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        2,
+        1,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        1636,
+        1052,
+        64,
+        64
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "recognition_success_128": {
+      "file": "res://assets/ui/toy/recognition_success_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        2,
+        1,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        1852,
+        656,
+        128,
+        128
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "card_not_needed_32": {
+      "file": "res://assets/ui/toy/card_not_needed_32.png",
+      "size": [
+        32,
+        32
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        3,
+        1,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        880,
+        1120,
+        32,
+        32
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "card_not_needed_64": {
+      "file": "res://assets/ui/toy/card_not_needed_64.png",
+      "size": [
+        64,
+        64
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        3,
+        1,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        1532,
+        920,
+        64,
+        64
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "card_not_needed_128": {
+      "file": "res://assets/ui/toy/card_not_needed_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        3,
+        1,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        1868,
+        264,
+        128,
+        128
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "card_already_added_32": {
+      "file": "res://assets/ui/toy/card_already_added_32.png",
+      "size": [
+        32,
+        32
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        4,
+        1,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        844,
+        1120,
+        32,
+        32
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "card_already_added_64": {
+      "file": "res://assets/ui/toy/card_already_added_64.png",
+      "size": [
+        64,
+        64
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        4,
+        1,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        1260,
+        920,
+        64,
+        64
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "card_already_added_128": {
+      "file": "res://assets/ui/toy/card_already_added_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        4,
+        1,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        1340,
+        264,
+        128,
+        128
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "reconnect_32": {
+      "file": "res://assets/ui/toy/reconnect_32.png",
+      "size": [
+        32,
+        32
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        0,
+        2,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        1348,
+        1120,
+        32,
+        32
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "reconnect_64": {
+      "file": "res://assets/ui/toy/reconnect_64.png",
+      "size": [
+        64,
+        64
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        0,
+        2,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        1704,
+        1052,
+        64,
+        64
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "reconnect_128": {
+      "file": "res://assets/ui/toy/reconnect_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        0,
+        2,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        4,
+        788,
+        128,
+        128
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "disconnect_32": {
+      "file": "res://assets/ui/toy/disconnect_32.png",
+      "size": [
+        32,
+        32
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        1,
+        2,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        1024,
+        1120,
+        32,
+        32
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "disconnect_64": {
+      "file": "res://assets/ui/toy/disconnect_64.png",
+      "size": [
+        64,
+        64
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        1,
+        2,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        1872,
+        920,
+        64,
+        64
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "disconnect_128": {
+      "file": "res://assets/ui/toy/disconnect_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        1,
+        2,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        400,
+        524,
+        128,
+        128
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "pause_32": {
+      "file": "res://assets/ui/mobile/pause_32.png",
+      "size": [
+        32,
+        32
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        2,
+        2,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        1240,
+        1120,
+        32,
+        32
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "pause_64": {
+      "file": "res://assets/ui/mobile/pause_64.png",
+      "size": [
+        64,
+        64
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        2,
+        2,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        1500,
+        1052,
+        64,
+        64
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "pause_128": {
+      "file": "res://assets/ui/mobile/pause_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        2,
+        2,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        1588,
+        656,
+        128,
+        128
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "play_32": {
+      "file": "res://assets/ui/mobile/play_32.png",
+      "size": [
+        32,
+        32
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        3,
+        2,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        1276,
+        1120,
+        32,
+        32
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "play_64": {
+      "file": "res://assets/ui/mobile/play_64.png",
+      "size": [
+        64,
+        64
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        3,
+        2,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        1568,
+        1052,
+        64,
+        64
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "play_128": {
+      "file": "res://assets/ui/mobile/play_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        3,
+        2,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        1720,
+        656,
+        128,
+        128
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "back_32": {
+      "file": "res://assets/ui/mobile/back_32.png",
+      "size": [
+        32,
+        32
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        4,
+        2,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        808,
+        1120,
+        32,
+        32
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "back_64": {
+      "file": "res://assets/ui/mobile/back_64.png",
+      "size": [
+        64,
+        64
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        4,
+        2,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        1192,
+        920,
+        64,
+        64
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "back_128": {
+      "file": "res://assets/ui/mobile/back_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        4,
+        2,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        1208,
+        264,
+        128,
+        128
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "confirm_32": {
+      "file": "res://assets/ui/mobile/confirm_32.png",
+      "size": [
+        32,
+        32
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        0,
+        3,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        916,
+        1120,
+        32,
+        32
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "confirm_64": {
+      "file": "res://assets/ui/mobile/confirm_64.png",
+      "size": [
+        64,
+        64
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        0,
+        3,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        1668,
+        920,
+        64,
+        64
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "confirm_128": {
+      "file": "res://assets/ui/mobile/confirm_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        0,
+        3,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        4,
+        524,
+        128,
+        128
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "music_on_32": {
+      "file": "res://assets/ui/mobile/music_on_32.png",
+      "size": [
+        32,
+        32
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        1,
+        3,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        1204,
+        1120,
+        32,
+        32
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "music_on_64": {
+      "file": "res://assets/ui/mobile/music_on_64.png",
+      "size": [
+        64,
+        64
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        1,
+        3,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        1228,
+        1052,
+        64,
+        64
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "music_on_128": {
+      "file": "res://assets/ui/mobile/music_on_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        1,
+        3,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        1324,
+        656,
+        128,
+        128
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "music_off_32": {
+      "file": "res://assets/ui/mobile/music_off_32.png",
+      "size": [
+        32,
+        32
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        2,
+        3,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        1168,
+        1120,
+        32,
+        32
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "music_off_64": {
+      "file": "res://assets/ui/mobile/music_off_64.png",
+      "size": [
+        64,
+        64
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        2,
+        3,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        1160,
+        1052,
+        64,
+        64
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "music_off_128": {
+      "file": "res://assets/ui/mobile/music_off_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        2,
+        3,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        1192,
+        656,
+        128,
+        128
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "voice_on_32": {
+      "file": "res://assets/ui/mobile/voice_on_32.png",
+      "size": [
+        32,
+        32
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        3,
+        3,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        1600,
+        1120,
+        32,
+        32
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "voice_on_64": {
+      "file": "res://assets/ui/mobile/voice_on_64.png",
+      "size": [
+        64,
+        64
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        3,
+        3,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        344,
+        1120,
+        64,
+        64
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "voice_on_128": {
+      "file": "res://assets/ui/mobile/voice_on_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        3,
+        3,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        1852,
+        788,
+        128,
+        128
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "voice_off_32": {
+      "file": "res://assets/ui/mobile/voice_off_32.png",
+      "size": [
+        32,
+        32
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        4,
+        3,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        1564,
+        1120,
+        32,
+        32
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "voice_off_64": {
+      "file": "res://assets/ui/mobile/voice_off_64.png",
+      "size": [
+        64,
+        64
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        4,
+        3,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        276,
+        1120,
+        64,
+        64
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "voice_off_128": {
+      "file": "res://assets/ui/mobile/voice_off_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        4,
+        3,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        1720,
+        788,
+        128,
+        128
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "volume_on_32": {
+      "file": "res://assets/ui/mobile/volume_on_32.png",
+      "size": [
+        32,
+        32
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        0,
+        4,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        1672,
+        1120,
+        32,
+        32
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "volume_on_64": {
+      "file": "res://assets/ui/mobile/volume_on_64.png",
+      "size": [
+        64,
+        64
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        0,
+        4,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        480,
+        1120,
+        64,
+        64
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "volume_on_128": {
+      "file": "res://assets/ui/mobile/volume_on_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        0,
+        4,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        136,
+        920,
+        128,
+        128
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "volume_off_32": {
+      "file": "res://assets/ui/mobile/volume_off_32.png",
+      "size": [
+        32,
+        32
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        1,
+        4,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        1636,
+        1120,
+        32,
+        32
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "volume_off_64": {
+      "file": "res://assets/ui/mobile/volume_off_64.png",
+      "size": [
+        64,
+        64
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        1,
+        4,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        412,
+        1120,
+        64,
+        64
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "volume_off_128": {
+      "file": "res://assets/ui/mobile/volume_off_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        1,
+        4,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        4,
+        920,
+        128,
+        128
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "finger_ready_32": {
+      "file": "res://assets/ui/toy/finger_ready_32.png",
+      "size": [
+        32,
+        32
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        2,
+        4,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        1096,
+        1120,
+        32,
+        32
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "finger_ready_64": {
+      "file": "res://assets/ui/toy/finger_ready_64.png",
+      "size": [
+        64,
+        64
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        2,
+        4,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        820,
+        1052,
+        64,
+        64
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "finger_ready_128": {
+      "file": "res://assets/ui/toy/finger_ready_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        2,
+        4,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        400,
+        656,
+        128,
+        128
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "finger_touch_32": {
+      "file": "res://assets/ui/mobile/finger_touch_32.png",
+      "size": [
+        32,
+        32
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        3,
+        4,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        1132,
+        1120,
+        32,
+        32
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "finger_touch_64": {
+      "file": "res://assets/ui/mobile/finger_touch_64.png",
+      "size": [
+        64,
+        64
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        3,
+        4,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        1024,
+        1052,
+        64,
+        64
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "finger_touch_128": {
+      "file": "res://assets/ui/mobile/finger_touch_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        3,
+        4,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        532,
+        656,
+        128,
+        128
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "target_arrow_32": {
+      "file": "res://assets/ui/toy/target_arrow_32.png",
+      "size": [
+        32,
+        32
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        4,
+        4,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        1420,
+        1120,
+        32,
+        32
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "target_arrow_64": {
+      "file": "res://assets/ui/toy/target_arrow_64.png",
+      "size": [
+        64,
+        64
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        4,
+        4,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        1840,
+        1052,
+        64,
+        64
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "target_arrow_128": {
+      "file": "res://assets/ui/toy/target_arrow_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_symbol_sheet.png",
+      "source_cell": [
+        4,
+        4,
+        5,
+        5
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        1192,
+        788,
+        128,
+        128
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "knob_off": {
+      "file": "res://assets/ui/toy/knob_off.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_control_sheet.png",
+      "source_cell": [
+        0,
+        0,
+        4,
+        4
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        1060,
+        656,
+        128,
+        128
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "knob_low": {
+      "file": "res://assets/ui/toy/knob_low.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_control_sheet.png",
+      "source_cell": [
+        1,
+        0,
+        4,
+        4
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        796,
+        656,
+        128,
+        128
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "knob_medium": {
+      "file": "res://assets/ui/toy/knob_medium.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_control_sheet.png",
+      "source_cell": [
+        2,
+        0,
+        4,
+        4
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        928,
+        656,
+        128,
+        128
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "knob_high": {
+      "file": "res://assets/ui/toy/knob_high.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_control_sheet.png",
+      "source_cell": [
+        3,
+        0,
+        4,
+        4
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        664,
+        656,
+        128,
+        128
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "tap_closed": {
+      "file": "res://assets/ui/toy/tap_closed.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        0.5,
+        0.92
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_control_sheet.png",
+      "source_cell": [
+        0,
+        1,
+        4,
+        4
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        928,
+        788,
+        128,
+        128
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "tap_open": {
+      "file": "res://assets/ui/toy/tap_open.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        0.5,
+        0.92
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_control_sheet.png",
+      "source_cell": [
+        1,
+        1,
+        4,
+        4
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        1060,
+        788,
+        128,
+        128
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "place_card_board": {
+      "file": "res://assets/ui/toy/place_card_board.png",
+      "size": [
+        256,
+        256
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_control_sheet.png",
+      "source_cell": [
+        2,
+        2,
+        4,
+        4
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        4,
+        4,
+        256,
+        256
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "place_card_stove": {
+      "file": "res://assets/ui/toy/place_card_stove.png",
+      "size": [
+        256,
+        256
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_control_sheet.png",
+      "source_cell": [
+        3,
+        2,
+        4,
+        4
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        524,
+        4,
+        256,
+        256
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "place_card_oven": {
+      "file": "res://assets/ui/toy/place_card_oven.png",
+      "size": [
+        256,
+        256
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_control_sheet.png",
+      "source_cell": [
+        0,
+        3,
+        4,
+        4
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        264,
+        4,
+        256,
+        256
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "stove_base": {
+      "file": "res://assets/ui/toy/stove_base.png",
+      "size": [
+        256,
+        256
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_control_sheet.png",
+      "source_cell": [
+        1,
+        3,
+        4,
+        4
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        524,
+        264,
+        256,
+        256
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "rotation_arrow": {
+      "file": "res://assets/ui/toy/rotation_arrow.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_control_sheet.png",
+      "source_cell": [
+        2,
+        3,
+        4,
+        4
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        532,
+        788,
+        128,
+        128
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "door_arrow": {
+      "file": "res://assets/ui/toy/door_arrow.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_control_sheet.png",
+      "source_cell": [
+        3,
+        3,
+        4,
+        4
+      ],
+      "no_baked_text": true,
+      "atlas_rect": [
+        664,
+        524,
+        128,
+        128
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "water_flow_0": {
+      "file": "res://assets/ui/toy/water_flow_0.png",
+      "size": [
+        64,
+        128
+      ],
+      "pivot": [
+        0.5,
+        0
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_control_sheet.png",
+      "derivation": "Isolated generated water from source faucet variants; common scale and top nozzle anchor.",
+      "atlas_rect": [
+        268,
+        920,
+        64,
+        128
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "water_flow_1": {
+      "file": "res://assets/ui/toy/water_flow_1.png",
+      "size": [
+        64,
+        128
+      ],
+      "pivot": [
+        0.5,
+        0
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_control_sheet.png",
+      "derivation": "Isolated generated water from source faucet variants; common scale and top nozzle anchor.",
+      "atlas_rect": [
+        336,
+        920,
+        64,
+        128
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "water_flow_2": {
+      "file": "res://assets/ui/toy/water_flow_2.png",
+      "size": [
+        64,
+        128
+      ],
+      "pivot": [
+        0.5,
+        0
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_control_sheet.png",
+      "derivation": "Isolated generated water from source faucet variants; common scale and top nozzle anchor.",
+      "atlas_rect": [
+        404,
+        920,
+        64,
+        128
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "water_flow_3": {
+      "file": "res://assets/ui/toy/water_flow_3.png",
+      "size": [
+        64,
+        128
+      ],
+      "pivot": [
+        0.5,
+        0
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "source/ui_control_sheet.png",
+      "derivation": "Isolated generated water from source faucet variants; common scale and top nozzle anchor.",
+      "atlas_rect": [
+        472,
+        920,
+        64,
+        128
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "reuse_pot": {
+      "file": "res://assets/ui/toy/reuse_pot.png",
+      "size": [
+        256,
+        256
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "existing/cooking_minigame_assets_v1/tools/pot_empty.png",
+      "reused": true,
+      "atlas_rect": [
+        264,
+        264,
+        256,
+        256
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "card_category_pot_64": {
+      "file": "res://assets/ui/toy/card_category_pot_64.png",
+      "size": [
+        64,
+        64
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "existing/cooking_minigame_assets_v1/tools/pot_empty.png",
+      "reused": true,
+      "atlas_rect": [
+        1396,
+        920,
+        64,
+        64
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "card_category_pot_128": {
+      "file": "res://assets/ui/toy/card_category_pot_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "existing/cooking_minigame_assets_v1/tools/pot_empty.png",
+      "reused": true,
+      "atlas_rect": [
+        1604,
+        264,
+        128,
+        128
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "reuse_pan": {
+      "file": "res://assets/ui/toy/reuse_pan.png",
+      "size": [
+        256,
+        256
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "existing/cooking_minigame_assets_v1/tools/pan_empty.png",
+      "reused": true,
+      "atlas_rect": [
+        4,
+        264,
+        256,
+        256
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "card_category_pan_64": {
+      "file": "res://assets/ui/toy/card_category_pan_64.png",
+      "size": [
+        64,
+        64
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "existing/cooking_minigame_assets_v1/tools/pan_empty.png",
+      "reused": true,
+      "atlas_rect": [
+        1328,
+        920,
+        64,
+        64
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "card_category_pan_128": {
+      "file": "res://assets/ui/toy/card_category_pan_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "existing/cooking_minigame_assets_v1/tools/pan_empty.png",
+      "reused": true,
+      "atlas_rect": [
+        1472,
+        264,
+        128,
+        128
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "reuse_oven_closed": {
+      "file": "res://assets/ui/toy/reuse_oven_closed.png",
+      "size": [
+        256,
+        256
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "existing/cooking_minigame_assets_v1/tools/oven_closed.png",
+      "reused": true,
+      "atlas_rect": [
+        1304,
+        4,
+        256,
+        256
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "reuse_oven_open": {
+      "file": "res://assets/ui/toy/reuse_oven_open.png",
+      "size": [
+        256,
+        256
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "existing/cooking_minigame_assets_v1/tools/oven_open.png",
+      "reused": true,
+      "atlas_rect": [
+        1564,
+        4,
+        256,
+        256
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "reuse_coffee": {
+      "file": "res://assets/ui/toy/reuse_coffee.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "existing/cooking_minigame_assets_v1/icons_128/coffee.png",
+      "reused": true,
+      "atlas_rect": [
+        136,
+        788,
+        128,
+        128
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "reuse_milk": {
+      "file": "res://assets/ui/toy/reuse_milk.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "existing/cooking_minigame_assets_v1/icons_128/milk.png",
+      "reused": true,
+      "atlas_rect": [
+        400,
+        788,
+        128,
+        128
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "reuse_ice": {
+      "file": "res://assets/ui/toy/reuse_ice.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "existing/cooking_minigame_assets_v1/icons_128/ice.png",
+      "reused": true,
+      "atlas_rect": [
+        268,
+        788,
+        128,
+        128
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "pot_on_stove": {
+      "file": "res://assets/ui/toy/pot_on_stove.png",
+      "size": [
+        256,
+        256
+      ],
+      "pivot": [
+        0.5,
+        0.9
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "composite: stove_base + reuse_pot",
+      "derivation": "Layer translation of generated stove and existing pot; off state is lifted clear of burner.",
+      "atlas_rect": [
+        1044,
+        4,
+        256,
+        256
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "pot_off_stove": {
+      "file": "res://assets/ui/toy/pot_off_stove.png",
+      "size": [
+        256,
+        256
+      ],
+      "pivot": [
+        0.5,
+        0.9
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "composite: stove_base + reuse_pot + target_arrow",
+      "derivation": "Layer translation of generated stove and existing pot; off state is lifted clear of burner.",
+      "atlas_rect": [
+        784,
+        4,
+        256,
+        256
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "drink_button_done": {
+      "file": "res://assets/ui/toy/drink_button_done.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "composite: drink_button_pressed + confirm_64",
+      "derivation": "Shared finished button background; ingredient icon rendered separately at runtime.",
+      "atlas_rect": [
+        796,
+        524,
+        128,
+        128
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "drink_coffee_normal": {
+      "file": "res://assets/ui/toy/drink_coffee_normal.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "composite: drink_button_normal + reuse_coffee",
+      "derivation": "Shared generated button background plus reused ingredient icon; done adds generated checkmark.",
+      "atlas_rect": [
+        1324,
+        524,
+        128,
+        128
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "drink_coffee_normal_64": {
+      "file": "res://assets/ui/toy/drink_coffee_normal_64.png",
+      "size": [
+        64,
+        64
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "drink_coffee_normal",
+      "derivation": "Nearest-neighbor 64px export.",
+      "atlas_rect": [
+        276,
+        1052,
+        64,
+        64
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "drink_coffee_pressed": {
+      "file": "res://assets/ui/toy/drink_coffee_pressed.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "composite: drink_button_pressed + reuse_coffee",
+      "derivation": "Shared generated button background plus reused ingredient icon; done adds generated checkmark.",
+      "atlas_rect": [
+        1456,
+        524,
+        128,
+        128
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "drink_coffee_pressed_64": {
+      "file": "res://assets/ui/toy/drink_coffee_pressed_64.png",
+      "size": [
+        64,
+        64
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "drink_coffee_pressed",
+      "derivation": "Nearest-neighbor 64px export.",
+      "atlas_rect": [
+        344,
+        1052,
+        64,
+        64
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "drink_coffee_done": {
+      "file": "res://assets/ui/toy/drink_coffee_done.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "composite: drink_button_done + reuse_coffee",
+      "derivation": "Shared generated button background plus reused ingredient icon; done adds generated checkmark.",
+      "atlas_rect": [
+        1192,
+        524,
+        128,
+        128
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "drink_coffee_done_64": {
+      "file": "res://assets/ui/toy/drink_coffee_done_64.png",
+      "size": [
+        64,
+        64
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "drink_coffee_done",
+      "derivation": "Nearest-neighbor 64px export.",
+      "atlas_rect": [
+        208,
+        1052,
+        64,
+        64
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "drink_milk_normal": {
+      "file": "res://assets/ui/toy/drink_milk_normal.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "composite: drink_button_normal + reuse_milk",
+      "derivation": "Shared generated button background plus reused ingredient icon; done adds generated checkmark.",
+      "atlas_rect": [
+        136,
+        656,
+        128,
+        128
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "drink_milk_normal_64": {
+      "file": "res://assets/ui/toy/drink_milk_normal_64.png",
+      "size": [
+        64,
+        64
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "drink_milk_normal",
+      "derivation": "Nearest-neighbor 64px export.",
+      "atlas_rect": [
+        684,
+        1052,
+        64,
+        64
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "drink_milk_pressed": {
+      "file": "res://assets/ui/toy/drink_milk_pressed.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "composite: drink_button_pressed + reuse_milk",
+      "derivation": "Shared generated button background plus reused ingredient icon; done adds generated checkmark.",
+      "atlas_rect": [
+        268,
+        656,
+        128,
+        128
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "drink_milk_pressed_64": {
+      "file": "res://assets/ui/toy/drink_milk_pressed_64.png",
+      "size": [
+        64,
+        64
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "drink_milk_pressed",
+      "derivation": "Nearest-neighbor 64px export.",
+      "atlas_rect": [
+        752,
+        1052,
+        64,
+        64
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "drink_milk_done": {
+      "file": "res://assets/ui/toy/drink_milk_done.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "composite: drink_button_done + reuse_milk",
+      "derivation": "Shared generated button background plus reused ingredient icon; done adds generated checkmark.",
+      "atlas_rect": [
+        4,
+        656,
+        128,
+        128
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "drink_milk_done_64": {
+      "file": "res://assets/ui/toy/drink_milk_done_64.png",
+      "size": [
+        64,
+        64
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "drink_milk_done",
+      "derivation": "Nearest-neighbor 64px export.",
+      "atlas_rect": [
+        616,
+        1052,
+        64,
+        64
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "drink_ice_normal": {
+      "file": "res://assets/ui/toy/drink_ice_normal.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "composite: drink_button_normal + reuse_ice",
+      "derivation": "Shared generated button background plus reused ingredient icon; done adds generated checkmark.",
+      "atlas_rect": [
+        1720,
+        524,
+        128,
+        128
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "drink_ice_normal_64": {
+      "file": "res://assets/ui/toy/drink_ice_normal_64.png",
+      "size": [
+        64,
+        64
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "drink_ice_normal",
+      "derivation": "Nearest-neighbor 64px export.",
+      "atlas_rect": [
+        480,
+        1052,
+        64,
+        64
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "drink_ice_pressed": {
+      "file": "res://assets/ui/toy/drink_ice_pressed.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "composite: drink_button_pressed + reuse_ice",
+      "derivation": "Shared generated button background plus reused ingredient icon; done adds generated checkmark.",
+      "atlas_rect": [
+        1852,
+        524,
+        128,
+        128
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "drink_ice_pressed_64": {
+      "file": "res://assets/ui/toy/drink_ice_pressed_64.png",
+      "size": [
+        64,
+        64
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "drink_ice_pressed",
+      "derivation": "Nearest-neighbor 64px export.",
+      "atlas_rect": [
+        548,
+        1052,
+        64,
+        64
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "drink_ice_done": {
+      "file": "res://assets/ui/toy/drink_ice_done.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "composite: drink_button_done + reuse_ice",
+      "derivation": "Shared generated button background plus reused ingredient icon; done adds generated checkmark.",
+      "atlas_rect": [
+        1588,
+        524,
+        128,
+        128
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "drink_ice_done_64": {
+      "file": "res://assets/ui/toy/drink_ice_done_64.png",
+      "size": [
+        64,
+        64
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "drink_ice_done",
+      "derivation": "Nearest-neighbor 64px export.",
+      "atlas_rect": [
+        412,
+        1052,
+        64,
+        64
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "drink_button_normal_64": {
+      "file": "res://assets/ui/toy/drink_button_normal_64.png",
+      "size": [
+        64,
+        64
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "drink_button_normal",
+      "derivation": "Nearest-neighbor 64px export.",
+      "atlas_rect": [
+        72,
+        1052,
+        64,
+        64
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "drink_button_pressed_64": {
+      "file": "res://assets/ui/toy/drink_button_pressed_64.png",
+      "size": [
+        64,
+        64
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "drink_button_pressed",
+      "derivation": "Nearest-neighbor 64px export.",
+      "atlas_rect": [
+        140,
+        1052,
+        64,
+        64
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "drink_button_done_64": {
+      "file": "res://assets/ui/toy/drink_button_done_64.png",
+      "size": [
+        64,
+        64
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "drink_button_done",
+      "derivation": "Nearest-neighbor 64px export.",
+      "atlas_rect": [
+        4,
+        1052,
+        64,
+        64
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "oven_level_low_64": {
+      "file": "res://assets/ui/toy/oven_level_low_64.png",
+      "size": [
+        64,
+        64
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "knob_low",
+      "derivation": "Declared reuse of logical stove-knob art for oven level display.",
+      "atlas_rect": [
+        1364,
+        1052,
+        64,
+        64
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "oven_level_medium_64": {
+      "file": "res://assets/ui/toy/oven_level_medium_64.png",
+      "size": [
+        64,
+        64
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "knob_medium",
+      "derivation": "Declared reuse of logical stove-knob art for oven level display.",
+      "atlas_rect": [
+        1432,
+        1052,
+        64,
+        64
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "oven_level_high_64": {
+      "file": "res://assets/ui/toy/oven_level_high_64.png",
+      "size": [
+        64,
+        64
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "knob_high",
+      "derivation": "Declared reuse of logical stove-knob art for oven level display.",
+      "atlas_rect": [
+        1296,
+        1052,
+        64,
+        64
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "finger_touch_0": {
+      "file": "res://assets/ui/mobile/finger_touch_0.png",
+      "size": [
+        64,
+        64
+      ],
+      "pivot": [
+        0.5,
+        0.95
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "finger_ready_64",
+      "derivation": "Generated pose aligned to bottom-center wrist.",
+      "atlas_rect": [
+        888,
+        1052,
+        64,
+        64
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "finger_touch_1": {
+      "file": "res://assets/ui/mobile/finger_touch_1.png",
+      "size": [
+        64,
+        64
+      ],
+      "pivot": [
+        0.5,
+        0.95
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "finger_touch_64",
+      "derivation": "Generated pose aligned to bottom-center wrist.",
+      "atlas_rect": [
+        956,
+        1052,
+        64,
+        64
+      ],
+      "atlas": "atlases/ui_core_atlas.png"
+    },
+    "teaching_card_layer": {
+      "file": "res://assets/ui/toy/teaching_card_layer.png",
+      "size": [
+        160,
+        96
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "place_card_board",
+      "derivation": "Cropped generated blank card, no new illustration.",
+      "atlas_rect": [
+        1628,
+        1552,
+        160,
+        96
+      ],
+      "atlas": "atlases/ui_teaching_atlas.png"
+    },
+    "teaching_board_layer": {
+      "file": "res://assets/ui/toy/teaching_board_layer.png",
+      "size": [
+        320,
+        144
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "place_card_board",
+      "derivation": "Cropped generated board, no new illustration.",
+      "atlas_rect": [
+        1304,
+        1552,
+        320,
+        144
+      ],
+      "atlas": "atlases/ui_teaching_atlas.png"
+    },
+    "teaching_place_card_512_0": {
+      "file": "res://assets/ui/toy/teaching_place_card_512_0.png",
+      "size": [
+        512,
+        512
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "composition of generated UI sprites and reused oven states",
+      "derivation": "Local state swap / translated pointer / screen pulse; not newly painted animation.",
+      "text_safe_rect": [
+        44,
+        412,
+        424,
+        56
+      ],
+      "atlas_rect": [
+        1036,
+        4,
+        512,
+        512
+      ],
+      "atlas": "atlases/ui_teaching_atlas.png"
+    },
+    "teaching_place_card_256_0": {
+      "file": "res://assets/ui/toy/teaching_place_card_256_0.png",
+      "size": [
+        256,
+        256
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "teaching_place_card_512_0",
+      "derivation": "Nearest-neighbor half-resolution export.",
+      "text_safe_rect": [
+        22,
+        206,
+        212,
+        28
+      ],
+      "atlas_rect": [
+        1556,
+        1036,
+        256,
+        256
+      ],
+      "atlas": "atlases/ui_teaching_atlas.png"
+    },
+    "teaching_place_card_512_1": {
+      "file": "res://assets/ui/toy/teaching_place_card_512_1.png",
+      "size": [
+        512,
+        512
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "composition of generated UI sprites and reused oven states",
+      "derivation": "Local state swap / translated pointer / screen pulse; not newly painted animation.",
+      "text_safe_rect": [
+        44,
+        412,
+        424,
+        56
+      ],
+      "atlas_rect": [
+        4,
+        520,
+        512,
+        512
+      ],
+      "atlas": "atlases/ui_teaching_atlas.png"
+    },
+    "teaching_place_card_256_1": {
+      "file": "res://assets/ui/toy/teaching_place_card_256_1.png",
+      "size": [
+        256,
+        256
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "teaching_place_card_512_1",
+      "derivation": "Nearest-neighbor half-resolution export.",
+      "text_safe_rect": [
+        22,
+        206,
+        212,
+        28
+      ],
+      "atlas_rect": [
+        4,
+        1552,
+        256,
+        256
+      ],
+      "atlas": "atlases/ui_teaching_atlas.png"
+    },
+    "teaching_turn_knob_512_0": {
+      "file": "res://assets/ui/toy/teaching_turn_knob_512_0.png",
+      "size": [
+        512,
+        512
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "composition of generated UI sprites and reused oven states",
+      "derivation": "Local state swap / translated pointer / screen pulse; not newly painted animation.",
+      "text_safe_rect": [
+        44,
+        412,
+        424,
+        56
+      ],
+      "atlas_rect": [
+        4,
+        1036,
+        512,
+        512
+      ],
+      "atlas": "atlases/ui_teaching_atlas.png"
+    },
+    "teaching_turn_knob_256_0": {
+      "file": "res://assets/ui/toy/teaching_turn_knob_256_0.png",
+      "size": [
+        256,
+        256
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "teaching_turn_knob_512_0",
+      "derivation": "Nearest-neighbor half-resolution export.",
+      "text_safe_rect": [
+        22,
+        206,
+        212,
+        28
+      ],
+      "atlas_rect": [
+        784,
+        1552,
+        256,
+        256
+      ],
+      "atlas": "atlases/ui_teaching_atlas.png"
+    },
+    "teaching_turn_knob_512_1": {
+      "file": "res://assets/ui/toy/teaching_turn_knob_512_1.png",
+      "size": [
+        512,
+        512
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "composition of generated UI sprites and reused oven states",
+      "derivation": "Local state swap / translated pointer / screen pulse; not newly painted animation.",
+      "text_safe_rect": [
+        44,
+        412,
+        424,
+        56
+      ],
+      "atlas_rect": [
+        520,
+        1036,
+        512,
+        512
+      ],
+      "atlas": "atlases/ui_teaching_atlas.png"
+    },
+    "teaching_turn_knob_256_1": {
+      "file": "res://assets/ui/toy/teaching_turn_knob_256_1.png",
+      "size": [
+        256,
+        256
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "teaching_turn_knob_512_1",
+      "derivation": "Nearest-neighbor half-resolution export.",
+      "text_safe_rect": [
+        22,
+        206,
+        212,
+        28
+      ],
+      "atlas_rect": [
+        1044,
+        1552,
+        256,
+        256
+      ],
+      "atlas": "atlases/ui_teaching_atlas.png"
+    },
+    "teaching_door_512_0": {
+      "file": "res://assets/ui/toy/teaching_door_512_0.png",
+      "size": [
+        512,
+        512
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "composition of generated UI sprites and reused oven states",
+      "derivation": "Local state swap / translated pointer / screen pulse; not newly painted animation.",
+      "text_safe_rect": [
+        44,
+        412,
+        424,
+        56
+      ],
+      "atlas_rect": [
+        4,
+        4,
+        512,
+        512
+      ],
+      "atlas": "atlases/ui_teaching_atlas.png"
+    },
+    "teaching_door_256_0": {
+      "file": "res://assets/ui/toy/teaching_door_256_0.png",
+      "size": [
+        256,
+        256
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "teaching_door_512_0",
+      "derivation": "Nearest-neighbor half-resolution export.",
+      "text_safe_rect": [
+        22,
+        206,
+        212,
+        28
+      ],
+      "atlas_rect": [
+        1036,
+        1036,
+        256,
+        256
+      ],
+      "atlas": "atlases/ui_teaching_atlas.png"
+    },
+    "teaching_door_512_1": {
+      "file": "res://assets/ui/toy/teaching_door_512_1.png",
+      "size": [
+        512,
+        512
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "composition of generated UI sprites and reused oven states",
+      "derivation": "Local state swap / translated pointer / screen pulse; not newly painted animation.",
+      "text_safe_rect": [
+        44,
+        412,
+        424,
+        56
+      ],
+      "atlas_rect": [
+        520,
+        4,
+        512,
+        512
+      ],
+      "atlas": "atlases/ui_teaching_atlas.png"
+    },
+    "teaching_door_256_1": {
+      "file": "res://assets/ui/toy/teaching_door_256_1.png",
+      "size": [
+        256,
+        256
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "teaching_door_512_1",
+      "derivation": "Nearest-neighbor half-resolution export.",
+      "text_safe_rect": [
+        22,
+        206,
+        212,
+        28
+      ],
+      "atlas_rect": [
+        1296,
+        1036,
+        256,
+        256
+      ],
+      "atlas": "atlases/ui_teaching_atlas.png"
+    },
+    "teaching_screen_fallback_512_0": {
+      "file": "res://assets/ui/toy/teaching_screen_fallback_512_0.png",
+      "size": [
+        512,
+        512
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "composition of generated UI sprites and reused oven states",
+      "derivation": "Local state swap / translated pointer / screen pulse; not newly painted animation.",
+      "text_safe_rect": [
+        44,
+        412,
+        424,
+        56
+      ],
+      "atlas_rect": [
+        520,
+        520,
+        512,
+        512
+      ],
+      "atlas": "atlases/ui_teaching_atlas.png"
+    },
+    "teaching_screen_fallback_256_0": {
+      "file": "res://assets/ui/toy/teaching_screen_fallback_256_0.png",
+      "size": [
+        256,
+        256
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "teaching_screen_fallback_512_0",
+      "derivation": "Nearest-neighbor half-resolution export.",
+      "text_safe_rect": [
+        22,
+        206,
+        212,
+        28
+      ],
+      "atlas_rect": [
+        264,
+        1552,
+        256,
+        256
+      ],
+      "atlas": "atlases/ui_teaching_atlas.png"
+    },
+    "teaching_screen_fallback_512_1": {
+      "file": "res://assets/ui/toy/teaching_screen_fallback_512_1.png",
+      "size": [
+        512,
+        512
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "composition of generated UI sprites and reused oven states",
+      "derivation": "Local state swap / translated pointer / screen pulse; not newly painted animation.",
+      "text_safe_rect": [
+        44,
+        412,
+        424,
+        56
+      ],
+      "atlas_rect": [
+        1036,
+        520,
+        512,
+        512
+      ],
+      "atlas": "atlases/ui_teaching_atlas.png"
+    },
+    "teaching_screen_fallback_256_1": {
+      "file": "res://assets/ui/toy/teaching_screen_fallback_256_1.png",
+      "size": [
+        256,
+        256
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "pivot_unit": "normalized",
+      "alpha": "binary",
+      "source": "teaching_screen_fallback_512_1",
+      "derivation": "Nearest-neighbor half-resolution export.",
+      "text_safe_rect": [
+        22,
+        206,
+        212,
+        28
+      ],
+      "atlas_rect": [
+        524,
+        1552,
+        256,
+        256
+      ],
+      "atlas": "atlases/ui_teaching_atlas.png"
+    }
+  },
+  "animations": {
+    "water_flow": {
+      "frames": [
+        "water_flow_0",
+        "water_flow_1",
+        "water_flow_2",
+        "water_flow_3"
+      ],
+      "fps": 8,
+      "loop": true,
+      "kind": "four_generated_water_phases",
+      "pivot": [
+        0.5,
+        0
+      ],
+      "pivot_unit": "normalized"
+    },
+    "finger_touch": {
+      "frames": [
+        "finger_touch_0",
+        "finger_touch_1"
+      ],
+      "fps": 3,
+      "loop": true,
+      "kind": "two_generated_poses",
+      "pivot": [
+        0.5,
+        0.95
+      ],
+      "pivot_unit": "normalized"
+    },
+    "teaching_place_card": {
+      "frames": [
+        "teaching_place_card_512_0",
+        "teaching_place_card_512_1"
+      ],
+      "fps": 2,
+      "loop": true,
+      "kind": "derived_local_state_swap",
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "alternate_size_frames": [
+        "teaching_place_card_256_0",
+        "teaching_place_card_256_1"
+      ],
+      "pivot_unit": "normalized"
+    },
+    "teaching_turn_knob": {
+      "frames": [
+        "teaching_turn_knob_512_0",
+        "teaching_turn_knob_512_1"
+      ],
+      "fps": 2,
+      "loop": true,
+      "kind": "derived_local_state_swap",
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "alternate_size_frames": [
+        "teaching_turn_knob_256_0",
+        "teaching_turn_knob_256_1"
+      ],
+      "pivot_unit": "normalized"
+    },
+    "teaching_door": {
+      "frames": [
+        "teaching_door_512_0",
+        "teaching_door_512_1"
+      ],
+      "fps": 2,
+      "loop": true,
+      "kind": "derived_local_state_swap",
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "alternate_size_frames": [
+        "teaching_door_256_0",
+        "teaching_door_256_1"
+      ],
+      "pivot_unit": "normalized"
+    },
+    "teaching_screen_fallback": {
+      "frames": [
+        "teaching_screen_fallback_512_0",
+        "teaching_screen_fallback_512_1"
+      ],
+      "fps": 2,
+      "loop": true,
+      "kind": "derived_local_state_swap",
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "alternate_size_frames": [
+        "teaching_screen_fallback_256_0",
+        "teaching_screen_fallback_256_1"
+      ],
+      "pivot_unit": "normalized"
+    }
+  },
+  "state_mappings": {
+    "play_mode": {
+      "screen": "screen_play_128",
+      "toy": "toy_play_128",
+      "panel": "panel"
+    },
+    "connection": {
+      "connecting": "connecting_64",
+      "connected": "connected_64",
+      "disconnected": "disconnected_64",
+      "reconnect": "reconnect_64",
+      "disconnect": "disconnect_64"
+    },
+    "app_controlled": {
+      "toy": "toy_play_128",
+      "badge": "toy_controlled_32"
+    },
+    "card_feedback": {
+      "frame": "card_frame",
+      "unknown": "unknown_card_128",
+      "success": "recognition_success_64",
+      "not_needed": "card_not_needed_64",
+      "already_added": "card_already_added_64"
+    },
+    "card_zones": {
+      "board": "place_card_board",
+      "stove": "place_card_stove",
+      "oven": "place_card_oven"
+    },
+    "pot_presence": {
+      "present": "pot_on_stove",
+      "absent": "pot_off_stove"
+    },
+    "tap": {
+      "off": "tap_closed",
+      "on": "tap_open",
+      "flow": "water_flow"
+    },
+    "stove_knob": {
+      "off": "knob_off",
+      "low": "knob_low",
+      "medium": "knob_medium",
+      "high": "knob_high"
+    },
+    "oven_levels": {
+      "low": "oven_level_low_64",
+      "medium": "oven_level_medium_64",
+      "high": "oven_level_high_64",
+      "display_size": [
+        64,
+        64
+      ],
+      "note": "Reuse logical knob artwork; actual firmware level mapping supplied by game."
+    },
+    "target_indicator": {
+      "arrow": "target_arrow_64",
+      "note": "Target shown separately from actual knob state."
+    },
+    "drink_buttons": {
+      "coffee": {
+        "normal": "drink_coffee_normal",
+        "pressed": "drink_coffee_pressed",
+        "done": "drink_coffee_done"
+      },
+      "milk": {
+        "normal": "drink_milk_normal",
+        "pressed": "drink_milk_pressed",
+        "done": "drink_milk_done"
+      },
+      "ice": {
+        "normal": "drink_ice_normal",
+        "pressed": "drink_ice_pressed",
+        "done": "drink_ice_done"
+      }
+    },
+    "drink_buttons_64": {
+      "coffee": {
+        "normal": "drink_coffee_normal_64",
+        "pressed": "drink_coffee_pressed_64",
+        "done": "drink_coffee_done_64"
+      },
+      "milk": {
+        "normal": "drink_milk_normal_64",
+        "pressed": "drink_milk_pressed_64",
+        "done": "drink_milk_done_64"
+      },
+      "ice": {
+        "normal": "drink_ice_normal_64",
+        "pressed": "drink_ice_pressed_64",
+        "done": "drink_ice_done_64"
+      }
+    },
+    "touch_controls": {
+      "pause": "pause_64",
+      "play": "play_64",
+      "back": "back_64",
+      "confirm": "confirm_64",
+      "music_on": "music_on_64",
+      "music_off": "music_off_64",
+      "voice_on": "voice_on_64",
+      "voice_off": "voice_off_64",
+      "volume_on": "volume_on_64",
+      "volume_off": "volume_off_64"
+    },
+    "dialogs": {
+      "disconnection": "dialog",
+      "return_confirmation": "dialog",
+      "action_button": "button_normal",
+      "pressed_button": "button_pressed",
+      "note": "All text external. Same frame is intentionally reused."
+    },
+    "mobile": {
+      "selected_customer": "selected_ring",
+      "loading": "loading",
+      "order_card": "order_card",
+      "steps": "step_bar"
+    },
+    "teaching": {
+      "place_card": "teaching_place_card",
+      "turn_knob": "teaching_turn_knob",
+      "door": "teaching_door",
+      "screen_fallback": "teaching_screen_fallback"
+    }
+  },
+  "runtime_interfaces": {
+    "loading": {
+      "asset": "loading",
+      "transform": "rotation",
+      "cycle_seconds": 1.2,
+      "loop": true,
+      "pixel_filter": "nearest",
+      "prefer_runtime_over_raster_frames": true
+    },
+    "connecting": {
+      "asset": "connecting_64",
+      "overlay": "loading",
+      "transform": "rotate loading overlay only",
+      "cycle_seconds": 1.2,
+      "loop": true
+    },
+    "progress": {
+      "track": "progress_track",
+      "fill": "progress_fill",
+      "method": "clip fill horizontally within track inset",
+      "range": [
+        0,
+        1
+      ],
+      "track_inner_rect": [
+        18,
+        17,
+        220,
+        14
+      ]
+    },
+    "timer": {
+      "track": "timer_track",
+      "fill": "timer_fill_full",
+      "method": "radial mask on full continuous ring; partial arc timer_fill is an optional spinner, not a full-progress mask",
+      "range": [
+        0,
+        1
+      ],
+      "note": "Ring art is independent from elapsed time; application controls fill mask."
+    },
+    "tap_flow": {
+      "tap": "tap_open",
+      "water_animation": "water_flow",
+      "tap_nozzle_anchor_px": [
+        113,
+        52
+      ],
+      "water_pivot": [
+        0.5,
+        0
+      ],
+      "water_pivot_unit": "normalized",
+      "note": "Verified composition in previews/water_phase_test.png. Attach water top-center to tap nozzle."
+    }
+  }
+}

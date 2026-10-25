@@ -1,0 +1,1495 @@
+{
+  "packages": [
+    "kitchen_missing_assets_p0_v1",
+    "fonts_and_voice_text_p0_v1",
+    "kitchen_p0_sfx_v1"
+  ],
+  "copied_unchanged": [
+    {
+      "path": "assets/food/ingredients/mushroom_whole_128.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/food/ingredients/mushroom_whole_128.png",
+      "sha256": "3e7ac645bcfab365e631f7a14ec0077d884c4929ffc693a3aa4b5eb3f230f0ce"
+    },
+    {
+      "path": "assets/food/ingredients/ice_cube_64.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/food/ingredients/ice_cube_64.png",
+      "sha256": "2ae6a6a373ff30faa62fdae8bc110d15b25c961c11c8f51a45bae59133d229f5"
+    },
+    {
+      "path": "assets/food/ingredients/corn_whole_64.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/food/ingredients/corn_whole_64.png",
+      "sha256": "689c937866a59c008b56693c1055902883c29aa204e03bbc4e61039929edb3d4"
+    },
+    {
+      "path": "assets/food/ingredients/mushroom_whole_64.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/food/ingredients/mushroom_whole_64.png",
+      "sha256": "67dba76ae0b0d70354a6e476c1aa05608a7fee41b7773dc25c46d29ae9dca693"
+    },
+    {
+      "path": "assets/food/ingredients/pumpkin_whole_64.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/food/ingredients/pumpkin_whole_64.png",
+      "sha256": "fffd928b16a7495ffd688cf1399a9bf9bb6dcc1b33befba99e85e684e19f22f4"
+    },
+    {
+      "path": "assets/food/ingredients/pumpkin_whole_128.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/food/ingredients/pumpkin_whole_128.png",
+      "sha256": "e673e08089ebd70d77b1235ba082d750cf6be14c30cafb17f20d3b93afef644f"
+    },
+    {
+      "path": "assets/food/ingredients/ice_cube_32.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/food/ingredients/ice_cube_32.png",
+      "sha256": "031fb57d9e257aff44782ef71fc87cab327f3a6e489ef729088a50642eea9156"
+    },
+    {
+      "path": "assets/food/ingredients/corn_whole_128.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/food/ingredients/corn_whole_128.png",
+      "sha256": "5a3177f87a7aa37f28de2a814ad92e8fdf9d768e1def5073af85818d47318b0d"
+    },
+    {
+      "path": "assets/food/prepared/pumpkin_chopped_128.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/food/prepared/pumpkin_chopped_128.png",
+      "sha256": "f6ffdfe4a7fbaa5bef68710d2ca5eecaf6ac488390f39178c7ae89b7002c83eb"
+    },
+    {
+      "path": "assets/food/prepared/corn_prepared_128.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/food/prepared/corn_prepared_128.png",
+      "sha256": "3f4b444a427c162c778fa3e29155069e4abf67fe56243b44a2415acd26b2c9ac"
+    },
+    {
+      "path": "assets/food/prepared/raw_cheese_toast_64.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/food/prepared/raw_cheese_toast_64.png",
+      "sha256": "c7ced0542385f4f423a3a0ccd91c6a08e5445e6298f7f5450479c87b9e5cbfb8"
+    },
+    {
+      "path": "assets/food/prepared/mushroom_sliced_128.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/food/prepared/mushroom_sliced_128.png",
+      "sha256": "fc2a00845ae56a45b0a22560935cf8278a37243be1c886dd092e566ac9644055"
+    },
+    {
+      "path": "assets/food/prepared/raw_cheese_toast_128.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/food/prepared/raw_cheese_toast_128.png",
+      "sha256": "011cb69a8d730d15dd23a83779d4fe0a9ae5fa1dfdb73b3b9dca9496466198a2"
+    },
+    {
+      "path": "assets/food/dishes/iced_latte_32.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/food/dishes/iced_latte_32.png",
+      "sha256": "bfda6c187d31a16426ef9c4582a152f79b532cf9a7415bc82fecd64545a93400"
+    },
+    {
+      "path": "assets/food/dishes/iced_latte_128.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/food/dishes/iced_latte_128.png",
+      "sha256": "d1a21d338052622b59b21343d773ff418ca9be89eea842c389bf8fe5383b76f3"
+    },
+    {
+      "path": "assets/food/dishes/pan_seared_mushrooms_64.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/food/dishes/pan_seared_mushrooms_64.png",
+      "sha256": "f9a240cee7cdec0341976787c7e0ac18625cf40186a2ee3f1890975881f4c02a"
+    },
+    {
+      "path": "assets/food/dishes/cheese_toast_32.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/food/dishes/cheese_toast_32.png",
+      "sha256": "1f895f1c01f35ec259aa9be9e5406e65baf38c64be1936308df9385bd7a3a38e"
+    },
+    {
+      "path": "assets/food/dishes/pumpkin_corn_soup_32.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/food/dishes/pumpkin_corn_soup_32.png",
+      "sha256": "2440b4b24762b38cd518806d97a14274530e25e23e8eb19899af7eb5b0f2c516"
+    },
+    {
+      "path": "assets/food/dishes/iced_latte_64.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/food/dishes/iced_latte_64.png",
+      "sha256": "b3b8e555f8fb446c1ad00e0c4171c1e5b6361fa511cbaaea0aa9749ca0839a0c"
+    },
+    {
+      "path": "assets/food/dishes/pan_seared_mushrooms_32.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/food/dishes/pan_seared_mushrooms_32.png",
+      "sha256": "bddb4f858df3d133fbe246724f4b18b008fe79e86c17e732e766fc66d37ec501"
+    },
+    {
+      "path": "assets/food/dishes/pumpkin_corn_soup_128.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/food/dishes/pumpkin_corn_soup_128.png",
+      "sha256": "a6a075b070bd6c9b697b46bf0840031a4c1cc7dca8c4e2d9768033c0b1de7d8f"
+    },
+    {
+      "path": "assets/food/dishes/cheese_toast_64.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/food/dishes/cheese_toast_64.png",
+      "sha256": "b812ac61a8e8789e939adfa36aea0da7186fc6d5a763f2f5e7b0db06d25467c2"
+    },
+    {
+      "path": "assets/food/dishes/cheese_toast_128.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/food/dishes/cheese_toast_128.png",
+      "sha256": "dc32c31e162ac577e04feab26ee52b16fd2a9ccbd1a0107e161f0701575c3126"
+    },
+    {
+      "path": "assets/food/dishes/pumpkin_corn_soup_64.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/food/dishes/pumpkin_corn_soup_64.png",
+      "sha256": "9d8a3605ff8db31ee5e46cc55949f249408c3224101d617957c8e3a082ded4a8"
+    },
+    {
+      "path": "assets/food/dishes/pan_seared_mushrooms_128.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/food/dishes/pan_seared_mushrooms_128.png",
+      "sha256": "72228f0659ef1c3e5458153e27dd3321bc3c2a003cf05630bb42da7f9dcd29d8"
+    },
+    {
+      "path": "assets/kitchen/utensils/oven_open_empty.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/food/tools/oven_open_empty.png",
+      "sha256": "8da0dc1af712e15d4d57189d95d17b19b751d50e42cc2dfaf5438184eea105df"
+    },
+    {
+      "path": "assets/kitchen/utensils/pan_empty.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/food/tools/pan_empty.png",
+      "sha256": "c2e63b94002cab4c4858a27d70de87c473454fde157fefefb9ac3a8c66d9cf4a"
+    },
+    {
+      "path": "assets/kitchen/utensils/cup_empty.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/food/tools/cup_empty.png",
+      "sha256": "bd438ec9d19c7eb10b7f10ad06c2ebe2412fbc4de0ab8e26b37dc95163719a0e"
+    },
+    {
+      "path": "assets/kitchen/utensils/drink_stir_spoon_128.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/food/tools/drink_stir_spoon_128.png",
+      "sha256": "7e40987233cb8bd720ce86e54d03ee60c44011692c18920932c10407d87d1cd9"
+    },
+    {
+      "path": "assets/kitchen/utensils/pot_empty.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/food/tools/pot_empty.png",
+      "sha256": "d9321f24971dc14423e47a7d343b65161e41a90fcf3f15116d44f556e4a5129f"
+    },
+    {
+      "path": "assets/kitchen/utensils/oven_closed.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/food/tools/oven_closed.png",
+      "sha256": "9b46a986b728ff8eda6ecfb5a7c79501fd6046c6ab92bc8b9b3323ba1113deb2"
+    },
+    {
+      "path": "assets/kitchen/utensils/oven_open.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/food/tools/oven_open.png",
+      "sha256": "a629b039e2867cc8779b32f121479d2b8ac4f428af961c7db283f15d3e0685a4"
+    },
+    {
+      "path": "assets/kitchen/overlays/pot_pumpkin_corn_cooked.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/food/layers/pot_pumpkin_corn_cooked.png",
+      "sha256": "1fec1556de11fa379536947a4c287cb9793f6dc3127b54d349bd64ebfcdc7662"
+    },
+    {
+      "path": "assets/kitchen/overlays/oven_door_open.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/food/layers/oven_door_open.png",
+      "sha256": "cda91740dc939570e78ea9293dc93497aa3f8289c64b0dea8bd895b651c55ed7"
+    },
+    {
+      "path": "assets/kitchen/overlays/pot_water_surface.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/food/layers/pot_water_surface.png",
+      "sha256": "061fe09f39756cdc79b854f91d9468464cb4175e1ed594b40820efb81462a4e8"
+    },
+    {
+      "path": "assets/kitchen/overlays/oven_food_raw.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/food/layers/oven_food_raw.png",
+      "sha256": "63ef1c3cb6b8691115606b0397cfc9ae174a5d43715933d08ad37e571a6a2771"
+    },
+    {
+      "path": "assets/kitchen/overlays/pan_mushroom_cooked.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/food/layers/pan_mushroom_cooked.png",
+      "sha256": "940f60a9eddf9047daa44d28ba61d37324b78f34837fbab170d2cd5880035c4f"
+    },
+    {
+      "path": "assets/kitchen/overlays/oven_door_closed.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/food/layers/oven_door_closed.png",
+      "sha256": "a385aaee6e67e76751be62486bc3ec0ac32dceb3a07d8491a266dce09d271979"
+    },
+    {
+      "path": "assets/kitchen/overlays/oven_interior_empty.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/food/layers/oven_interior_empty.png",
+      "sha256": "a96c8db63b324096c2333e298ff55b3f3f5bdf77f01f7c21e8bda8c1d2792285"
+    },
+    {
+      "path": "assets/kitchen/overlays/oven_glow.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/food/layers/oven_glow.png",
+      "sha256": "7b9120c89805902de646fa9527993219a222d256db7dd9ed77d6b5d26abb86b7"
+    },
+    {
+      "path": "assets/kitchen/overlays/oven_shell_open.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/food/layers/oven_shell_open.png",
+      "sha256": "22811d9271b6c03186fd7a61f474d70c87376429f49ccdcec633a7846c03e221"
+    },
+    {
+      "path": "assets/kitchen/overlays/pan_mushroom_raw.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/food/layers/pan_mushroom_raw.png",
+      "sha256": "fc5c1e89509ba75fed024469527a064460d7b6ae8bd2be708e75029f757237e4"
+    },
+    {
+      "path": "assets/kitchen/overlays/cup_coffee_milk.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/food/layers/cup_coffee_milk.png",
+      "sha256": "2ec244cb48e1f051c8cea1f816597c7480c965a5a4337fcb7eeefd6694e3b10d"
+    },
+    {
+      "path": "assets/kitchen/overlays/pot_pumpkin_corn_raw.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/food/layers/pot_pumpkin_corn_raw.png",
+      "sha256": "6f0095d1e9808e3f0512ef682fc1dca60e9ffa26752962051431bb5ae55acb19"
+    },
+    {
+      "path": "assets/kitchen/overlays/cup_coffee_milk_ice.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/food/layers/cup_coffee_milk_ice.png",
+      "sha256": "debf3a2932174909a3a52cd6ca29b10fdd89c0e20b5dd67ce9df49cb72191bcf"
+    },
+    {
+      "path": "assets/kitchen/overlays/cup_coffee.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/food/layers/cup_coffee.png",
+      "sha256": "3f562b4b51ca722eade77851340ae839c8fd3c653770713a9a5d3279f3b9ead6"
+    },
+    {
+      "path": "assets/kitchen/overlays/cup_ice.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/food/layers/cup_ice.png",
+      "sha256": "59db72c57c6de3499987b2f3ac545860efb5264f92eb3930087bb28792311a8b"
+    },
+    {
+      "path": "assets/kitchen/overlays/oven_food_cooked.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/food/layers/oven_food_cooked.png",
+      "sha256": "a07f29a63b277bd638d424b186fc708261903e69d59e7da680e412711efdf82e"
+    },
+    {
+      "path": "assets/kitchen/background/kitchen_background_panorama_2304x1024.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/background/kitchen_background_panorama_2304x1024.png",
+      "sha256": "a6ed6b638937005ea6380312ef0a9cdc1ae41108c1830f33d7fd65bbdf3129be"
+    },
+    {
+      "path": "assets/kitchen/background/kitchen_background_extend_left_384x1024.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/background/kitchen_background_extend_left_384x1024.png",
+      "sha256": "8fff99063a6caab7c0766540f19009c2c2622958df81293b9f7ee226dd65409a"
+    },
+    {
+      "path": "assets/kitchen/background/kitchen_background_extend_right_384x1024.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/background/kitchen_background_extend_right_384x1024.png",
+      "sha256": "fbd1ffa72c4282d8e577bae2a391a1087af4d1de603c51be7ef7e6f0852e1f4c"
+    },
+    {
+      "path": "assets/kitchen/background/kitchen_background_main_1536x1024.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/background/kitchen_background_main_1536x1024.png",
+      "sha256": "2e76857b398ae90a2dc97e59828d784eb1c7396d558ba8d303d5871f7560593f"
+    },
+    {
+      "path": "assets/ui/skin/button_normal.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/button_normal.png",
+      "sha256": "b4d6a04c73a2e99375c24b0d05d238cc99914275a10d65f18801fba25ac1bcd8"
+    },
+    {
+      "path": "assets/ui/skin/button_pressed.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/button_pressed.png",
+      "sha256": "b638e05e27099c4d0aefc22f117bb63a094acf313858ad1783142f38a7dd85ce"
+    },
+    {
+      "path": "assets/ui/skin/panel.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/panel.png",
+      "sha256": "016c65f1e6fffec93799ae4645602720cf4ca513614fd2514642f9d5f95557bc"
+    },
+    {
+      "path": "assets/ui/skin/dialog.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/dialog.png",
+      "sha256": "f1a933ce1fe24552d7d80717159b78d293dd18f1311449c91526d366cda84289"
+    },
+    {
+      "path": "assets/ui/skin/step_bar.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/step_bar.png",
+      "sha256": "3fbf4f49162c3839a419ebc6a1b26b8e9e2bd8e703896e04fb7cc802b526f3b7"
+    },
+    {
+      "path": "assets/ui/skin/order_card.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/order_card.png",
+      "sha256": "fbd49bf0cace4b4c7249ab0793d2c175e5c0680fd8b6ed5e8cff6320e0a606be"
+    },
+    {
+      "path": "assets/ui/skin/progress_track.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/progress_track.png",
+      "sha256": "2295d035bc17002e655d1f988d0f971f1bbd122c22c2e5af3921fb6aa175b237"
+    },
+    {
+      "path": "assets/ui/skin/progress_fill.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/progress_fill.png",
+      "sha256": "5c2ddb5624b61a1645511534e8a86df71b28a54bb614cca8da149b8860e14571"
+    },
+    {
+      "path": "assets/ui/toy/timer_track.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/timer_track.png",
+      "sha256": "8393eac751ea2be233d90757cdd698b5d8e1ef51a854edc4181aa61612d55ede"
+    },
+    {
+      "path": "assets/ui/toy/timer_fill.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/timer_fill.png",
+      "sha256": "ca9ca9d2e678511c21ea220b056f975b74ac3e2e8399457bf7c3be4ddddf2bc7"
+    },
+    {
+      "path": "assets/ui/toy/completion.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/completion.png",
+      "sha256": "72c25a5e53ca9eaeefb59bcfc4923fa2be8e29b507206ed2c017ded44d616836"
+    },
+    {
+      "path": "assets/ui/toy/card_frame.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/card_frame.png",
+      "sha256": "b3f605eaa3d5b6fa85748724a98b405a66ff4449faddcdc1dfbef1efcd058ff2"
+    },
+    {
+      "path": "assets/ui/skin/drink_button_normal.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/drink_button_normal.png",
+      "sha256": "d3e058f7f62231441a5359b141ebe6a8de90485348971a417138ad91c6e4be2e"
+    },
+    {
+      "path": "assets/ui/skin/drink_button_pressed.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/drink_button_pressed.png",
+      "sha256": "3a779257f95b2d5677e74579f9be39fe80e0f78b31fa724027d2a560d2caf1c3"
+    },
+    {
+      "path": "assets/ui/mobile/selected_ring.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/selected_ring.png",
+      "sha256": "8ec006cad79a214210a845a8f5e6afa80ad133efbdb603204027f02ab0f7071e"
+    },
+    {
+      "path": "assets/ui/mobile/loading.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/loading.png",
+      "sha256": "c0a5f51e0ec2ba443963b110308483d6ae3e168f8c3c1dd6efddbd0decadb570"
+    },
+    {
+      "path": "assets/ui/toy/timer_fill_full.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/timer_fill_full.png",
+      "sha256": "02bba60ce297f658e06d6c019abfa82614f11a135b712ae691415c73de3bd285"
+    },
+    {
+      "path": "assets/ui/toy/card_frame_64.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/card_frame_64.png",
+      "sha256": "e2efad2824e6e18d9688ba76ccfdc2c7fb29dd963b98743e91f9bdbf47947e25"
+    },
+    {
+      "path": "assets/ui/mobile/screen_play_32.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/screen_play_32.png",
+      "sha256": "86195425da0daffbbdcafeaa05128240c07dd8295a4c8dbac854be42523cc3a3"
+    },
+    {
+      "path": "assets/ui/mobile/screen_play_64.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/screen_play_64.png",
+      "sha256": "2fdb73f7b3d34b5724482aaf667d7f685824bc41ebcfd5432f6793b43ff58f20"
+    },
+    {
+      "path": "assets/ui/mobile/screen_play_128.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/screen_play_128.png",
+      "sha256": "4af07d0b21d8bb4cb57f83b2b2ebbf23784961f477c45d66a58ea1a6a637437f"
+    },
+    {
+      "path": "assets/ui/toy/toy_play_32.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/toy_play_32.png",
+      "sha256": "b3470db85b20d687744bdb1e5e26efa555678626a12c78cce9eded0709d60771"
+    },
+    {
+      "path": "assets/ui/toy/toy_play_64.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/toy_play_64.png",
+      "sha256": "35514ade00184d598a7c60b13005e9f3e94939c1183b1d0c8eae91aadd4ac5b0"
+    },
+    {
+      "path": "assets/ui/toy/toy_play_128.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/toy_play_128.png",
+      "sha256": "195424664be24c4f20415568b4159d800e8d82288a18685923bf52b0a05fb65d"
+    },
+    {
+      "path": "assets/ui/toy/connecting_32.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/connecting_32.png",
+      "sha256": "0277842fd3809f3cb539bfc001dbf748a5f39f270fbbbd8d038f76fcf9652baa"
+    },
+    {
+      "path": "assets/ui/toy/connecting_64.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/connecting_64.png",
+      "sha256": "88f5b05146c78242e485ab279ae694b8ea7e1575981c240c0555ead1d3b1c5b7"
+    },
+    {
+      "path": "assets/ui/toy/connecting_128.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/connecting_128.png",
+      "sha256": "a1a81789fbb3abfaa817fa050937060fa51186e3c4f122b1519be7894cfbd0f0"
+    },
+    {
+      "path": "assets/ui/toy/connected_32.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/connected_32.png",
+      "sha256": "2286d7b4b6eea577104086a9344ede851719a1ddf36175e0c8e7f36c7297e173"
+    },
+    {
+      "path": "assets/ui/toy/connected_64.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/connected_64.png",
+      "sha256": "d8fc38c88e87c03ee3232f4148abbe40d50bbcc3a71a96be4c676590d887cb3d"
+    },
+    {
+      "path": "assets/ui/toy/connected_128.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/connected_128.png",
+      "sha256": "e91c942b76b1aee2b7483c7edb020f1fed4e46a4f197cb809dc2d4e503b5b4cc"
+    },
+    {
+      "path": "assets/ui/toy/disconnected_32.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/disconnected_32.png",
+      "sha256": "60aeb20e63a9799590c9f9dd436c8a30c0b660785b8438b66116f9892407164f"
+    },
+    {
+      "path": "assets/ui/toy/disconnected_64.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/disconnected_64.png",
+      "sha256": "368e07b66819870c7a05bfe2db4586fefacd38b0e629a45188b9d8911ca6a1aa"
+    },
+    {
+      "path": "assets/ui/toy/disconnected_128.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/disconnected_128.png",
+      "sha256": "98f1d9e2a9e655bd327e78369098fa58f04c1b8d90768e13305c5950c6b68d52"
+    },
+    {
+      "path": "assets/ui/toy/toy_controlled_32.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/toy_controlled_32.png",
+      "sha256": "f53f8feba8fae7e92fa55d3e13492aa7194b141114d833508e8c590a0ae26630"
+    },
+    {
+      "path": "assets/ui/toy/toy_controlled_64.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/toy_controlled_64.png",
+      "sha256": "bc86785d40d2f8fb36150e509801c7c9d13a7b71d96c76f561002af48347bcbc"
+    },
+    {
+      "path": "assets/ui/toy/toy_controlled_128.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/toy_controlled_128.png",
+      "sha256": "dc0b8e734a559becea5f53ae09d88eaeaddd26ce8cd2fed19bd8a1423ee431a1"
+    },
+    {
+      "path": "assets/ui/toy/unknown_card_32.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/unknown_card_32.png",
+      "sha256": "3343222eee346839080274c18e0de2d3dcae2cf6fe3ec9819dc17d0fbc15e6de"
+    },
+    {
+      "path": "assets/ui/toy/unknown_card_64.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/unknown_card_64.png",
+      "sha256": "635655707fb1108574f8c3b9151597ad0995082b5498a61d2e5f5561333f74e9"
+    },
+    {
+      "path": "assets/ui/toy/unknown_card_128.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/unknown_card_128.png",
+      "sha256": "34476db58a120a98caa639885a8299c79d67d7b911fcb0741a147973ed7e314c"
+    },
+    {
+      "path": "assets/ui/toy/recognition_success_32.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/recognition_success_32.png",
+      "sha256": "351c8317617fb922d0951130a75dbf118e26a7f149dc4bb0bcc47fee6a6c6131"
+    },
+    {
+      "path": "assets/ui/toy/recognition_success_64.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/recognition_success_64.png",
+      "sha256": "37e5d43a61f06f2e72e23adb580c2c01080cc0b024d4c44b77cda68ecb51c165"
+    },
+    {
+      "path": "assets/ui/toy/recognition_success_128.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/recognition_success_128.png",
+      "sha256": "9c16e9de3d4fef37678f715f5f55950819a57140d6da8611943ffdc4717333f7"
+    },
+    {
+      "path": "assets/ui/toy/card_not_needed_32.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/card_not_needed_32.png",
+      "sha256": "57156c37e80f60a0763891d50e3e6c883a863ce457628e93b52e2251fee85493"
+    },
+    {
+      "path": "assets/ui/toy/card_not_needed_64.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/card_not_needed_64.png",
+      "sha256": "947655b01e4fe7d009e50380d898fe2055e620055e6028cd65d2f08d784e2384"
+    },
+    {
+      "path": "assets/ui/toy/card_not_needed_128.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/card_not_needed_128.png",
+      "sha256": "19be2744f0c8d3c5b5f29d04e913a3ab7c10d63a9b52c196ef6c3997fa5cc895"
+    },
+    {
+      "path": "assets/ui/toy/card_already_added_32.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/card_already_added_32.png",
+      "sha256": "af85583dfc4e467a7291baa01a867981a856cb1332bc80c89ef7287a735546e0"
+    },
+    {
+      "path": "assets/ui/toy/card_already_added_64.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/card_already_added_64.png",
+      "sha256": "aa26377275bb5a51d91e5355b8f4ea0e339040ba37462d2195faff6d251c964c"
+    },
+    {
+      "path": "assets/ui/toy/card_already_added_128.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/card_already_added_128.png",
+      "sha256": "691aab4299b84a79a60fadde6ad333f0fe2b336ec8466d930193aecaae68952a"
+    },
+    {
+      "path": "assets/ui/toy/reconnect_32.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/reconnect_32.png",
+      "sha256": "0fc4a1172fc04949579aba1ced1a5f14c4d15a6aa246d9e80fd0eb4458fc1d5a"
+    },
+    {
+      "path": "assets/ui/toy/reconnect_64.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/reconnect_64.png",
+      "sha256": "22b62fd84ae902bee07b5069c907d71091b1ae33df083191f73cd98a3fc64459"
+    },
+    {
+      "path": "assets/ui/toy/reconnect_128.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/reconnect_128.png",
+      "sha256": "a6ec254283b41156593ea1d9cf2f12e7f6028993cee151970a9b7275cb067931"
+    },
+    {
+      "path": "assets/ui/toy/disconnect_32.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/disconnect_32.png",
+      "sha256": "74c698da692f55d9c62c3490aac9187bf2a3e8d5ea7565eec80b111cd1a6f088"
+    },
+    {
+      "path": "assets/ui/toy/disconnect_64.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/disconnect_64.png",
+      "sha256": "e6fb15f156181878b2551c4b270b6a9a7c231f69394014c5f7c1bfb9e158d17f"
+    },
+    {
+      "path": "assets/ui/toy/disconnect_128.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/disconnect_128.png",
+      "sha256": "76c34a48f920417c515aa0a84baa7ce59d6d3c0d66b2d8ebe6be2ff77d6a44b1"
+    },
+    {
+      "path": "assets/ui/mobile/pause_32.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/pause_32.png",
+      "sha256": "7eb19aef5aea66dc62763d5ab93b62586d52144ca16ec136f2500b20d6b61deb"
+    },
+    {
+      "path": "assets/ui/mobile/pause_64.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/pause_64.png",
+      "sha256": "ec3edb42f9ee57d11fe5c70b2f5b67cd6a9fca3b2233a4e2c3864706f5a4df59"
+    },
+    {
+      "path": "assets/ui/mobile/pause_128.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/pause_128.png",
+      "sha256": "1f1edae19df855925450533de95289531070367895a52d1a5cbe631914d6409c"
+    },
+    {
+      "path": "assets/ui/mobile/play_32.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/play_32.png",
+      "sha256": "dedd14570e19ed3a67e78ed40bcfd84788e5dd5e750e9e5dac65db3bfc207152"
+    },
+    {
+      "path": "assets/ui/mobile/play_64.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/play_64.png",
+      "sha256": "b84f0bf5b432a8cf0a9649d0fa1a21e40db33963c597c8be290f5a18959a5cc6"
+    },
+    {
+      "path": "assets/ui/mobile/play_128.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/play_128.png",
+      "sha256": "c4429bd7aca9a72a1c0bab548eaa0e809af790064ff59a73f5f3b3fa07c4f920"
+    },
+    {
+      "path": "assets/ui/mobile/back_32.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/back_32.png",
+      "sha256": "1330c895422dbb6ac2cc6058e596b2d1a6014a6c5b6a3fe6e5351910a20c2826"
+    },
+    {
+      "path": "assets/ui/mobile/back_64.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/back_64.png",
+      "sha256": "0db33730ddd145ea30b67aee67931b751b15779dabc6b2d811e6e5fb3f6291ff"
+    },
+    {
+      "path": "assets/ui/mobile/back_128.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/back_128.png",
+      "sha256": "6bc475d22912a98f8160c1de09a5681337749d179cc53e4c8ef590b3b8b70ceb"
+    },
+    {
+      "path": "assets/ui/mobile/confirm_32.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/confirm_32.png",
+      "sha256": "7da77de36d7349ed96899c26047b0b6307c2baba82fbf22e1d341e3eadc2b353"
+    },
+    {
+      "path": "assets/ui/mobile/confirm_64.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/confirm_64.png",
+      "sha256": "24558972883128750a1699344097dc20c002166aa5a31c174af371b054315dcc"
+    },
+    {
+      "path": "assets/ui/mobile/confirm_128.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/confirm_128.png",
+      "sha256": "468294305e59c28740d28bffe184b5fc2fa04adc20acc8c79432daa5855766d2"
+    },
+    {
+      "path": "assets/ui/mobile/music_on_32.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/music_on_32.png",
+      "sha256": "89fce4800fd32dc9695e986b2dff74d35119f0a800b3cda58beeb8123ce6ffc8"
+    },
+    {
+      "path": "assets/ui/mobile/music_on_64.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/music_on_64.png",
+      "sha256": "440bf14a3f7a22e961f53383a54f60391d4caad4078d0e3e8c0d22d2665900c5"
+    },
+    {
+      "path": "assets/ui/mobile/music_on_128.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/music_on_128.png",
+      "sha256": "6f3f3401398ef2ea5ac1ebd0ed4ec49e1264a50a1b2d62c50bdbb5bfb189c67f"
+    },
+    {
+      "path": "assets/ui/mobile/music_off_32.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/music_off_32.png",
+      "sha256": "f99dbc5fccbae367f7050c9c6f7cf9510a08beefc7f45ee24ffb4b42137971b4"
+    },
+    {
+      "path": "assets/ui/mobile/music_off_64.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/music_off_64.png",
+      "sha256": "d2e5ef8ceb22d745737f44023441f7409c8e3a1affedbad5f3ac8270d75ef832"
+    },
+    {
+      "path": "assets/ui/mobile/music_off_128.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/music_off_128.png",
+      "sha256": "d2dcf0f265770d15f3f22d1f36d18823a19216bed35fdd41b41ce3e3295f2f8f"
+    },
+    {
+      "path": "assets/ui/mobile/voice_on_32.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/voice_on_32.png",
+      "sha256": "95a130a7713fa242e7db26dc9533d7704c89cbf16838f062497fd64fa3916a83"
+    },
+    {
+      "path": "assets/ui/mobile/voice_on_64.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/voice_on_64.png",
+      "sha256": "787ed1e93045cf5c503b0331a58dfcedec6bf231ef0ba503b34467b166c5b9b9"
+    },
+    {
+      "path": "assets/ui/mobile/voice_on_128.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/voice_on_128.png",
+      "sha256": "6b3bfde3f19aa98abe4ffca3c4f7594fb6bc46c234923beb6cb511e727a4a2bc"
+    },
+    {
+      "path": "assets/ui/mobile/voice_off_32.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/voice_off_32.png",
+      "sha256": "4a8cca7c05274b5cae7b92907dd5c0b80083d8a10e876fda0bebce0766e6eafd"
+    },
+    {
+      "path": "assets/ui/mobile/voice_off_64.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/voice_off_64.png",
+      "sha256": "185e9af02ba96d3e476e0a437a53f3d710f2fbb20c94372f8038edf0865e198d"
+    },
+    {
+      "path": "assets/ui/mobile/voice_off_128.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/voice_off_128.png",
+      "sha256": "2e9a440ecb8cede4ebd6392e0ceb4b98d82519d29a43ac05712185b2c073d58b"
+    },
+    {
+      "path": "assets/ui/mobile/volume_on_32.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/volume_on_32.png",
+      "sha256": "5603d09e962f721a3cb79f38edcc89185480f866e19f41424be467799b6cbc27"
+    },
+    {
+      "path": "assets/ui/mobile/volume_on_64.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/volume_on_64.png",
+      "sha256": "7dd2119aef82a83ef1fe3baa9dc17c59bf424639c0e7691829e6a7e0334e5308"
+    },
+    {
+      "path": "assets/ui/mobile/volume_on_128.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/volume_on_128.png",
+      "sha256": "830591994cd99a4f821365bea380563f9758e01327052d658be3a657f419d3cf"
+    },
+    {
+      "path": "assets/ui/mobile/volume_off_32.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/volume_off_32.png",
+      "sha256": "ddd106f6e267d4ccfb583b82f6864d870aa75edef1e06e7caecd8266d0ab500b"
+    },
+    {
+      "path": "assets/ui/mobile/volume_off_64.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/volume_off_64.png",
+      "sha256": "6abeec8ee79fccfd358835dabf6e29be00cdb903d62b20cc4efb5acd30396899"
+    },
+    {
+      "path": "assets/ui/mobile/volume_off_128.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/volume_off_128.png",
+      "sha256": "71a7b89b19b1981073f981ebab9fbb218d4ae1c3633ddacc9f0064c26b486c5a"
+    },
+    {
+      "path": "assets/ui/toy/finger_ready_32.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/finger_ready_32.png",
+      "sha256": "4f6595c31647b576c3d2addc467c1a1a7f4f2635188b63994a5439d92c2154e4"
+    },
+    {
+      "path": "assets/ui/toy/finger_ready_64.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/finger_ready_64.png",
+      "sha256": "bf13c224b6ec6235817fd721c4b22510388539e22811b973ebfbd9f9d6f220e1"
+    },
+    {
+      "path": "assets/ui/toy/finger_ready_128.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/finger_ready_128.png",
+      "sha256": "4f2b3dab6e80cc7b787bf137ac14c58271aeab34d43a096e458112ea85e898ac"
+    },
+    {
+      "path": "assets/ui/mobile/finger_touch_32.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/finger_touch_32.png",
+      "sha256": "f8a8463061904df37badd846532d26947ec978cf51bd82079e74ea75538489e6"
+    },
+    {
+      "path": "assets/ui/mobile/finger_touch_64.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/finger_touch_64.png",
+      "sha256": "587bb9f5f4b6889d623be5f8fdcfcb6b8121aef6d803115008c40d44e14c239f"
+    },
+    {
+      "path": "assets/ui/mobile/finger_touch_128.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/finger_touch_128.png",
+      "sha256": "ca691f5b7994d99e01f298cb4875e62f673eca77eb7f64d630d92ed74b535214"
+    },
+    {
+      "path": "assets/ui/toy/target_arrow_32.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/target_arrow_32.png",
+      "sha256": "042cd3b3f202c1117d65b3cb22749c133dfcd7662a6e4c9cdda4a775c6944f59"
+    },
+    {
+      "path": "assets/ui/toy/target_arrow_64.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/target_arrow_64.png",
+      "sha256": "b775b5c4b9ccd847a05ecee30f2924cf64a5a74f37276262221f476e9ed77fe0"
+    },
+    {
+      "path": "assets/ui/toy/target_arrow_128.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/target_arrow_128.png",
+      "sha256": "c6eca19b2496c7045eff9f1c87df20681532f83dad86337da0d66be132d87822"
+    },
+    {
+      "path": "assets/ui/toy/knob_off.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/knob_off.png",
+      "sha256": "87e5b0e50c8cfceceba5023ca408a9960998c8c367f04a767f5b0ad265cfc249"
+    },
+    {
+      "path": "assets/ui/toy/knob_low.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/knob_low.png",
+      "sha256": "f2f79ea959add1e213688b41bb8c8cb5c3fba60c7295b6b92e2ee411a80696cc"
+    },
+    {
+      "path": "assets/ui/toy/knob_medium.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/knob_medium.png",
+      "sha256": "76b44abd1b7de63e990f160e093a9e0dc31f7d7afe510e6ea9bda4f91221d0dc"
+    },
+    {
+      "path": "assets/ui/toy/knob_high.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/knob_high.png",
+      "sha256": "af5a5c1e90c16a8bc0e83d8561c2f45be2a09bc3bffd149467f035581e3d6a04"
+    },
+    {
+      "path": "assets/ui/toy/tap_closed.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/tap_closed.png",
+      "sha256": "c4d2f9229cd71d9779edec3492ad6a218550de7f66a293dcbabdcf1959e051d3"
+    },
+    {
+      "path": "assets/ui/toy/tap_open.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/tap_open.png",
+      "sha256": "80470af2c8bbcf31735a73563ccc2c1b399d79dbb35873f4ef409ae1c079eddb"
+    },
+    {
+      "path": "assets/ui/toy/place_card_board.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/place_card_board.png",
+      "sha256": "0d896877f62b13ec6a41aea4d3557fc52ce2876e29060d0381671cac617e93bd"
+    },
+    {
+      "path": "assets/ui/toy/place_card_stove.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/place_card_stove.png",
+      "sha256": "ca0b6bf98bbe676eab99d36bb4e09fc0a31eaf624f74c5fa8a6bc9143cd4a654"
+    },
+    {
+      "path": "assets/ui/toy/place_card_oven.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/place_card_oven.png",
+      "sha256": "cf299836560e54761a09403da2b29fe8d22dffae5b4d4fa4eb6a3269134d5bc8"
+    },
+    {
+      "path": "assets/ui/toy/stove_base.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/stove_base.png",
+      "sha256": "dc4dcc57c3396ee1cc021a54892996b322ac295676b26deed6cecfb1abe1d2a9"
+    },
+    {
+      "path": "assets/ui/toy/rotation_arrow.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/rotation_arrow.png",
+      "sha256": "b86e255d2548bc2a82456f0aacf6609cfe00ebffd0b59863a88c1803c571eb09"
+    },
+    {
+      "path": "assets/ui/toy/door_arrow.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/door_arrow.png",
+      "sha256": "a56ac6c2a965eadd215dca3403153ab46347489258bcde93d2808ca5b8433d3e"
+    },
+    {
+      "path": "assets/ui/toy/water_flow_0.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/water_flow_0.png",
+      "sha256": "7bc8786065f387b2a448ed0bdd78404089c0fd84511fcc49c547f5afe0681918"
+    },
+    {
+      "path": "assets/ui/toy/water_flow_1.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/water_flow_1.png",
+      "sha256": "df43711e8a3c6fc993002094c15a757551f86bc52295320bf4ed1088ed76a4b8"
+    },
+    {
+      "path": "assets/ui/toy/water_flow_2.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/water_flow_2.png",
+      "sha256": "227a02e4ba185c0f06cd36f1c96b75386dd365bf45ed127f2248eae56bc577cb"
+    },
+    {
+      "path": "assets/ui/toy/water_flow_3.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/water_flow_3.png",
+      "sha256": "f1e1b17e94dd7355bcc9ac7ad77680d4ab2ca44e7050d073cea328e4e52e8668"
+    },
+    {
+      "path": "assets/ui/toy/reuse_pot.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/reuse_pot.png",
+      "sha256": "d9321f24971dc14423e47a7d343b65161e41a90fcf3f15116d44f556e4a5129f"
+    },
+    {
+      "path": "assets/ui/toy/card_category_pot_64.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/card_category_pot_64.png",
+      "sha256": "5eb5a503e717b0357013e33334f01395bbcb101700c8ae70c507c893e5713f0f"
+    },
+    {
+      "path": "assets/ui/toy/card_category_pot_128.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/card_category_pot_128.png",
+      "sha256": "efb0d60363e89c80096d2e2bac3cc280db7380456b93047de8cb3280e57f5370"
+    },
+    {
+      "path": "assets/ui/toy/reuse_pan.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/reuse_pan.png",
+      "sha256": "c2e63b94002cab4c4858a27d70de87c473454fde157fefefb9ac3a8c66d9cf4a"
+    },
+    {
+      "path": "assets/ui/toy/card_category_pan_64.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/card_category_pan_64.png",
+      "sha256": "3fa8375ea2e72821c2d1d78fb14da1822d55bc52b743951af4d4a2816e6db9b1"
+    },
+    {
+      "path": "assets/ui/toy/card_category_pan_128.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/card_category_pan_128.png",
+      "sha256": "054f08d3e0bc39c483bb87d9fd0480d27a236097d6dd30382cb2e8dacddabecf"
+    },
+    {
+      "path": "assets/ui/toy/reuse_oven_closed.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/reuse_oven_closed.png",
+      "sha256": "9b46a986b728ff8eda6ecfb5a7c79501fd6046c6ab92bc8b9b3323ba1113deb2"
+    },
+    {
+      "path": "assets/ui/toy/reuse_oven_open.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/reuse_oven_open.png",
+      "sha256": "a629b039e2867cc8779b32f121479d2b8ac4f428af961c7db283f15d3e0685a4"
+    },
+    {
+      "path": "assets/ui/toy/reuse_coffee.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/reuse_coffee.png",
+      "sha256": "a388e63fbaf476e089692d040219b9dd8208dadebc59da55895604e91791fbf5"
+    },
+    {
+      "path": "assets/ui/toy/reuse_milk.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/reuse_milk.png",
+      "sha256": "8f55a623c9ba1e6cb1d3ef0602054e3273b335a0eb56813f037a9beb4ff0bc5a"
+    },
+    {
+      "path": "assets/ui/toy/reuse_ice.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/reuse_ice.png",
+      "sha256": "e588cad64241bac8e0dfada40b4ef14cbbb77b92718cab0d6e8e2f1ab055ea84"
+    },
+    {
+      "path": "assets/ui/toy/pot_on_stove.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/pot_on_stove.png",
+      "sha256": "fcb5865965e1539dca3a20a1efede5696c6bf0c65feee75ec8bb2410a731f348"
+    },
+    {
+      "path": "assets/ui/toy/pot_off_stove.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/pot_off_stove.png",
+      "sha256": "716a5291da0cee7a3eb89c0cde3bbed0a76a02d774e8ebd35821fd2da5578b13"
+    },
+    {
+      "path": "assets/ui/toy/drink_button_done.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/drink_button_done.png",
+      "sha256": "207fd76524b7d68477cefe402cf75dc83a9f74cf5070ed934b56200539909924"
+    },
+    {
+      "path": "assets/ui/toy/drink_coffee_normal.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/drink_coffee_normal.png",
+      "sha256": "4cf6e27d9b5816822dcaebea2e4eab71f1b549429e84a42611532fada6c4a25c"
+    },
+    {
+      "path": "assets/ui/toy/drink_coffee_normal_64.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/drink_coffee_normal_64.png",
+      "sha256": "92f2cac9e0f16cfe35376b91c9784fecb518f50007d8462e294c37377700707d"
+    },
+    {
+      "path": "assets/ui/toy/drink_coffee_pressed.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/drink_coffee_pressed.png",
+      "sha256": "2d4cc1de2d9c5050d7517c1f1b7b9f901b34c1656b914ce28e4fe66b24a23b33"
+    },
+    {
+      "path": "assets/ui/toy/drink_coffee_pressed_64.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/drink_coffee_pressed_64.png",
+      "sha256": "3fbbac148d31d8b0d89769bb91754157314c1024c9658d924cde6ee0361a7e1b"
+    },
+    {
+      "path": "assets/ui/toy/drink_coffee_done.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/drink_coffee_done.png",
+      "sha256": "9f8571bb54963f3dca34e494300802fcb2a44d31e1a604d5c91dacb7a4349eb5"
+    },
+    {
+      "path": "assets/ui/toy/drink_coffee_done_64.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/drink_coffee_done_64.png",
+      "sha256": "a63acac66cc337ddf5e55ee56a56134c871fb4818d398c3af888912cfeb13d04"
+    },
+    {
+      "path": "assets/ui/toy/drink_milk_normal.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/drink_milk_normal.png",
+      "sha256": "e08403adc71aae511b94b386a8697c573ecead3bc4b3548d217fb2bed950e1de"
+    },
+    {
+      "path": "assets/ui/toy/drink_milk_normal_64.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/drink_milk_normal_64.png",
+      "sha256": "6f880e80b21d6ba8fc5deaf91cd721b43926f68c4c6150fcb9ff000a3b93a1ef"
+    },
+    {
+      "path": "assets/ui/toy/drink_milk_pressed.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/drink_milk_pressed.png",
+      "sha256": "f07ba284439e35ba5b7ba8272b58f6dba7affc515f53dd4eee41912ff1b10d75"
+    },
+    {
+      "path": "assets/ui/toy/drink_milk_pressed_64.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/drink_milk_pressed_64.png",
+      "sha256": "fd238abdcf073667294af6bd4a95276ae4517b00fd7bd72df5788d58ff1c4fbd"
+    },
+    {
+      "path": "assets/ui/toy/drink_milk_done.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/drink_milk_done.png",
+      "sha256": "0e7789ccf1431613d6dcd4f11b2a282c0ef2c5b9965fcbbe02b21a7c9c75f118"
+    },
+    {
+      "path": "assets/ui/toy/drink_milk_done_64.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/drink_milk_done_64.png",
+      "sha256": "4bbeded9d905ae42e35b4fcf37e7fc7f1d09c24c7db87f7a3ca87edb9d2b88eb"
+    },
+    {
+      "path": "assets/ui/toy/drink_ice_normal.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/drink_ice_normal.png",
+      "sha256": "8035248107a5617f05b50a1022a51c757472328ef51fe942a83972e4d3896caa"
+    },
+    {
+      "path": "assets/ui/toy/drink_ice_normal_64.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/drink_ice_normal_64.png",
+      "sha256": "d13bffa63fc2f338b9530f14f74cd033734a43d0dffc6785e6157acf679adc19"
+    },
+    {
+      "path": "assets/ui/toy/drink_ice_pressed.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/drink_ice_pressed.png",
+      "sha256": "86889354dd9963142629650adcc7fead1d3f8123ceed4828ab44bee33b130bfd"
+    },
+    {
+      "path": "assets/ui/toy/drink_ice_pressed_64.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/drink_ice_pressed_64.png",
+      "sha256": "5be54b886d8d7f888b5a4a073b94dd99e7ae88ca0efa95f28e40f756b4d0039c"
+    },
+    {
+      "path": "assets/ui/toy/drink_ice_done.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/drink_ice_done.png",
+      "sha256": "f4936beec3a02204b18e96f9da27d4a68d980cd82ea4f6e35ba9ce73aa04078a"
+    },
+    {
+      "path": "assets/ui/toy/drink_ice_done_64.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/drink_ice_done_64.png",
+      "sha256": "77d83723ea16bd419f75f62e11f04d1307af7f24d36b3eed34dffb332ae6a345"
+    },
+    {
+      "path": "assets/ui/toy/drink_button_normal_64.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/drink_button_normal_64.png",
+      "sha256": "08502efdadbb6cf666dfe801486e4fb82b8a96a6a0d6e73789f71b60ba11ff1c"
+    },
+    {
+      "path": "assets/ui/toy/drink_button_pressed_64.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/drink_button_pressed_64.png",
+      "sha256": "05bbe8b352574751b872cae3f41e583ba68207b90b6ed1dadf0f64708e835c3c"
+    },
+    {
+      "path": "assets/ui/toy/drink_button_done_64.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/drink_button_done_64.png",
+      "sha256": "131dea7d4c9c73ca7c3a9637fae28adfd79483dcf1eaeddd90193a9e4dadb02d"
+    },
+    {
+      "path": "assets/ui/toy/oven_level_low_64.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/oven_level_low_64.png",
+      "sha256": "e618f1fd047f3a85ebe70c32acb0077fdaf02afc434149a71f17f3130d402981"
+    },
+    {
+      "path": "assets/ui/toy/oven_level_medium_64.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/oven_level_medium_64.png",
+      "sha256": "0c223b2093f6c33f966d98feb4b35074fb74297c83f3227cd297e8105d6367f0"
+    },
+    {
+      "path": "assets/ui/toy/oven_level_high_64.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/oven_level_high_64.png",
+      "sha256": "256022a4436d3d370d8fa3390ce1dbc698dff0d3f3469abd82fff4a12546c405"
+    },
+    {
+      "path": "assets/ui/mobile/finger_touch_0.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/finger_touch_0.png",
+      "sha256": "51c91a32f768fb095d9e7171e513ddcc24ecd21ae9814c84aee5e33405716a65"
+    },
+    {
+      "path": "assets/ui/mobile/finger_touch_1.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/finger_touch_1.png",
+      "sha256": "151753aaa4fd90d22441b4dbd41c810bc2c0e003d36b4a24b487821b0bbc27be"
+    },
+    {
+      "path": "assets/ui/toy/teaching_card_layer.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/teaching_card_layer.png",
+      "sha256": "3eccc0ae7b945b7563672c7b9c2889229fd43c3d0e1ff153535c5cac07a97c3b"
+    },
+    {
+      "path": "assets/ui/toy/teaching_board_layer.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/teaching_board_layer.png",
+      "sha256": "4b30d7da908682fe7edbe85cf3325872598b19f2380cc2abf3be98045c075985"
+    },
+    {
+      "path": "assets/ui/toy/teaching_place_card_512_0.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/teaching_place_card_512_0.png",
+      "sha256": "be740c27f80e01c71e32535b67b7024aa0767f0dd7de013e4cc009a3f9fa9bb7"
+    },
+    {
+      "path": "assets/ui/toy/teaching_place_card_256_0.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/teaching_place_card_256_0.png",
+      "sha256": "bd93364f79e82fcfaa5afcb81860e4cf37b7ea7fbe3a38bda2d650356d4dada2"
+    },
+    {
+      "path": "assets/ui/toy/teaching_place_card_512_1.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/teaching_place_card_512_1.png",
+      "sha256": "8e1299fdb7f6ead4ed107eeb253f1d7dc233c3e59885096bec6c20ed2a744f70"
+    },
+    {
+      "path": "assets/ui/toy/teaching_place_card_256_1.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/teaching_place_card_256_1.png",
+      "sha256": "5731d89c497c12fda4aab16dcfa88a9b9f9ddfe465bcc9d1263f220758f34bf3"
+    },
+    {
+      "path": "assets/ui/toy/teaching_turn_knob_512_0.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/teaching_turn_knob_512_0.png",
+      "sha256": "57701aaef5a6070cc6d16c1928d0c058970e705b4c7a5e6b3d2b0f9423c3cd3b"
+    },
+    {
+      "path": "assets/ui/toy/teaching_turn_knob_256_0.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/teaching_turn_knob_256_0.png",
+      "sha256": "b98ed8c5bfacf2740f46462c44f3239570d4dc5626a2fbf4d19826cc52d79b94"
+    },
+    {
+      "path": "assets/ui/toy/teaching_turn_knob_512_1.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/teaching_turn_knob_512_1.png",
+      "sha256": "4d069aca9f8719c210922ef5f42315fc684f4020d0ae8cf738c3c59cd96690db"
+    },
+    {
+      "path": "assets/ui/toy/teaching_turn_knob_256_1.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/teaching_turn_knob_256_1.png",
+      "sha256": "c3b38af4eb412c225b174f7375333e58293a00f94bdf4396099fcbc7473dc456"
+    },
+    {
+      "path": "assets/ui/toy/teaching_door_512_0.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/teaching_door_512_0.png",
+      "sha256": "1fdd4b4db22a54dbf44f23db4a6f81f2e0e9da10f2ea177156f5f3cee8f40d37"
+    },
+    {
+      "path": "assets/ui/toy/teaching_door_256_0.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/teaching_door_256_0.png",
+      "sha256": "c32ecd1289162cef7a02689a7d5258e08dc052566e0a3e91f1b1c2f1bc61c673"
+    },
+    {
+      "path": "assets/ui/toy/teaching_door_512_1.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/teaching_door_512_1.png",
+      "sha256": "a41d7a5295dea57ffce255d8bb394681583115a7046bd055b9b0ae0bd700c138"
+    },
+    {
+      "path": "assets/ui/toy/teaching_door_256_1.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/teaching_door_256_1.png",
+      "sha256": "fbb47d05c7f2540dfa81e19532e2b7fa0a9966dc4e65416245338af0f155550c"
+    },
+    {
+      "path": "assets/ui/toy/teaching_screen_fallback_512_0.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/teaching_screen_fallback_512_0.png",
+      "sha256": "ddfda57e099cbdc14c5615f60fb411e6bfe66a4085415782e0149a880526615a"
+    },
+    {
+      "path": "assets/ui/toy/teaching_screen_fallback_256_0.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/teaching_screen_fallback_256_0.png",
+      "sha256": "4d46dcb52d80fe48d1b4917b2d5bc945284a66dee25c34e80097d62c68f6d844"
+    },
+    {
+      "path": "assets/ui/toy/teaching_screen_fallback_512_1.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/teaching_screen_fallback_512_1.png",
+      "sha256": "745c4af4de3100a318007f5a6c12ea24d81fa6cfb52e15708674116ebf3ddbb2"
+    },
+    {
+      "path": "assets/ui/toy/teaching_screen_fallback_256_1.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/teaching_screen_fallback_256_1.png",
+      "sha256": "83b4befc3bc32b93560b72620e7060a5772fc6ef0e562fae7f4e1baae373d2f8"
+    },
+    {
+      "path": "fonts/latin/NotoSans-Regular.ttf",
+      "source_package": "fonts_and_voice_text_p0_v1",
+      "source_file": "fonts_and_voice_text_p0_v1/fonts/latin/NotoSans-Regular.ttf",
+      "sha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
+    },
+    {
+      "path": "fonts/zh_CN/NotoSansCJKsc-Regular.otf",
+      "source_package": "fonts_and_voice_text_p0_v1",
+      "source_file": "fonts_and_voice_text_p0_v1/fonts/zh_CN/NotoSansCJKsc-Regular.otf",
+      "sha256": "2c76254f6fc379fddfce0a7e84fb5385bb135d3e399294f6eeb6680d0365b74b"
+    },
+    {
+      "path": "fonts/licenses/NotoSans-OFL.txt",
+      "source_package": "fonts_and_voice_text_p0_v1",
+      "source_file": "fonts_and_voice_text_p0_v1/licenses/NotoSans-OFL.txt",
+      "sha256": "0dab92d0544f7b233403f14b84a663bdbfa746982eda629e7f4f9ffe1b036feb"
+    },
+    {
+      "path": "fonts/licenses/NotoSansCJK-OFL.txt",
+      "source_package": "fonts_and_voice_text_p0_v1",
+      "source_file": "fonts_and_voice_text_p0_v1/licenses/NotoSansCJK-OFL.txt",
+      "sha256": "6a73f9541c2de74158c0e7cf6b0a58ef774f5a780bf191f2d7ec9cc53efe2bf2"
+    },
+    {
+      "path": "fonts/font_sources.json",
+      "source_package": "fonts_and_voice_text_p0_v1",
+      "source_file": "fonts_and_voice_text_p0_v1/font_sources.json",
+      "sha256": "5bac81927625e5e5951030b1b386aafe0654aff10bbfebf6c0c38c62c2396b2b"
+    },
+    {
+      "path": "i18n/voice.csv",
+      "source_package": "fonts_and_voice_text_p0_v1",
+      "source_file": "fonts_and_voice_text_p0_v1/i18n/voice.csv",
+      "sha256": "00ed9d8caca6d2e9925dfd0a6ac09bf450e194b254172f17a098442972cc5786"
+    },
+    {
+      "path": "i18n/terminology.csv",
+      "source_package": "fonts_and_voice_text_p0_v1",
+      "source_file": "fonts_and_voice_text_p0_v1/i18n/terminology.csv",
+      "sha256": "a70cff618b3b6cd22755ad67a01664230bf2c28e171b6f877960d90ff5231cf3"
+    },
+    {
+      "path": "assets/audio/sfx/ui_click.ogg",
+      "source_package": "kitchen_p0_sfx_v1",
+      "source_file": "kitchen_p0_sfx_v1/ogg_mobile/ui_click.ogg",
+      "sha256": "615fae74bda14e93005ddc6ef9579bb96f73afb3c219363b83e4e2d5d9d2805e"
+    },
+    {
+      "path": "assets/audio/sfx/toy_connected.ogg",
+      "source_package": "kitchen_p0_sfx_v1",
+      "source_file": "kitchen_p0_sfx_v1/ogg_mobile/toy_connected.ogg",
+      "sha256": "447f52caf52cdf9e4e1507b41b8f4e45280eb4bc5eb102404289478197b648e5"
+    },
+    {
+      "path": "assets/audio/sfx/toy_disconnected.ogg",
+      "source_package": "kitchen_p0_sfx_v1",
+      "source_file": "kitchen_p0_sfx_v1/ogg_mobile/toy_disconnected.ogg",
+      "sha256": "8f6b712a23a737b460e34fd5c5e97534edde4df09baa5f594fb503d7cfaf864e"
+    },
+    {
+      "path": "assets/audio/sfx/ui_back.ogg",
+      "source_package": "kitchen_p0_sfx_v1",
+      "source_file": "kitchen_p0_sfx_v1/ogg_mobile/ui_back.ogg",
+      "sha256": "5e963e3bf1e86c04058b5e4464840b592eb718c4b68411b7372415f370f9e633"
+    },
+    {
+      "path": "assets/audio/sfx/step_complete.ogg",
+      "source_package": "kitchen_p0_sfx_v1",
+      "source_file": "kitchen_p0_sfx_v1/ogg_mobile/step_complete.ogg",
+      "sha256": "c82125b2636a406fdd4de06819e289761f65c3713b15e04be6fbf7a3ee7ed349"
+    },
+    {
+      "path": "assets/audio/sfx/card_unknown.ogg",
+      "source_package": "kitchen_p0_sfx_v1",
+      "source_file": "kitchen_p0_sfx_v1/ogg_mobile/card_unknown.ogg",
+      "sha256": "0962535fd7c04563382718767e17ba67ed8df4d043cacd9d524b3c206970230a"
+    },
+    {
+      "path": "assets/audio/sfx/dish_complete.ogg",
+      "source_package": "kitchen_p0_sfx_v1",
+      "source_file": "kitchen_p0_sfx_v1/ogg_mobile/dish_complete.ogg",
+      "sha256": "8f0117a2974e522c31d963295cd8838c3eb0422e9b7a7bcbd229e3fa37680c1c"
+    },
+    {
+      "path": "assets/audio/sfx/card_not_needed.ogg",
+      "source_package": "kitchen_p0_sfx_v1",
+      "source_file": "kitchen_p0_sfx_v1/ogg_mobile/card_not_needed.ogg",
+      "sha256": "4a3649ac83119af97e5715f52258d1ed22f952ddd4c677760b4ba4b303bf1b07"
+    },
+    {
+      "path": "assets/audio/sfx/source_manifest.json",
+      "source_package": "kitchen_p0_sfx_v1",
+      "source_file": "kitchen_p0_sfx_v1/manifest.json",
+      "sha256": "b1da900571bd589d8c3f3c3d6e042fc72b37fc5c5bded4ce5c292b0af571218c"
+    },
+    {
+      "path": "assets/audio/sfx/SOURCE.txt",
+      "source_package": "kitchen_p0_sfx_v1",
+      "source_file": "kitchen_p0_sfx_v1/README.txt",
+      "sha256": "d86365ed63b5f8751c032a7211dfb179f2b2a1d0c0456519b0572e9e43626f2b"
+    }
+  ],
+  "derived": [
+    {
+      "path": "i18n/ui.csv",
+      "source_package": "fonts_and_voice_text_p0_v1",
+      "source_file": "fonts_and_voice_text_p0_v1/i18n/ui.csv",
+      "source_sha256": "efbbe52ef81c25ed4b73f3a2626a6c9c38515e04264e0c196cf5f74265fcf2fb",
+      "current_sha256": "15380d0b2002413dcdc012652135fcae8d5c72187d850491913edd1849bf0487",
+      "reason": "local simulator single-language labels and feedback"
+    },
+    {
+      "path": "assets/ui/p0_manifest.json",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/ui/manifest.json",
+      "source_sha256": "8bee166eac78246d9df2271b108f4daeea8316cb30df099cfdea7db48929acd1",
+      "current_sha256": "4013560704307e6717f1229dee9b2bc37d1f6e14926ba85042cc4cea3d2e420b",
+      "reason": "source manifest paths remapped for this project"
+    }
+  ],
+  "food_layer_order_back_to_front": {
+    "pot_raw": [
+      "tools/pot_empty.png",
+      "layers/pot_water_surface.png",
+      "layers/pot_pumpkin_corn_raw.png"
+    ],
+    "pot_cooked": [
+      "tools/pot_empty.png",
+      "layers/pot_pumpkin_corn_cooked.png"
+    ],
+    "pan_raw": [
+      "tools/pan_empty.png",
+      "layers/pan_mushroom_raw.png"
+    ],
+    "pan_cooked": [
+      "tools/pan_empty.png",
+      "layers/pan_mushroom_cooked.png"
+    ],
+    "coffee": [
+      "layers/cup_coffee.png",
+      "tools/cup_empty.png"
+    ],
+    "coffee_milk": [
+      "layers/cup_coffee_milk.png",
+      "tools/cup_empty.png"
+    ],
+    "coffee_milk_ice": [
+      "layers/cup_coffee_milk.png",
+      "layers/cup_ice.png",
+      "tools/cup_empty.png"
+    ],
+    "oven_empty": [
+      "layers/oven_interior_empty.png",
+      "layers/oven_shell_open.png"
+    ],
+    "oven_raw": [
+      "layers/oven_interior_empty.png",
+      "layers/oven_glow.png",
+      "layers/oven_food_raw.png",
+      "layers/oven_shell_open.png"
+    ],
+    "oven_cooked": [
+      "layers/oven_interior_empty.png",
+      "layers/oven_glow.png",
+      "layers/oven_food_cooked.png",
+      "layers/oven_shell_open.png"
+    ],
+    "oven_closed": [
+      "tools/oven_closed.png"
+    ]
+  },
+  "status": "desktop local tests verified the simulator and localization; this is not a device deployment or main-review approval"
+}

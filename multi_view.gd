@@ -6,12 +6,25 @@ const SCALE: float = Floor.RENDER_SCALE
 const ROOT := "res://assets/"
 const ART_ROOT := "res://restaurant_art/"
 const BACKGROUND := ART_ROOT + "restaurant_open_background.png"
+const RECIPE_DISHES := {
+	"pumpkin_corn_soup": "food/dishes/pumpkin_corn_soup_32.png",
+	"pan_fried_mushrooms": "food/dishes/pan_seared_mushrooms_32.png",
+	"bake": "food/dishes/cheese_toast_32.png",
+	"drink": "food/dishes/iced_latte_32.png",
+}
+# The original 34x20 generic plate is held from its painted plate centre, while
+# the new 32px recipe art is held from its lower plate edge.
+const DISH_ANCHOR := Vector2(16,30)
+const GENERIC_DISH_ANCHOR := Vector2(17,16)
+const FOOD_TABLE_ANCHOR := Vector2(45,-8)
 var model: Variant
 var selected_table: int = 1
 var clock: float = 0.0
 var catalog: Dictionary
 var textures: Dictionary = {}
 var background: Texture2D
+var action_metadata: Dictionary = {}
+var place_dish_anchor_cache: Dictionary = {}
 
 func _ready() -> void:
 	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
@@ -47,6 +60,76 @@ func _index(seconds: float, clip: Dictionary) -> int:
 func _clip(species: String, group: String, name: String) -> Dictionary:
 	var entry: Dictionary = catalog.customers.get(species,catalog.staff.get(species,{}))
 	return entry[group].clips[name]
+
+
+func _action_metadata(species: String) -> Dictionary:
+	# Hand anchors are authored beside each animation sheet.  Cache the parsed file
+	# because this path is read from the draw loop while a server is placing a dish.
+	if action_metadata.has(species):
+		return action_metadata[species]
+	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string("res://assets/actions/%s/animation.json" % species))
+	action_metadata[species] = parsed if parsed is Dictionary else {}
+	return action_metadata[species]
+
+
+func _place_dish_anchors(species: String) -> Dictionary:
+	if place_dish_anchor_cache.has(species):
+		return place_dish_anchor_cache[species]
+	var action: Dictionary = _action_metadata(species)
+	var place: Dictionary = action.get("place_dish",{})
+	var frames: Array = place.get("frames",[])
+	var hands: Array = []
+	for frame: Dictionary in frames:
+		var anchor: Array = frame.get("hand_anchor",[])
+		hands.append(Vector2(anchor[0],anchor[1]) if anchor.size() == 2 else Vector2.ZERO)
+	var release: Vector2 = hands[2] if hands.size() > 2 else Vector2.ZERO
+	for event: Dictionary in place.get("events",[]):
+		var anchor: Array = event.get("anchor",[])
+		if int(event.get("frame",-1)) == 2 and anchor.size() == 2:
+			release = Vector2(anchor[0],anchor[1])
+	place_dish_anchor_cache[species] = {"hands":hands,"release":release,"release_frame":2}
+	return place_dish_anchor_cache[species]
+
+
+func food_render_plan(table: Dictionary, species: String = "", elapsed: float = -1.0) -> Dictionary:
+	# Read-only plan shared by the tabletop and the transient held-dish pass.
+	# It also gives isolated visual tests a way to inspect real metadata without
+	# duplicating the production mapping or hard-coding animal-specific offsets.
+	var recipe_id: String = str(table.get("recipe_id",""))
+	var recipe_art: bool = RECIPE_DISHES.has(recipe_id)
+	var table_anchor: Vector2 = Vector2(table.center) + FOOD_TABLE_ANCHOR*SCALE
+	var dish_anchor: Vector2 = DISH_ANCHOR if recipe_art else GENERIC_DISH_ANCHOR
+	var plan: Dictionary = {
+		"texture_path": str(RECIPE_DISHES.get(recipe_id,"props/dish.png")),
+		"recipe_art": recipe_art,
+		"dish_anchor": dish_anchor,
+		"table_anchor": table_anchor,
+		"table_origin": table_anchor-dish_anchor*SCALE,
+	}
+	if species.is_empty():
+		return plan
+	var anchors: Dictionary = _place_dish_anchors(species)
+	var clip: Dictionary = _clip(species,"actions","place_dish")
+	var frame: int = _index(elapsed,clip)
+	var hands: Array = anchors.hands
+	var hand_anchor: Vector2 = hands[frame] if frame < hands.size() else Vector2.ZERO
+	var animation_origin: Vector2 = table_anchor-Vector2(anchors.release)*SCALE
+	plan.merge({
+		"frame":frame,
+		"release_anchor":anchors.release,
+		"hand_anchor":hand_anchor,
+		"animation_origin":animation_origin,
+		"handheld_origin":animation_origin+hand_anchor*SCALE-dish_anchor*SCALE,
+		"attached":frame < int(anchors.release_frame),
+	})
+	return plan
+
+
+func table_food_render_plan(table: Dictionary) -> Dictionary:
+	var plan: Dictionary = food_render_plan(table)
+	if str(table.phase) in ["drinking","checkout","leaving"]:
+		plan.merge({"texture_path":"cleanup/props/empty_plate.png","recipe_art":false,"dish_anchor":GENERIC_DISH_ANCHOR,"table_origin":plan.table_anchor-GENERIC_DISH_ANCHOR*SCALE},true)
+	return plan
 
 func _draw_clip(clip: Dictionary, origin: Vector2, elapsed: float, fixed: int = -1) -> int:
 	var i: int = _index(elapsed,clip) if fixed < 0 else fixed
@@ -190,7 +273,8 @@ func _table_items(table: Dictionary) -> void:
 				if kind == "food": food = true
 				else: drink = true
 	if food:
-		_prop("cleanup/props/empty_plate.png" if table.phase in ["drinking","checkout","leaving"] else "props/dish.png",c+Vector2(28,-24)*SCALE)
+		var food_plan: Dictionary = table_food_render_plan(table)
+		_prop(food_plan.texture_path,food_plan.table_origin)
 	var baked_cup: bool = false
 	if table.phase == "drinking":
 		var guest: Dictionary = model.customers.get(table.guest_id,{})
@@ -222,16 +306,24 @@ func _working(worker: Dictionary) -> void:
 	else:
 		var food: bool = task.kind == "food"
 		var clip: Dictionary = _clip(species,"actions" if food else "drinks","place_dish" if food else "place_cup")
-		var target: Vector2 = c+(Vector2(45,-8) if food else Vector2(7,-6))*SCALE
-		var release: Vector2 = Vector2(27,84) if food else Vector2(17,85)
-		for event in clip.events:
-			var a: Array = event.get("anchor",event.get("world_anchor_from_cell",[]))
-			if a.size()==2: release = Vector2(a[0],a[1])
+		var target: Vector2 = c+(Vector2(7,-6) if not food else FOOD_TABLE_ANCHOR)*SCALE
+		var release: Vector2 = Vector2(17,85)
+		var food_plan: Dictionary = {}
+		if food:
+			food_plan = food_render_plan(table,species,worker.elapsed)
+			target = food_plan.table_anchor
+			release = food_plan.release_anchor
+		else:
+			for event in clip.events:
+				var a: Array = event.get("anchor",event.get("world_anchor_from_cell",[]))
+				if a.size()==2: release = Vector2(a[0],a[1])
 		var origin: Vector2 = target-release*SCALE
 		var i: int = _draw_clip(clip,origin,worker.elapsed)
-		if i < 2:
+		if food and bool(food_plan.attached):
+			_prop(food_plan.texture_path,food_plan.handheld_origin)
+		elif not food and i < 2:
 			var point: Vector2 = origin+(release+Vector2(13 if i==0 else 3,0))*SCALE
-			_prop("props/dish.png" if food else "drinks/rabbit/cup.png",point-(Vector2(17,16) if food else Vector2(11,18))*SCALE)
+			_prop("drinks/rabbit/cup.png",point-Vector2(11,18)*SCALE)
 
 func _draw() -> void:
 	if model == null or catalog.is_empty(): return

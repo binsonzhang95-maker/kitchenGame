@@ -8,6 +8,10 @@ config/features=PackedStringArray("4.3", "GL Compatibility")
 config/use_custom_user_dir=true
 config/custom_user_dir_name="MoriDinerPrototype"
 
+[internationalization]
+
+locale/translations=PackedStringArray("res://i18n/ui.zh_CN.translation", "res://i18n/ui.en.translation")
+
 [display]
 window/size/viewport_width=1536
 window/size/viewport_height=1152
@@ -15,6 +19,11 @@ window/size/window_width_override=1280
 window/size/window_height_override=960
 window/stretch/mode="canvas_items"
 window/stretch/aspect="keep"
+
+[input_devices]
+
+pointing/emulate_mouse_from_touch=true
+pointing/emulate_touch_from_mouse=false
 
 [rendering]
 renderer/rendering_method="gl_compatibility"

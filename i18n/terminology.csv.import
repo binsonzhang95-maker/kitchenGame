@@ -1,0 +1,17 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://owwyi2rr0d0s"
+
+[deps]
+
+files=["res://i18n/terminology.en.translation", "res://i18n/terminology.name.translation", "res://i18n/terminology.note.translation"]
+
+source_file="res://i18n/terminology.csv"
+dest_files=["res://i18n/terminology.en.translation", "res://i18n/terminology.name.translation", "res://i18n/terminology.note.translation"]
+
+[params]
+
+compress=true
+delimiter=0

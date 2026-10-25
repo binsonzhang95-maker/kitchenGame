@@ -1,0 +1,419 @@
+{
+  "pack_id": "komori_kitchen_p0_sfx",
+  "version": "1.0.0",
+  "schema_version": 1,
+  "source": "Original procedural additive synthesis; no external samples; no voice.",
+  "source_plan": "KITCHEN_GAME_ASSETS_PLAN.md section 7.2, supplied 2026-10-25",
+  "audition_status": "Technical decode/waveform checks only; human/target-device listening pending.",
+  "sounds": [
+    {
+      "sound_id": "ui_click",
+      "label_zh": "UI 点击",
+      "event": "ui.click",
+      "duration_s": 0.11,
+      "loop": false,
+      "intended_playback": "phone",
+      "feedback_shape_zh": "单次干净的轻木击",
+      "source": "original_procedural_synthesis",
+      "sample_rate_hz": 48000,
+      "channels": 1,
+      "wav_bits_per_sample": 24,
+      "wav": {
+        "path": "wav_48k24/ui_click.wav",
+        "size_bytes": 15884,
+        "sha256": "84ef0ed48fe378f1aa6732510e3d6483de0c8ffbb42da63abe0e3bcd09209f71",
+        "crc32": "644a8322",
+        "metrics": {
+          "sample_count": 5280,
+          "duration_s": 0.11,
+          "peak_dbfs": -12.0,
+          "rms_dbfs": -22.2596,
+          "oversampled_4x_peak_dbfs": -11.9945,
+          "clipped_samples": 0,
+          "first_sample": 0.0,
+          "last_sample": 0.0,
+          "dc_offset": -6.795358477216778e-06,
+          "energy_above_5khz_percent": 4.0679820340654976e-09
+        }
+      },
+      "ogg": {
+        "path": "ogg_mobile/ui_click.ogg",
+        "size_bytes": 4527,
+        "sha256": "615fae74bda14e93005ddc6ef9579bb96f73afb3c219363b83e4e2d5d9d2805e",
+        "crc32": "febfd903",
+        "codec": "vorbis",
+        "metrics": {
+          "sample_count": 5152,
+          "duration_s": 0.10733333333333334,
+          "peak_dbfs": -11.9557,
+          "rms_dbfs": -22.0926,
+          "oversampled_4x_peak_dbfs": -11.9477,
+          "clipped_samples": 0,
+          "first_sample": -1.3004814718442503e-06,
+          "last_sample": 0.00015836345846764743,
+          "dc_offset": -1.059694178784514e-05,
+          "energy_above_5khz_percent": 6.930663515933252e-08
+        }
+      }
+    },
+    {
+      "sound_id": "ui_back",
+      "label_zh": "UI 返回",
+      "event": "ui.back",
+      "duration_s": 0.13,
+      "loop": false,
+      "intended_playback": "phone",
+      "feedback_shape_zh": "较低音域的轻柔回落",
+      "source": "original_procedural_synthesis",
+      "sample_rate_hz": 48000,
+      "channels": 1,
+      "wav_bits_per_sample": 24,
+      "wav": {
+        "path": "wav_48k24/ui_back.wav",
+        "size_bytes": 18764,
+        "sha256": "550ed9366c8e3ddc2f0752d3bc50274b942410575a1395d8bbb648143e19ac7c",
+        "crc32": "cfd20c26",
+        "metrics": {
+          "sample_count": 6240,
+          "duration_s": 0.13,
+          "peak_dbfs": -12.0,
+          "rms_dbfs": -21.8455,
+          "oversampled_4x_peak_dbfs": -11.9945,
+          "clipped_samples": 0,
+          "first_sample": 0.0,
+          "last_sample": 0.0,
+          "dc_offset": 2.9006084570517906e-05,
+          "energy_above_5khz_percent": 1.4140117385672277e-09
+        }
+      },
+      "ogg": {
+        "path": "ogg_mobile/ui_back.ogg",
+        "size_bytes": 4544,
+        "sha256": "5e963e3bf1e86c04058b5e4464840b592eb718c4b68411b7372415f370f9e633",
+        "crc32": "7830bc72",
+        "codec": "vorbis",
+        "metrics": {
+          "sample_count": 6112,
+          "duration_s": 0.12733333333333333,
+          "peak_dbfs": -11.9361,
+          "rms_dbfs": -21.6881,
+          "oversampled_4x_peak_dbfs": -11.9306,
+          "clipped_samples": 0,
+          "first_sample": 5.8368292229715735e-05,
+          "last_sample": 5.709184733859729e-06,
+          "dc_offset": 5.281862710527303e-06,
+          "energy_above_5khz_percent": 2.005457260883538e-09
+        }
+      }
+    },
+    {
+      "sound_id": "card_not_needed",
+      "label_zh": "这一步用不到",
+      "event": "card.not_needed",
+      "duration_s": 0.3,
+      "loop": false,
+      "intended_playback": "toy_primary_phone_fallback",
+      "feedback_shape_zh": "两次缓和的同音木击，不是失败警报",
+      "source": "original_procedural_synthesis",
+      "sample_rate_hz": 48000,
+      "channels": 1,
+      "wav_bits_per_sample": 24,
+      "wav": {
+        "path": "wav_48k24/card_not_needed.wav",
+        "size_bytes": 43244,
+        "sha256": "5ef6595f388188b60db8f9247609e818236809bccafdf063d28f243cbe98b229",
+        "crc32": "e44f9132",
+        "metrics": {
+          "sample_count": 14400,
+          "duration_s": 0.3,
+          "peak_dbfs": -12.0,
+          "rms_dbfs": -22.0915,
+          "oversampled_4x_peak_dbfs": -11.9945,
+          "clipped_samples": 0,
+          "first_sample": 0.0,
+          "last_sample": 0.0,
+          "dc_offset": -1.6735709375805325e-05,
+          "energy_above_5khz_percent": 2.2019834386185665e-09
+        }
+      },
+      "ogg": {
+        "path": "ogg_mobile/card_not_needed.ogg",
+        "size_bytes": 4927,
+        "sha256": "4a3649ac83119af97e5715f52258d1ed22f952ddd4c677760b4ba4b303bf1b07",
+        "crc32": "7ade01df",
+        "codec": "vorbis",
+        "metrics": {
+          "sample_count": 14272,
+          "duration_s": 0.29733333333333334,
+          "peak_dbfs": -11.9283,
+          "rms_dbfs": -21.9644,
+          "oversampled_4x_peak_dbfs": -11.9228,
+          "clipped_samples": 0,
+          "first_sample": -0.00016348381177522242,
+          "last_sample": -6.511171250167536e-06,
+          "dc_offset": -2.844528569501972e-05,
+          "energy_above_5khz_percent": 9.615513209881192e-09
+        }
+      }
+    },
+    {
+      "sound_id": "card_unknown",
+      "label_zh": "未知卡",
+      "event": "card.unknown",
+      "duration_s": 0.34,
+      "loop": false,
+      "intended_playback": "toy_primary_phone_fallback",
+      "feedback_shape_zh": "两音小幅上行问询，与用不到的同音节奏不同",
+      "source": "original_procedural_synthesis",
+      "sample_rate_hz": 48000,
+      "channels": 1,
+      "wav_bits_per_sample": 24,
+      "wav": {
+        "path": "wav_48k24/card_unknown.wav",
+        "size_bytes": 49004,
+        "sha256": "2eb3a92ded982e681e5567959f90101fbea65252c2c19dcd1dacb6e99933a9da",
+        "crc32": "11ba741d",
+        "metrics": {
+          "sample_count": 16320,
+          "duration_s": 0.34,
+          "peak_dbfs": -12.0,
+          "rms_dbfs": -22.3231,
+          "oversampled_4x_peak_dbfs": -11.9945,
+          "clipped_samples": 0,
+          "first_sample": 0.0,
+          "last_sample": 0.0,
+          "dc_offset": 4.12024411500669e-06,
+          "energy_above_5khz_percent": 3.1222361514432753e-09
+        }
+      },
+      "ogg": {
+        "path": "ogg_mobile/card_unknown.ogg",
+        "size_bytes": 5027,
+        "sha256": "0962535fd7c04563382718767e17ba67ed8df4d043cacd9d524b3c206970230a",
+        "crc32": "e1f47f16",
+        "codec": "vorbis",
+        "metrics": {
+          "sample_count": 16192,
+          "duration_s": 0.3373333333333333,
+          "peak_dbfs": -11.9331,
+          "rms_dbfs": -22.2086,
+          "oversampled_4x_peak_dbfs": -11.9276,
+          "clipped_samples": 0,
+          "first_sample": 0.00016884402430150658,
+          "last_sample": -0.00010108605056302622,
+          "dc_offset": -1.8117909663547798e-06,
+          "energy_above_5khz_percent": 3.125253043545719e-08
+        }
+      }
+    },
+    {
+      "sound_id": "step_complete",
+      "label_zh": "步骤完成",
+      "event": "cooking.step_complete",
+      "duration_s": 0.62,
+      "loop": false,
+      "intended_playback": "phone",
+      "feedback_shape_zh": "两音上行，柔木铃确认",
+      "source": "original_procedural_synthesis",
+      "sample_rate_hz": 48000,
+      "channels": 1,
+      "wav_bits_per_sample": 24,
+      "wav": {
+        "path": "wav_48k24/step_complete.wav",
+        "size_bytes": 89324,
+        "sha256": "1acd903c082632f5c8bac0c1e8e3ddbe2c1fc1227b279766a9385f98c08cb29d",
+        "crc32": "26dd6136",
+        "metrics": {
+          "sample_count": 29760,
+          "duration_s": 0.62,
+          "peak_dbfs": -10.0,
+          "rms_dbfs": -21.3028,
+          "oversampled_4x_peak_dbfs": -9.9928,
+          "clipped_samples": 0,
+          "first_sample": 0.0,
+          "last_sample": 0.0,
+          "dc_offset": 3.504176293649981e-07,
+          "energy_above_5khz_percent": 4.86527019028694e-09
+        }
+      },
+      "ogg": {
+        "path": "ogg_mobile/step_complete.ogg",
+        "size_bytes": 6210,
+        "sha256": "c82125b2636a406fdd4de06819e289761f65c3713b15e04be6fbf7a3ee7ed349",
+        "crc32": "28671c63",
+        "codec": "vorbis",
+        "metrics": {
+          "sample_count": 29632,
+          "duration_s": 0.6173333333333333,
+          "peak_dbfs": -9.9373,
+          "rms_dbfs": -21.2066,
+          "oversampled_4x_peak_dbfs": -9.9291,
+          "clipped_samples": 0,
+          "first_sample": -0.00039575499249622226,
+          "last_sample": 6.8978729359514546e-06,
+          "dc_offset": -9.937698202813239e-08,
+          "energy_above_5khz_percent": 3.0909419228988356e-08
+        }
+      }
+    },
+    {
+      "sound_id": "dish_complete",
+      "label_zh": "菜品完成",
+      "event": "cooking.dish_complete",
+      "duration_s": 0.92,
+      "loop": false,
+      "intended_playback": "phone",
+      "feedback_shape_zh": "三个音的舒展完成感，末音延长",
+      "source": "original_procedural_synthesis",
+      "sample_rate_hz": 48000,
+      "channels": 1,
+      "wav_bits_per_sample": 24,
+      "wav": {
+        "path": "wav_48k24/dish_complete.wav",
+        "size_bytes": 132524,
+        "sha256": "4b0fb506e1843c05a9f2d757fd2988680ee154571f5714cdd56c3d0629d261b9",
+        "crc32": "31c614cc",
+        "metrics": {
+          "sample_count": 44160,
+          "duration_s": 0.92,
+          "peak_dbfs": -9.0,
+          "rms_dbfs": -21.1939,
+          "oversampled_4x_peak_dbfs": -8.9915,
+          "clipped_samples": 0,
+          "first_sample": 0.0,
+          "last_sample": 0.0,
+          "dc_offset": 5.941325123759283e-07,
+          "energy_above_5khz_percent": 7.685759682141815e-09
+        }
+      },
+      "ogg": {
+        "path": "ogg_mobile/dish_complete.ogg",
+        "size_bytes": 7599,
+        "sha256": "8f0117a2974e522c31d963295cd8838c3eb0422e9b7a7bcbd229e3fa37680c1c",
+        "crc32": "dacbeb03",
+        "codec": "vorbis",
+        "metrics": {
+          "sample_count": 44032,
+          "duration_s": 0.9173333333333333,
+          "peak_dbfs": -8.8299,
+          "rms_dbfs": -21.1045,
+          "oversampled_4x_peak_dbfs": -8.8223,
+          "clipped_samples": 0,
+          "first_sample": 0.000125528997159563,
+          "last_sample": -1.026539939630311e-05,
+          "dc_offset": -3.7442795351566194e-07,
+          "energy_above_5khz_percent": 6.255654525610484e-09
+        }
+      }
+    },
+    {
+      "sound_id": "toy_connected",
+      "label_zh": "玩具已连接",
+      "event": "toy.connected",
+      "duration_s": 0.48,
+      "loop": false,
+      "intended_playback": "phone",
+      "feedback_shape_zh": "较低音域上行五度，清晰连上",
+      "source": "original_procedural_synthesis",
+      "sample_rate_hz": 48000,
+      "channels": 1,
+      "wav_bits_per_sample": 24,
+      "wav": {
+        "path": "wav_48k24/toy_connected.wav",
+        "size_bytes": 69164,
+        "sha256": "74234153dc2494a961723435908977ac51e20be64e30d1fa8a08b5403e472888",
+        "crc32": "6fda87d6",
+        "metrics": {
+          "sample_count": 23040,
+          "duration_s": 0.48,
+          "peak_dbfs": -11.0,
+          "rms_dbfs": -21.8449,
+          "oversampled_4x_peak_dbfs": -10.9945,
+          "clipped_samples": 0,
+          "first_sample": 0.0,
+          "last_sample": 0.0,
+          "dc_offset": -8.714566421177653e-06,
+          "energy_above_5khz_percent": 3.686157533841532e-09
+        }
+      },
+      "ogg": {
+        "path": "ogg_mobile/toy_connected.ogg",
+        "size_bytes": 5562,
+        "sha256": "447f52caf52cdf9e4e1507b41b8f4e45280eb4bc5eb102404289478197b648e5",
+        "crc32": "376c8b05",
+        "codec": "vorbis",
+        "metrics": {
+          "sample_count": 22912,
+          "duration_s": 0.47733333333333333,
+          "peak_dbfs": -10.873,
+          "rms_dbfs": -21.7352,
+          "oversampled_4x_peak_dbfs": -10.8674,
+          "clipped_samples": 0,
+          "first_sample": 0.00011398441711207852,
+          "last_sample": 8.116231765598059e-05,
+          "dc_offset": -1.3284260106478689e-05,
+          "energy_above_5khz_percent": 3.368194759421679e-10
+        }
+      }
+    },
+    {
+      "sound_id": "toy_disconnected",
+      "label_zh": "玩具已断线",
+      "event": "toy.disconnected",
+      "duration_s": 0.52,
+      "loop": false,
+      "intended_playback": "phone",
+      "feedback_shape_zh": "柔和下行，保留进度而非惩罚",
+      "source": "original_procedural_synthesis",
+      "sample_rate_hz": 48000,
+      "channels": 1,
+      "wav_bits_per_sample": 24,
+      "wav": {
+        "path": "wav_48k24/toy_disconnected.wav",
+        "size_bytes": 74924,
+        "sha256": "edffd4b18d34a0a3130befa4dc7210cb97fae22f1b34849a4bb1f882a2635e12",
+        "crc32": "5b22014c",
+        "metrics": {
+          "sample_count": 24960,
+          "duration_s": 0.52,
+          "peak_dbfs": -11.0,
+          "rms_dbfs": -21.8762,
+          "oversampled_4x_peak_dbfs": -10.9945,
+          "clipped_samples": 0,
+          "first_sample": 0.0,
+          "last_sample": 0.0,
+          "dc_offset": 9.38665217314011e-06,
+          "energy_above_5khz_percent": 1.043711963163686e-09
+        }
+      },
+      "ogg": {
+        "path": "ogg_mobile/toy_disconnected.ogg",
+        "size_bytes": 5533,
+        "sha256": "8f6b712a23a737b460e34fd5c5e97534edde4df09baa5f594fb503d7cfaf864e",
+        "crc32": "8b396d66",
+        "codec": "vorbis",
+        "metrics": {
+          "sample_count": 24832,
+          "duration_s": 0.5173333333333333,
+          "peak_dbfs": -11.0127,
+          "rms_dbfs": -21.7834,
+          "oversampled_4x_peak_dbfs": -11.0071,
+          "clipped_samples": 0,
+          "first_sample": 0.0003273831680417061,
+          "last_sample": -7.394643034785986e-06,
+          "dc_offset": 1.5560820391729722e-05,
+          "energy_above_5khz_percent": 3.052590509741396e-08
+        }
+      }
+    }
+  ],
+  "not_included": [
+    {
+      "sound_id": "nfc_recognized_existing",
+      "status": "reuse_existing_not_provided",
+      "reason": "Plan says toy already has NFC recognition cue; original asset was not supplied or extracted."
+    }
+  ],
+  "id_note": "Stable string IDs proposed for this asset pack; not verified against existing firmware numeric IDs. Map explicitly at integration.",
+  "vorbis_decode_note": "Local ffmpeg decoding returned 128 fewer samples (2.667 ms) than WAV for these short Vorbis assets; exact decoded durations are recorded, all within target ranges. Use WAV for exact sample timing."
+}

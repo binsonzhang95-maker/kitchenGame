@@ -114,6 +114,7 @@ func _new_main() -> void:
 	app.save_path = own_save_path
 	app.seed_guests = false
 	app.player_mode = true
+	app.interactive_cooking = false # This test covers the order-only (auto-cook) mode.
 	root.add_child(app)
 
 
@@ -295,7 +296,8 @@ func _check_restore() -> void:
 	_expect(app.model.paused and app.pause_overlay.visible, "fresh GUI restores saved pause state")
 	_expect(_same(app.model.to_dict(), frozen), "fresh GUI restores complete guests, routes, claimed tasks, kitchen, and economy")
 	_expect(_processing() and app.model.validate_invariants().is_empty(), "restored task claims remain valid")
-	_expect(app.music.settings_path == own_save_path + ".audio.json" and app.music.player.stream_paused, "restored music uses private settings and stays paused")
+	# A paused restore never starts BGM, and stream_paused reads false on a player with no playback.
+	_expect(app.music.settings_path == own_save_path + ".audio.json" and app.music.paused and (not app.music.player.playing or app.music.player.stream_paused), "restored music uses private settings and stays paused")
 	_click(app.pause_button.get_global_rect().get_center())
 	await _frame()
 	if finished: return

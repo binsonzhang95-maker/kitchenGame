@@ -1,0 +1,139 @@
+{
+  "species": "koala",
+  "animation": "drink",
+  "image": "drink.png",
+  "frame_size": [
+    128,
+    128
+  ],
+  "frame_count": 4,
+  "direction": "front_down",
+  "seat_pivot": [
+    64,
+    110
+  ],
+  "loop": false,
+  "single_shot": true,
+  "durations_ms": [
+    240,
+    220,
+    420,
+    280
+  ],
+  "duration_ms": 1160,
+  "release_event_frame": 3,
+  "release_event_timing": "at_clip_exit_after_frame_3",
+  "cup_asset": "cup.png",
+  "cup_asset_pivot": "bottom_center",
+  "frames": [
+    {
+      "index": 0,
+      "duration_ms": 240,
+      "phase": "reach_grip",
+      "cup_bbox": [
+        46,
+        70,
+        28,
+        25
+      ],
+      "cup_anchor": [
+        60,
+        95
+      ],
+      "cup_visible": true,
+      "cup_baked_in": true,
+      "external_cup_visible": false,
+      "hands_foreground_bbox": [
+        33,
+        68,
+        54,
+        28
+      ],
+      "hands_foreground_file": "hands_foreground/drink_00.png",
+      "event": null
+    },
+    {
+      "index": 1,
+      "duration_ms": 220,
+      "phase": "lift",
+      "cup_bbox": [
+        52,
+        60,
+        24,
+        24
+      ],
+      "cup_anchor": [
+        64,
+        84
+      ],
+      "cup_visible": true,
+      "cup_baked_in": true,
+      "external_cup_visible": false,
+      "hands_foreground_bbox": [
+        39,
+        58,
+        50,
+        27
+      ],
+      "hands_foreground_file": "hands_foreground/drink_01.png",
+      "event": null
+    },
+    {
+      "index": 2,
+      "duration_ms": 420,
+      "phase": "sip",
+      "cup_bbox": [
+        52,
+        55,
+        24,
+        24
+      ],
+      "cup_anchor": [
+        64,
+        79
+      ],
+      "cup_visible": true,
+      "cup_baked_in": true,
+      "external_cup_visible": false,
+      "hands_foreground_bbox": [
+        39,
+        53,
+        50,
+        27
+      ],
+      "hands_foreground_file": "hands_foreground/drink_02.png",
+      "event": null
+    },
+    {
+      "index": 3,
+      "duration_ms": 280,
+      "phase": "lower_release",
+      "cup_bbox": [
+        48,
+        70,
+        27,
+        25
+      ],
+      "cup_anchor": [
+        61,
+        95
+      ],
+      "cup_visible": true,
+      "cup_baked_in": true,
+      "external_cup_visible": false,
+      "hands_foreground_bbox": [
+        35,
+        68,
+        53,
+        28
+      ],
+      "hands_foreground_file": "hands_foreground/drink_03.png",
+      "event": "release_cup"
+    }
+  ],
+  "compositing": {
+    "during_clip": "Hide independent table mug. Mug is baked into all four character frames. Render character behind table, then corresponding hands_foreground layer above table.",
+    "on_exit": "Atomically switch character from drink to cup-free eat/idle pose and spawn/show one independent cup at frame 3 cup_anchor. Never display external mug while drink frame remains visible.",
+    "foreground_note": "Foreground crop contains original mug and gripping hands, plus a little torso; use tabletop occlusion if needed."
+  }
+}

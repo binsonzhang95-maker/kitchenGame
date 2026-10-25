@@ -1,0 +1,1 @@
+8 original imagegen icons. All64x64 RGBA binary alpha, readable flame counts1/2/3 and increasing visual heights24/29/36px. No words in the sprites; overview labels only. No animation claims.

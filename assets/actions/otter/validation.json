@@ -1,0 +1,98 @@
+{
+  "species": "otter",
+  "frames": 12,
+  "sheets": [
+    512,
+    128
+  ],
+  "frame": [
+    128,
+    128
+  ],
+  "alpha_values": [
+    0,
+    255
+  ],
+  "bounds": [
+    [
+      19,
+      10,
+      121,
+      112
+    ],
+    [
+      19,
+      10,
+      120,
+      112
+    ],
+    [
+      20,
+      10,
+      121,
+      112
+    ],
+    [
+      20,
+      10,
+      121,
+      113
+    ],
+    [
+      19,
+      10,
+      121,
+      112
+    ],
+    [
+      20,
+      10,
+      120,
+      112
+    ],
+    [
+      13,
+      10,
+      114,
+      111
+    ],
+    [
+      19,
+      10,
+      121,
+      112
+    ],
+    [
+      12,
+      10,
+      121,
+      112
+    ],
+    [
+      19,
+      10,
+      120,
+      112
+    ],
+    [
+      20,
+      10,
+      121,
+      112
+    ],
+    [
+      12,
+      10,
+      120,
+      112
+    ]
+  ],
+  "distinct_frames_per_action": [
+    4,
+    4,
+    4
+  ],
+  "reference_identity_checked": true,
+  "no_furniture_or_dishes": true,
+  "notes": "Tested first draft. Generated shape details may vary slightly between frames; no fake static transformations. Preview cycles all actions; action loop flags in animation.json are authoritative."
+}

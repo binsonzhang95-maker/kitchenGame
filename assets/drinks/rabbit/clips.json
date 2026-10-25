@@ -1,0 +1,212 @@
+{
+  "species": "rabbit",
+  "frame_size": [
+    128,
+    128
+  ],
+  "pivot": [
+    64,
+    120
+  ],
+  "clips": {
+    "carry_drinks_down": {
+      "sheet": "carry_drinks.png",
+      "row": 0,
+      "frames": 4,
+      "duration_ms": [
+        140,
+        140,
+        140,
+        140
+      ],
+      "loop": true,
+      "rects": [
+        [
+          0,
+          0,
+          128,
+          128
+        ],
+        [
+          128,
+          0,
+          128,
+          128
+        ],
+        [
+          256,
+          0,
+          128,
+          128
+        ],
+        [
+          384,
+          0,
+          128,
+          128
+        ]
+      ],
+      "props_details": "animation.json"
+    },
+    "carry_drinks_left": {
+      "sheet": "carry_drinks.png",
+      "row": 1,
+      "frames": 4,
+      "duration_ms": [
+        140,
+        140,
+        140,
+        140
+      ],
+      "loop": true,
+      "rects": [
+        [
+          0,
+          128,
+          128,
+          128
+        ],
+        [
+          128,
+          128,
+          128,
+          128
+        ],
+        [
+          256,
+          128,
+          128,
+          128
+        ],
+        [
+          384,
+          128,
+          128,
+          128
+        ]
+      ],
+      "props_details": "animation.json"
+    },
+    "carry_drinks_right": {
+      "sheet": "carry_drinks.png",
+      "row": 2,
+      "frames": 4,
+      "duration_ms": [
+        140,
+        140,
+        140,
+        140
+      ],
+      "loop": true,
+      "rects": [
+        [
+          0,
+          256,
+          128,
+          128
+        ],
+        [
+          128,
+          256,
+          128,
+          128
+        ],
+        [
+          256,
+          256,
+          128,
+          128
+        ],
+        [
+          384,
+          256,
+          128,
+          128
+        ]
+      ],
+      "props_details": "animation.json"
+    },
+    "carry_drinks_up": {
+      "sheet": "carry_drinks.png",
+      "row": 3,
+      "frames": 4,
+      "duration_ms": [
+        140,
+        140,
+        140,
+        140
+      ],
+      "loop": true,
+      "rects": [
+        [
+          0,
+          384,
+          128,
+          128
+        ],
+        [
+          128,
+          384,
+          128,
+          128
+        ],
+        [
+          256,
+          384,
+          128,
+          128
+        ],
+        [
+          384,
+          384,
+          128,
+          128
+        ]
+      ],
+      "props_details": "animation.json"
+    },
+    "place_cup": {
+      "sheet": "place_cup.png",
+      "row": 0,
+      "frames": 4,
+      "duration_ms": [
+        180,
+        220,
+        160,
+        240
+      ],
+      "loop": false,
+      "rects": [
+        [
+          0,
+          0,
+          128,
+          128
+        ],
+        [
+          128,
+          0,
+          128,
+          128
+        ],
+        [
+          256,
+          0,
+          128,
+          128
+        ],
+        [
+          384,
+          0,
+          128,
+          128
+        ]
+      ],
+      "props_details": "animation.json",
+      "release_event": {
+        "frame_index": 2,
+        "detach_to_table": true
+      }
+    }
+  }
+}

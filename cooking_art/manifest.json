@@ -1,0 +1,1276 @@
+{
+  "version": 1,
+  "kind": "static transparent cooking minigame art, not full UI or animations",
+  "image_text": false,
+  "texture_filter": "nearest",
+  "recipe_ingredient_limit": 3,
+  "water_occupies_ingredient_slot": false,
+  "recipes": {
+    "soup": [
+      "potato",
+      "carrot"
+    ],
+    "pan": [
+      "egg",
+      "tomato"
+    ],
+    "bake": [
+      "bread",
+      "cheese"
+    ],
+    "drink": [
+      "coffee",
+      "milk",
+      "ice"
+    ]
+  },
+  "assets": {
+    "pot_empty": {
+      "file": "tools/pot_empty.png",
+      "size": [
+        256,
+        256
+      ],
+      "atlas": "tools_packed_atlas.png",
+      "rect": [
+        0,
+        0,
+        256,
+        256
+      ],
+      "pivot": [
+        128,
+        128
+      ],
+      "pivot_type": "canvas center; see category manifest for visual anchors",
+      "alpha_bbox": [
+        16,
+        60,
+        240,
+        236
+      ]
+    },
+    "pot_soup": {
+      "file": "tools/pot_soup.png",
+      "size": [
+        256,
+        256
+      ],
+      "atlas": "tools_packed_atlas.png",
+      "rect": [
+        256,
+        0,
+        256,
+        256
+      ],
+      "pivot": [
+        128,
+        128
+      ],
+      "pivot_type": "canvas center; see category manifest for visual anchors",
+      "alpha_bbox": [
+        16,
+        60,
+        240,
+        236
+      ]
+    },
+    "pan_empty": {
+      "file": "tools/pan_empty.png",
+      "size": [
+        256,
+        256
+      ],
+      "atlas": "tools_packed_atlas.png",
+      "rect": [
+        512,
+        0,
+        256,
+        256
+      ],
+      "pivot": [
+        128,
+        128
+      ],
+      "pivot_type": "canvas center; see category manifest for visual anchors",
+      "alpha_bbox": [
+        16,
+        44,
+        240,
+        236
+      ]
+    },
+    "pan_egg_tomato": {
+      "file": "tools/pan_egg_tomato.png",
+      "size": [
+        256,
+        256
+      ],
+      "atlas": "tools_packed_atlas.png",
+      "rect": [
+        768,
+        0,
+        256,
+        256
+      ],
+      "pivot": [
+        128,
+        128
+      ],
+      "pivot_type": "canvas center; see category manifest for visual anchors",
+      "alpha_bbox": [
+        17,
+        44,
+        239,
+        236
+      ]
+    },
+    "board_whole": {
+      "file": "tools/board_whole.png",
+      "size": [
+        256,
+        256
+      ],
+      "atlas": "tools_packed_atlas.png",
+      "rect": [
+        1024,
+        0,
+        256,
+        256
+      ],
+      "pivot": [
+        128,
+        128
+      ],
+      "pivot_type": "canvas center; see category manifest for visual anchors",
+      "alpha_bbox": [
+        16,
+        88,
+        240,
+        236
+      ]
+    },
+    "board_chopped": {
+      "file": "tools/board_chopped.png",
+      "size": [
+        256,
+        256
+      ],
+      "atlas": "tools_packed_atlas.png",
+      "rect": [
+        0,
+        256,
+        256,
+        256
+      ],
+      "pivot": [
+        128,
+        128
+      ],
+      "pivot_type": "canvas center; see category manifest for visual anchors",
+      "alpha_bbox": [
+        16,
+        90,
+        240,
+        236
+      ]
+    },
+    "oven_closed": {
+      "file": "tools/oven_closed.png",
+      "size": [
+        256,
+        256
+      ],
+      "atlas": "tools_packed_atlas.png",
+      "rect": [
+        256,
+        256,
+        256,
+        256
+      ],
+      "pivot": [
+        128,
+        128
+      ],
+      "pivot_type": "canvas center; see category manifest for visual anchors",
+      "alpha_bbox": [
+        25,
+        32,
+        231,
+        206
+      ]
+    },
+    "oven_open": {
+      "file": "tools/oven_open.png",
+      "size": [
+        256,
+        256
+      ],
+      "atlas": "tools_packed_atlas.png",
+      "rect": [
+        512,
+        256,
+        256,
+        256
+      ],
+      "pivot": [
+        128,
+        128
+      ],
+      "pivot_type": "canvas center; see category manifest for visual anchors",
+      "alpha_bbox": [
+        16,
+        32,
+        240,
+        228
+      ]
+    },
+    "cup_empty": {
+      "file": "tools/cup_empty.png",
+      "size": [
+        256,
+        256
+      ],
+      "atlas": "tools_packed_atlas.png",
+      "rect": [
+        768,
+        256,
+        256,
+        256
+      ],
+      "pivot": [
+        128,
+        128
+      ],
+      "pivot_type": "canvas center; see category manifest for visual anchors",
+      "alpha_bbox": [
+        29,
+        24,
+        227,
+        236
+      ]
+    },
+    "cup_milk_coffee_ice": {
+      "file": "tools/cup_milk_coffee_ice.png",
+      "size": [
+        256,
+        256
+      ],
+      "atlas": "tools_packed_atlas.png",
+      "rect": [
+        1024,
+        256,
+        256,
+        256
+      ],
+      "pivot": [
+        128,
+        128
+      ],
+      "pivot_type": "canvas center; see category manifest for visual anchors",
+      "alpha_bbox": [
+        29,
+        24,
+        227,
+        236
+      ]
+    },
+    "potato": {
+      "file": "ingredients/potato.png",
+      "size": [
+        64,
+        64
+      ],
+      "atlas": "ingredients_packed_atlas.png",
+      "rect": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "pivot": [
+        32,
+        32
+      ],
+      "pivot_type": "canvas center; see category manifest for visual anchors",
+      "alpha_bbox": [
+        5,
+        8,
+        59,
+        55
+      ]
+    },
+    "carrot": {
+      "file": "ingredients/carrot.png",
+      "size": [
+        64,
+        64
+      ],
+      "atlas": "ingredients_packed_atlas.png",
+      "rect": [
+        64,
+        0,
+        64,
+        64
+      ],
+      "pivot": [
+        32,
+        32
+      ],
+      "pivot_type": "canvas center; see category manifest for visual anchors",
+      "alpha_bbox": [
+        5,
+        5,
+        59,
+        59
+      ]
+    },
+    "egg": {
+      "file": "ingredients/egg.png",
+      "size": [
+        64,
+        64
+      ],
+      "atlas": "ingredients_packed_atlas.png",
+      "rect": [
+        128,
+        0,
+        64,
+        64
+      ],
+      "pivot": [
+        32,
+        32
+      ],
+      "pivot_type": "canvas center; see category manifest for visual anchors",
+      "alpha_bbox": [
+        5,
+        6,
+        59,
+        57
+      ]
+    },
+    "tomato": {
+      "file": "ingredients/tomato.png",
+      "size": [
+        64,
+        64
+      ],
+      "atlas": "ingredients_packed_atlas.png",
+      "rect": [
+        0,
+        64,
+        64,
+        64
+      ],
+      "pivot": [
+        32,
+        32
+      ],
+      "pivot_type": "canvas center; see category manifest for visual anchors",
+      "alpha_bbox": [
+        5,
+        6,
+        59,
+        57
+      ]
+    },
+    "bread": {
+      "file": "ingredients/bread.png",
+      "size": [
+        64,
+        64
+      ],
+      "atlas": "ingredients_packed_atlas.png",
+      "rect": [
+        64,
+        64,
+        64,
+        64
+      ],
+      "pivot": [
+        32,
+        32
+      ],
+      "pivot_type": "canvas center; see category manifest for visual anchors",
+      "alpha_bbox": [
+        5,
+        6,
+        59,
+        58
+      ]
+    },
+    "cheese": {
+      "file": "ingredients/cheese.png",
+      "size": [
+        64,
+        64
+      ],
+      "atlas": "ingredients_packed_atlas.png",
+      "rect": [
+        128,
+        64,
+        64,
+        64
+      ],
+      "pivot": [
+        32,
+        32
+      ],
+      "pivot_type": "canvas center; see category manifest for visual anchors",
+      "alpha_bbox": [
+        5,
+        6,
+        59,
+        57
+      ]
+    },
+    "coffee": {
+      "file": "ingredients/coffee.png",
+      "size": [
+        64,
+        64
+      ],
+      "atlas": "ingredients_packed_atlas.png",
+      "rect": [
+        0,
+        128,
+        64,
+        64
+      ],
+      "pivot": [
+        32,
+        32
+      ],
+      "pivot_type": "canvas center; see category manifest for visual anchors",
+      "alpha_bbox": [
+        5,
+        7,
+        59,
+        57
+      ]
+    },
+    "milk": {
+      "file": "ingredients/milk.png",
+      "size": [
+        64,
+        64
+      ],
+      "atlas": "ingredients_packed_atlas.png",
+      "rect": [
+        64,
+        128,
+        64,
+        64
+      ],
+      "pivot": [
+        32,
+        32
+      ],
+      "pivot_type": "canvas center; see category manifest for visual anchors",
+      "alpha_bbox": [
+        15,
+        5,
+        49,
+        59
+      ]
+    },
+    "ice": {
+      "file": "ingredients/ice.png",
+      "size": [
+        64,
+        64
+      ],
+      "atlas": "ingredients_packed_atlas.png",
+      "rect": [
+        128,
+        128,
+        64,
+        64
+      ],
+      "pivot": [
+        32,
+        32
+      ],
+      "pivot_type": "canvas center; see category manifest for visual anchors",
+      "alpha_bbox": [
+        5,
+        7,
+        59,
+        57
+      ]
+    },
+    "heat_low": {
+      "file": "actions/heat_low.png",
+      "size": [
+        64,
+        64
+      ],
+      "atlas": "actions_packed_atlas.png",
+      "rect": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "pivot": [
+        32,
+        32
+      ],
+      "pivot_type": "canvas center; see category manifest for visual anchors",
+      "alpha_bbox": [
+        21,
+        32,
+        42,
+        56
+      ]
+    },
+    "heat_medium": {
+      "file": "actions/heat_medium.png",
+      "size": [
+        64,
+        64
+      ],
+      "atlas": "actions_packed_atlas.png",
+      "rect": [
+        64,
+        0,
+        64,
+        64
+      ],
+      "pivot": [
+        32,
+        32
+      ],
+      "pivot_type": "canvas center; see category manifest for visual anchors",
+      "alpha_bbox": [
+        10,
+        27,
+        54,
+        56
+      ]
+    },
+    "heat_high": {
+      "file": "actions/heat_high.png",
+      "size": [
+        64,
+        64
+      ],
+      "atlas": "actions_packed_atlas.png",
+      "rect": [
+        128,
+        0,
+        64,
+        64
+      ],
+      "pivot": [
+        32,
+        32
+      ],
+      "pivot_type": "canvas center; see category manifest for visual anchors",
+      "alpha_bbox": [
+        3,
+        20,
+        61,
+        56
+      ]
+    },
+    "add_water": {
+      "file": "actions/add_water.png",
+      "size": [
+        64,
+        64
+      ],
+      "atlas": "actions_packed_atlas.png",
+      "rect": [
+        192,
+        0,
+        64,
+        64
+      ],
+      "pivot": [
+        32,
+        32
+      ],
+      "pivot_type": "canvas center; see category manifest for visual anchors",
+      "alpha_bbox": [
+        7,
+        4,
+        57,
+        56
+      ]
+    },
+    "stir": {
+      "file": "actions/stir.png",
+      "size": [
+        64,
+        64
+      ],
+      "atlas": "actions_packed_atlas.png",
+      "rect": [
+        0,
+        64,
+        64,
+        64
+      ],
+      "pivot": [
+        32,
+        32
+      ],
+      "pivot_type": "canvas center; see category manifest for visual anchors",
+      "alpha_bbox": [
+        6,
+        6,
+        58,
+        56
+      ]
+    },
+    "flip": {
+      "file": "actions/flip.png",
+      "size": [
+        64,
+        64
+      ],
+      "atlas": "actions_packed_atlas.png",
+      "rect": [
+        64,
+        64,
+        64,
+        64
+      ],
+      "pivot": [
+        32,
+        32
+      ],
+      "pivot_type": "canvas center; see category manifest for visual anchors",
+      "alpha_bbox": [
+        8,
+        4,
+        55,
+        56
+      ]
+    },
+    "confirm": {
+      "file": "actions/confirm.png",
+      "size": [
+        64,
+        64
+      ],
+      "atlas": "actions_packed_atlas.png",
+      "rect": [
+        128,
+        64,
+        64,
+        64
+      ],
+      "pivot": [
+        32,
+        32
+      ],
+      "pivot_type": "canvas center; see category manifest for visual anchors",
+      "alpha_bbox": [
+        6,
+        11,
+        58,
+        56
+      ]
+    },
+    "back": {
+      "file": "actions/back.png",
+      "size": [
+        64,
+        64
+      ],
+      "atlas": "actions_packed_atlas.png",
+      "rect": [
+        192,
+        64,
+        64,
+        64
+      ],
+      "pivot": [
+        32,
+        32
+      ],
+      "pivot_type": "canvas center; see category manifest for visual anchors",
+      "alpha_bbox": [
+        6,
+        9,
+        58,
+        56
+      ]
+    },
+    "cut_knife": {
+      "file": "actions/cut_knife.png",
+      "size": [
+        64,
+        64
+      ],
+      "atlas": "actions_packed_atlas.png",
+      "rect": [
+        0,
+        128,
+        64,
+        64
+      ],
+      "pivot": [
+        32,
+        32
+      ],
+      "pivot_type": "canvas center; see category manifest for visual anchors",
+      "alpha_bbox": [
+        4,
+        24,
+        60,
+        40
+      ]
+    }
+  },
+  "qa": {
+    "pot_empty": {
+      "size": [
+        256,
+        256
+      ],
+      "alpha_min_max": [
+        0,
+        255
+      ],
+      "sha256": "375d8eac3ee294348f0209bfbaf7b30f77eb0e7ee93faea210974c647685651b"
+    },
+    "pot_soup": {
+      "size": [
+        256,
+        256
+      ],
+      "alpha_min_max": [
+        0,
+        255
+      ],
+      "sha256": "f9aea9562fca9a189db1b1a9e427c4e65459a33dfcaf3b74e861b4755421b611"
+    },
+    "pan_empty": {
+      "size": [
+        256,
+        256
+      ],
+      "alpha_min_max": [
+        0,
+        255
+      ],
+      "sha256": "3bea1ce53f68ff414fd35e8d20a4b8a2cd7639162d9fb26e42259812e6f070f3"
+    },
+    "pan_egg_tomato": {
+      "size": [
+        256,
+        256
+      ],
+      "alpha_min_max": [
+        0,
+        255
+      ],
+      "sha256": "77eacd870ab70d8fea66ec5cba909bd4c9b8bf15824325780c09db256fc9e30c"
+    },
+    "board_whole": {
+      "size": [
+        256,
+        256
+      ],
+      "alpha_min_max": [
+        0,
+        255
+      ],
+      "sha256": "21f8eae4b7368f81eba290ee3496c850b04576a8ce30b7c7fd5aeaa9c565269b"
+    },
+    "board_chopped": {
+      "size": [
+        256,
+        256
+      ],
+      "alpha_min_max": [
+        0,
+        255
+      ],
+      "sha256": "ff4a7a4a1fd27944fbdc178e99ffd60bf93fb1e26e385b061b7dd1f5a9fa5f04"
+    },
+    "oven_closed": {
+      "size": [
+        256,
+        256
+      ],
+      "alpha_min_max": [
+        0,
+        255
+      ],
+      "sha256": "c68710d550feda0bbb3e1716d0a762dce8ffe6d0a13116402710a9fd5544d352"
+    },
+    "oven_open": {
+      "size": [
+        256,
+        256
+      ],
+      "alpha_min_max": [
+        0,
+        255
+      ],
+      "sha256": "2e5fa3b7cf711f60a3874d96789f759046f1b007be936064d67805e1125bc14b"
+    },
+    "cup_empty": {
+      "size": [
+        256,
+        256
+      ],
+      "alpha_min_max": [
+        0,
+        253
+      ],
+      "sha256": "35510e43874a07204d9b707619cbf2036317b5fa748f0be34811b7053b02a64a"
+    },
+    "cup_milk_coffee_ice": {
+      "size": [
+        256,
+        256
+      ],
+      "alpha_min_max": [
+        0,
+        255
+      ],
+      "sha256": "83ac080870fc8553b44807cf0c6778c2330af3e40e73a98c11dd25f639b3d5b5"
+    },
+    "potato": {
+      "size": [
+        64,
+        64
+      ],
+      "alpha_min_max": [
+        0,
+        255
+      ],
+      "sha256": "3f18df69e14f0dc27b19d009cd73910e561cfb3fc2dd5ed069419de1b3c1ca96"
+    },
+    "carrot": {
+      "size": [
+        64,
+        64
+      ],
+      "alpha_min_max": [
+        0,
+        255
+      ],
+      "sha256": "f158f729c05a30b02383e5ba7ec3ca5affb39a033af5f0e15d6217e6560f23a2"
+    },
+    "egg": {
+      "size": [
+        64,
+        64
+      ],
+      "alpha_min_max": [
+        0,
+        255
+      ],
+      "sha256": "8a66dc846a20de2fd8a388d987042b2a55f6a148952b29632ba6ecc62f9ce658"
+    },
+    "tomato": {
+      "size": [
+        64,
+        64
+      ],
+      "alpha_min_max": [
+        0,
+        255
+      ],
+      "sha256": "dddce638cbbbfd377696ee954f914db98cfd91ac07fd08ea9682b99ced662f68"
+    },
+    "bread": {
+      "size": [
+        64,
+        64
+      ],
+      "alpha_min_max": [
+        0,
+        255
+      ],
+      "sha256": "131efa8ec9d2f32ee6d638c0968a0d5ba2b5e6ab36d7401844858ba39cfe9746"
+    },
+    "cheese": {
+      "size": [
+        64,
+        64
+      ],
+      "alpha_min_max": [
+        0,
+        255
+      ],
+      "sha256": "9edbdfc5743d4820f1061b966db69a057e8b2aa81b52f54ec95b99d1601cedc0"
+    },
+    "coffee": {
+      "size": [
+        64,
+        64
+      ],
+      "alpha_min_max": [
+        0,
+        255
+      ],
+      "sha256": "147d69eb03e9e31270043d222c67bc561b9395d48016131f8fda04d1c7cf0009"
+    },
+    "milk": {
+      "size": [
+        64,
+        64
+      ],
+      "alpha_min_max": [
+        0,
+        255
+      ],
+      "sha256": "cbca2614546158c6abd8be163d38dffd51769f8b0305c4b505c6f09a87fedf5d"
+    },
+    "ice": {
+      "size": [
+        64,
+        64
+      ],
+      "alpha_min_max": [
+        0,
+        255
+      ],
+      "sha256": "0661f4a9afcdf0f305593bec4a73e3de498e6c4b8accecc3915e61698dc9a511"
+    },
+    "heat_low": {
+      "size": [
+        64,
+        64
+      ],
+      "alpha_min_max": [
+        0,
+        255
+      ],
+      "sha256": "080a4194ae6d5140e429c6d9fab396eb1fc55340b47d4d1043ebdf570adf6387"
+    },
+    "heat_medium": {
+      "size": [
+        64,
+        64
+      ],
+      "alpha_min_max": [
+        0,
+        255
+      ],
+      "sha256": "ba3d94cbedc78bd408eb8f52ebb3d44d82ebd7608e69d28bf3753216267c9e02"
+    },
+    "heat_high": {
+      "size": [
+        64,
+        64
+      ],
+      "alpha_min_max": [
+        0,
+        255
+      ],
+      "sha256": "02f6c2d29d02300fea7feba75cade1585a3456d35a3a26cecf8d715d08eb5b67"
+    },
+    "add_water": {
+      "size": [
+        64,
+        64
+      ],
+      "alpha_min_max": [
+        0,
+        255
+      ],
+      "sha256": "bf9e841ec6fb271d334193b37d79a1b6143415bf46bd4ddafe4da561b9435983"
+    },
+    "stir": {
+      "size": [
+        64,
+        64
+      ],
+      "alpha_min_max": [
+        0,
+        255
+      ],
+      "sha256": "a3010461527e6f842171b5e5745d1d41e8798081387adddd712875006b388b70"
+    },
+    "flip": {
+      "size": [
+        64,
+        64
+      ],
+      "alpha_min_max": [
+        0,
+        255
+      ],
+      "sha256": "ab060b6ca20790f2424f8521f9c22012a183ccc6cbed2c18ffa06addac462a8c"
+    },
+    "confirm": {
+      "size": [
+        64,
+        64
+      ],
+      "alpha_min_max": [
+        0,
+        255
+      ],
+      "sha256": "18583ebddb746df65bd09a47b1a49cec62cc62123327e3815c29775852d46c16"
+    },
+    "back": {
+      "size": [
+        64,
+        64
+      ],
+      "alpha_min_max": [
+        0,
+        255
+      ],
+      "sha256": "16b3e048b2cd6490c75c72f362577289c0ffadf800678958ea0036fc64eefe8c"
+    },
+    "cut_knife": {
+      "size": [
+        64,
+        64
+      ],
+      "alpha_min_max": [
+        0,
+        255
+      ],
+      "sha256": "13916685e6255e88b1ecfcc110586f934c2b685bafda22851e10103404ffc9a0"
+    }
+  },
+  "asset_count": 28,
+  "icons_128": {
+    "potato": {
+      "file": "icons_128/potato.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        64,
+        64
+      ],
+      "source": "ingredients/potato.png",
+      "scale": "nearest x2, no new artwork"
+    },
+    "carrot": {
+      "file": "icons_128/carrot.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        64,
+        64
+      ],
+      "source": "ingredients/carrot.png",
+      "scale": "nearest x2, no new artwork"
+    },
+    "egg": {
+      "file": "icons_128/egg.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        64,
+        64
+      ],
+      "source": "ingredients/egg.png",
+      "scale": "nearest x2, no new artwork"
+    },
+    "tomato": {
+      "file": "icons_128/tomato.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        64,
+        64
+      ],
+      "source": "ingredients/tomato.png",
+      "scale": "nearest x2, no new artwork"
+    },
+    "bread": {
+      "file": "icons_128/bread.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        64,
+        64
+      ],
+      "source": "ingredients/bread.png",
+      "scale": "nearest x2, no new artwork"
+    },
+    "cheese": {
+      "file": "icons_128/cheese.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        64,
+        64
+      ],
+      "source": "ingredients/cheese.png",
+      "scale": "nearest x2, no new artwork"
+    },
+    "coffee": {
+      "file": "icons_128/coffee.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        64,
+        64
+      ],
+      "source": "ingredients/coffee.png",
+      "scale": "nearest x2, no new artwork"
+    },
+    "milk": {
+      "file": "icons_128/milk.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        64,
+        64
+      ],
+      "source": "ingredients/milk.png",
+      "scale": "nearest x2, no new artwork"
+    },
+    "ice": {
+      "file": "icons_128/ice.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        64,
+        64
+      ],
+      "source": "ingredients/ice.png",
+      "scale": "nearest x2, no new artwork"
+    },
+    "heat_low": {
+      "file": "icons_128/heat_low.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        64,
+        64
+      ],
+      "source": "actions/heat_low.png",
+      "scale": "nearest x2, no new artwork"
+    },
+    "heat_medium": {
+      "file": "icons_128/heat_medium.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        64,
+        64
+      ],
+      "source": "actions/heat_medium.png",
+      "scale": "nearest x2, no new artwork"
+    },
+    "heat_high": {
+      "file": "icons_128/heat_high.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        64,
+        64
+      ],
+      "source": "actions/heat_high.png",
+      "scale": "nearest x2, no new artwork"
+    },
+    "add_water": {
+      "file": "icons_128/add_water.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        64,
+        64
+      ],
+      "source": "actions/add_water.png",
+      "scale": "nearest x2, no new artwork"
+    },
+    "stir": {
+      "file": "icons_128/stir.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        64,
+        64
+      ],
+      "source": "actions/stir.png",
+      "scale": "nearest x2, no new artwork"
+    },
+    "flip": {
+      "file": "icons_128/flip.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        64,
+        64
+      ],
+      "source": "actions/flip.png",
+      "scale": "nearest x2, no new artwork"
+    },
+    "confirm": {
+      "file": "icons_128/confirm.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        64,
+        64
+      ],
+      "source": "actions/confirm.png",
+      "scale": "nearest x2, no new artwork"
+    },
+    "back": {
+      "file": "icons_128/back.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        64,
+        64
+      ],
+      "source": "actions/back.png",
+      "scale": "nearest x2, no new artwork"
+    },
+    "cut_knife": {
+      "file": "icons_128/cut_knife.png",
+      "size": [
+        128,
+        128
+      ],
+      "pivot": [
+        64,
+        64
+      ],
+      "source": "actions/cut_knife.png",
+      "scale": "nearest x2, no new artwork"
+    }
+  }
+}

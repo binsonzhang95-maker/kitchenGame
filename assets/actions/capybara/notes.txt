@@ -1,0 +1,3 @@
+Tested first draft. Generated shape details may vary slightly between frames; no fake static transformations. Preview cycles all actions; action loop flags in animation.json are authoritative.
+Front-facing seated character; pivot (64,110), head top 10. Match table position to supplied spoon-tip anchors.
+Approximate spoon tips: [[46, 102], [63, 64], None, [46, 102]]; no separate foreground overlay exported.

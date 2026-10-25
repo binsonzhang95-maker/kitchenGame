@@ -1,0 +1,205 @@
+{
+  "species": "rabbit",
+  "role": "waiter",
+  "frame_size": [
+    128,
+    128
+  ],
+  "direction": "left",
+  "pivot": [
+    64,
+    120
+  ],
+  "render_offset": [
+    -8,
+    0
+  ],
+  "actual_foot_center": [
+    71,
+    120
+  ],
+  "baseline": 120,
+  "props_directory": "../props",
+  "props": {
+    "empty_plate": {
+      "file": "empty_plate.png",
+      "origin": [
+        17,
+        20
+      ]
+    },
+    "empty_cup": {
+      "file": "empty_cup.png",
+      "origin": [
+        11,
+        20
+      ]
+    },
+    "cloth": {
+      "file": "cloth.png",
+      "origin": [
+        13,
+        14
+      ]
+    },
+    "stain": {
+      "file": "stain.png",
+      "origin": [
+        18,
+        9
+      ]
+    }
+  },
+  "collect": {
+    "sheet": "collect.png",
+    "frames": 4,
+    "duration_ms": [
+      220,
+      220,
+      220,
+      260
+    ],
+    "loop": false,
+    "prop_baked": false,
+    "hand_prop_anchors": [
+      [
+        22,
+        97
+      ],
+      [
+        42,
+        90
+      ],
+      [
+        48,
+        93
+      ],
+      null
+    ],
+    "events": [
+      {
+        "frame": 1,
+        "event": "pickup_stack",
+        "hide_world_objects": [
+          "empty_plate",
+          "empty_cup"
+        ],
+        "show_attached_objects": [
+          "empty_plate",
+          "empty_cup"
+        ]
+      },
+      {
+        "frame": 3,
+        "event": "store_collected_items",
+        "hide_attached_objects": [
+          "empty_plate",
+          "empty_cup"
+        ],
+        "destination": "waiter_inventory_or_offscreen_bus_bin"
+      }
+    ],
+    "phases": [
+      "reach_to_stack_on_table",
+      "lift_stack",
+      "retract_stack",
+      "store_then_return_hands"
+    ],
+    "notes": "Plate and empty cup are a stack picked up together. At frame1 transfer, never merely delete. Frame3 inventory transfer is semantic; no bin is depicted."
+  },
+  "wipe": {
+    "sheet": "wipe.png",
+    "frames": 4,
+    "duration_ms": [
+      200,
+      220,
+      220,
+      260
+    ],
+    "loop": false,
+    "prop_baked": false,
+    "cloth_bottom_center": [
+      [
+        13,
+        92
+      ],
+      [
+        42,
+        92
+      ],
+      [
+        14,
+        92
+      ],
+      null
+    ],
+    "stain_remaining_fraction": [
+      1,
+      0.55,
+      0,
+      0
+    ],
+    "events": [
+      {
+        "frame": 0,
+        "event": "show_cloth_in_hand"
+      },
+      {
+        "frame": 1,
+        "event": "partial_wipe",
+        "stain_remaining_fraction": 0.55
+      },
+      {
+        "frame": 2,
+        "event": "table_clean",
+        "stain_remaining_fraction": 0
+      },
+      {
+        "frame": 3,
+        "event": "stow_cloth_return_hands"
+      }
+    ],
+    "phases": [
+      "reach_left_with_cloth",
+      "wipe_right",
+      "wipe_left_finish",
+      "return_to_neutral"
+    ]
+  },
+  "scene": {
+    "size": [
+      300,
+      256
+    ],
+    "table_origin": [
+      35,
+      119
+    ],
+    "nominal_actor_origin": [
+      130,
+      61
+    ],
+    "actual_actor_origin": [
+      122,
+      61
+    ],
+    "dirty_stack_bottom_center_world": [
+      144,
+      158
+    ],
+    "layer_order": [
+      "table",
+      "stain",
+      "actor",
+      "attached_or_world_plate_and_cup",
+      "cloth"
+    ],
+    "prop_transfer_atomic": true
+  },
+  "limitations": [
+    "Test draft; subtle head/ear and wrist jumps remain.",
+    "Collect frame3 transfers dishes to logical waiter inventory, not visible bin.",
+    "Cleanup is left facing only.",
+    "Character drawing shifted 8px right to preserve extended hand; apply render_offset -8px for old standing alignment."
+  ]
+}

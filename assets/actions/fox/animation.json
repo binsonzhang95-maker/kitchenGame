@@ -1,0 +1,157 @@
+{
+  "species": "fox",
+  "role": "waiter",
+  "cell_size": [
+    128,
+    128
+  ],
+  "anchor_pixels": [
+    64,
+    120
+  ],
+  "alpha": "binary",
+  "frame_indexing": "zero_based",
+  "generation": "built-in imagegen; crop, alpha threshold, nearest-neighbor resizing, alignment and assembly only",
+  "rows": [
+    "down",
+    "left",
+    "right",
+    "up"
+  ],
+  "carry_walk": {
+    "sheet": "carry_walk.png",
+    "loop": true,
+    "frame_count_per_direction": 4,
+    "duration_ms": 140,
+    "dish_baked_in": true,
+    "prop_layer_enabled": false
+  },
+  "place_dish": {
+    "sheet": "place_dish.png",
+    "direction": "left",
+    "loop": false,
+    "duration_ms": [
+      180,
+      220,
+      160,
+      200
+    ],
+    "dish_baked_in": false,
+    "frames": [
+      {
+        "index": 0,
+        "name": "place_dish_00",
+        "sheet": "place_dish.png",
+        "x": 0,
+        "y": 0,
+        "w": 128,
+        "h": 128,
+        "duration_ms": 180,
+        "hand_anchor": [
+          40,
+          86
+        ],
+        "dish_anchor": [
+          40,
+          86
+        ],
+        "dish_attached": true,
+        "file": "frames/place_dish_00.png"
+      },
+      {
+        "index": 1,
+        "name": "place_dish_01",
+        "sheet": "place_dish.png",
+        "x": 128,
+        "y": 0,
+        "w": 128,
+        "h": 128,
+        "duration_ms": 220,
+        "hand_anchor": [
+          22,
+          83
+        ],
+        "dish_anchor": [
+          22,
+          83
+        ],
+        "dish_attached": true,
+        "file": "frames/place_dish_01.png"
+      },
+      {
+        "index": 2,
+        "name": "place_dish_02",
+        "sheet": "place_dish.png",
+        "x": 256,
+        "y": 0,
+        "w": 128,
+        "h": 128,
+        "duration_ms": 160,
+        "hand_anchor": [
+          16,
+          83
+        ],
+        "dish_anchor": [
+          16,
+          83
+        ],
+        "dish_attached": false,
+        "file": "frames/place_dish_02.png"
+      },
+      {
+        "index": 3,
+        "name": "place_dish_03",
+        "sheet": "place_dish.png",
+        "x": 384,
+        "y": 0,
+        "w": 128,
+        "h": 128,
+        "duration_ms": 200,
+        "hand_anchor": [
+          43,
+          87
+        ],
+        "dish_anchor": [
+          16,
+          83
+        ],
+        "dish_attached": false,
+        "file": "frames/place_dish_03.png"
+      }
+    ],
+    "events": [
+      {
+        "frame": 2,
+        "event": "release_dish",
+        "anchor": [
+          16,
+          83
+        ]
+      }
+    ]
+  },
+  "props": {
+    "dish": {
+      "file": "dish.png",
+      "size": [
+        34,
+        20
+      ],
+      "origin": [
+        17,
+        16
+      ],
+      "use_only_for": [
+        "place_dish"
+      ],
+      "visible_attached_frames": [
+        0,
+        1
+      ],
+      "release_frame": 2,
+      "after_release": "detach and leave at table/pass position; never follow retracting hands",
+      "source": "shared transparent dish prop"
+    }
+  },
+  "authoritative_clip_index": "clips.json"
+}

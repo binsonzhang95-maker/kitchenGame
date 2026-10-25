@@ -1,0 +1,155 @@
+{
+  "schema_version": 1,
+  "species": "cat",
+  "animation": "drink",
+  "sheet": "drink.png",
+  "frame_width": 128,
+  "frame_height": 128,
+  "frame_count": 4,
+  "durations_ms": [
+    240,
+    220,
+    420,
+    280
+  ],
+  "loop": false,
+  "playback": "single-shot",
+  "seat_pivot": [
+    64,
+    110
+  ],
+  "cup_baked_in": true,
+  "world_cup_visible_during_clip": false,
+  "cup_asset": "cup.png",
+  "cup_asset_size": [
+    32,
+    32
+  ],
+  "release_frame": 3,
+  "release_event_timing": "after frame 3 duration on animation exit",
+  "exit_behavior": "Stop rendering baked drink clip and switch to independent world cup. Never overlay a second mug while clip is active.",
+  "events": [
+    {
+      "frame": 0,
+      "event": "grip",
+      "world_cup_visible": false
+    },
+    {
+      "frame": 3,
+      "timing": "on_exit",
+      "event": "release",
+      "world_cup_visible": true,
+      "stop_baked_clip": true
+    }
+  ],
+  "frames": [
+    {
+      "index": 0,
+      "file": "frames/drink_00.png",
+      "duration_ms": 240,
+      "cup_bbox": [
+        43,
+        73,
+        26,
+        22
+      ],
+      "cup_anchor": [
+        56,
+        84
+      ],
+      "cup_visible": true,
+      "world_cup_visible": false,
+      "grip": true,
+      "phase": "grip_at_table",
+      "foreground_bbox": [
+        29,
+        73,
+        40,
+        25
+      ],
+      "foreground_file": "hands_foreground/drink_0.png",
+      "bbox_accuracy": "approximate; inspect before precise masking"
+    },
+    {
+      "index": 1,
+      "file": "frames/drink_01.png",
+      "duration_ms": 220,
+      "cup_bbox": [
+        49,
+        55,
+        25,
+        24
+      ],
+      "cup_anchor": [
+        61,
+        67
+      ],
+      "cup_visible": true,
+      "world_cup_visible": false,
+      "grip": true,
+      "phase": "raise",
+      "foreground_bbox": [
+        35,
+        55,
+        39,
+        27
+      ],
+      "foreground_file": "hands_foreground/drink_1.png",
+      "bbox_accuracy": "approximate; inspect before precise masking"
+    },
+    {
+      "index": 2,
+      "file": "frames/drink_02.png",
+      "duration_ms": 420,
+      "cup_bbox": [
+        50,
+        53,
+        24,
+        24
+      ],
+      "cup_anchor": [
+        62,
+        65
+      ],
+      "cup_visible": true,
+      "world_cup_visible": false,
+      "grip": true,
+      "phase": "sip",
+      "foreground_bbox": [
+        36,
+        53,
+        38,
+        27
+      ],
+      "foreground_file": "hands_foreground/drink_2.png",
+      "bbox_accuracy": "approximate; inspect before precise masking"
+    },
+    {
+      "index": 3,
+      "file": "frames/drink_03.png",
+      "duration_ms": 280,
+      "cup_bbox": [
+        43,
+        73,
+        26,
+        22
+      ],
+      "cup_anchor": [
+        56,
+        84
+      ],
+      "cup_visible": true,
+      "world_cup_visible": false,
+      "grip": false,
+      "phase": "lower_then_release_on_exit",
+      "foreground_bbox": [
+        29,
+        73,
+        40,
+        25
+      ],
+      "foreground_file": "hands_foreground/drink_3.png",
+      "bbox_accuracy": "approximate; inspect before precise masking"
+    }
+  ]
+}

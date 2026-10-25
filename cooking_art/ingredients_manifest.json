@@ -1,0 +1,229 @@
+{
+  "frame_size": [
+    64,
+    64
+  ],
+  "filter": "nearest",
+  "alpha": "binary transparent",
+  "atlas": "ingredients_atlas.png",
+  "columns": 3,
+  "rows": 3,
+  "assets": {
+    "potato": {
+      "file": "ingredients/potato.png",
+      "size": [
+        64,
+        64
+      ],
+      "pivot": [
+        32,
+        32
+      ],
+      "atlas_rect": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "opaque_bbox": [
+        5,
+        8,
+        59,
+        55
+      ],
+      "sha256": "8d6bd0188cdd0569ec3ab9952f53c84a1d9da37efca68f8d17446dbdfbad7653"
+    },
+    "carrot": {
+      "file": "ingredients/carrot.png",
+      "size": [
+        64,
+        64
+      ],
+      "pivot": [
+        32,
+        32
+      ],
+      "atlas_rect": [
+        64,
+        0,
+        64,
+        64
+      ],
+      "opaque_bbox": [
+        5,
+        5,
+        59,
+        59
+      ],
+      "sha256": "7131499e116f8964baeede369c69a8b7cb4561e6229832396882a79f44af5ba5"
+    },
+    "egg": {
+      "file": "ingredients/egg.png",
+      "size": [
+        64,
+        64
+      ],
+      "pivot": [
+        32,
+        32
+      ],
+      "atlas_rect": [
+        128,
+        0,
+        64,
+        64
+      ],
+      "opaque_bbox": [
+        5,
+        6,
+        59,
+        57
+      ],
+      "sha256": "7a5ff5abae4cf2095b205633bd5f6059b9840e9713208e06a532f592830f0a6a"
+    },
+    "tomato": {
+      "file": "ingredients/tomato.png",
+      "size": [
+        64,
+        64
+      ],
+      "pivot": [
+        32,
+        32
+      ],
+      "atlas_rect": [
+        0,
+        64,
+        64,
+        64
+      ],
+      "opaque_bbox": [
+        5,
+        6,
+        59,
+        57
+      ],
+      "sha256": "cf224d3d0298679b1564f66cec0c8432b0ab8320cf7bcca409099bbdaaf2f3d3"
+    },
+    "bread": {
+      "file": "ingredients/bread.png",
+      "size": [
+        64,
+        64
+      ],
+      "pivot": [
+        32,
+        32
+      ],
+      "atlas_rect": [
+        64,
+        64,
+        64,
+        64
+      ],
+      "opaque_bbox": [
+        5,
+        6,
+        59,
+        58
+      ],
+      "sha256": "c759aae90909fdf40153fbc35f814bb44cda95cbcc214bd69bef6f7ed0357732"
+    },
+    "cheese": {
+      "file": "ingredients/cheese.png",
+      "size": [
+        64,
+        64
+      ],
+      "pivot": [
+        32,
+        32
+      ],
+      "atlas_rect": [
+        128,
+        64,
+        64,
+        64
+      ],
+      "opaque_bbox": [
+        5,
+        6,
+        59,
+        57
+      ],
+      "sha256": "f6f0eaabd7f377d4de588b89d5ae2663e84196881b0ca3de32fb67fa473f9068"
+    },
+    "coffee": {
+      "file": "ingredients/coffee.png",
+      "size": [
+        64,
+        64
+      ],
+      "pivot": [
+        32,
+        32
+      ],
+      "atlas_rect": [
+        0,
+        128,
+        64,
+        64
+      ],
+      "opaque_bbox": [
+        5,
+        7,
+        59,
+        57
+      ],
+      "sha256": "69315a16d73138aa13204bf80a039b8fbc96bf13e9ebe0958363549a54975e76"
+    },
+    "milk": {
+      "file": "ingredients/milk.png",
+      "size": [
+        64,
+        64
+      ],
+      "pivot": [
+        32,
+        32
+      ],
+      "atlas_rect": [
+        64,
+        128,
+        64,
+        64
+      ],
+      "opaque_bbox": [
+        15,
+        5,
+        49,
+        59
+      ],
+      "sha256": "783df0a7cdb9c321d92b597b1366b7dfd61b4fbea76a08ea2236d1f763f2530a"
+    },
+    "ice": {
+      "file": "ingredients/ice.png",
+      "size": [
+        64,
+        64
+      ],
+      "pivot": [
+        32,
+        32
+      ],
+      "atlas_rect": [
+        128,
+        128,
+        64,
+        64
+      ],
+      "opaque_bbox": [
+        5,
+        7,
+        59,
+        57
+      ],
+      "sha256": "27105f5ad7f2e040c20aebb578be167e0d4eae2eb542afdae5949dd7c82e6126"
+    }
+  }
+}

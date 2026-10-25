@@ -1,0 +1,87 @@
+{
+  "species": "sheep",
+  "action": "sit_down",
+  "sheet": "sit_down.png",
+  "frame_size": [
+    128,
+    128
+  ],
+  "frame_count": 4,
+  "direction": "front_down_at_table",
+  "loop": false,
+  "duration_ms": [
+    180,
+    220,
+    220,
+    300
+  ],
+  "pivot": [
+    64,
+    110
+  ],
+  "frames": [
+    {
+      "index": 0,
+      "file": "frames/sit_down_00.png",
+      "rect": [
+        0,
+        0,
+        128,
+        128
+      ],
+      "phase": "turn_at_chair"
+    },
+    {
+      "index": 1,
+      "file": "frames/sit_down_01.png",
+      "rect": [
+        128,
+        0,
+        128,
+        128
+      ],
+      "phase": "bend_knees"
+    },
+    {
+      "index": 2,
+      "file": "frames/sit_down_02.png",
+      "rect": [
+        256,
+        0,
+        128,
+        128
+      ],
+      "phase": "land_on_seat"
+    },
+    {
+      "index": 3,
+      "file": "frames/sit_down_03.png",
+      "rect": [
+        384,
+        0,
+        128,
+        128
+      ],
+      "phase": "stable_sitting"
+    }
+  ],
+  "events": [
+    {
+      "frame": 2,
+      "event": "occupy_seat"
+    },
+    {
+      "frame": 3,
+      "event": "ready_for_table_action",
+      "timing": "on_exit"
+    }
+  ],
+  "transition": "Head uses same neutral artwork as drink0. New limb poses retained. Align pivot64,110; table hides lower-body differences.",
+  "head_stabilization": {
+    "source": "existing drink frame0 head",
+    "old_neck_y": 77,
+    "reference_neck_y": 76,
+    "body_translation_y": -1,
+    "limbs": "new articulated source poses retained"
+  }
+}

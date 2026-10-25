@@ -1,0 +1,58 @@
+{
+  "frames": 4,
+  "unique_frames": 4,
+  "binary_alpha": true,
+  "transforms": [
+    {
+      "source_size": [
+        453,
+        453
+      ],
+      "uniform_scale": 0.2141280353200883,
+      "origin": [
+        16,
+        13
+      ]
+    },
+    {
+      "source_size": [
+        392,
+        444
+      ],
+      "uniform_scale": 0.2141280353200883,
+      "origin": [
+        22,
+        15
+      ]
+    },
+    {
+      "source_size": [
+        409,
+        409
+      ],
+      "uniform_scale": 0.2141280353200883,
+      "origin": [
+        20,
+        22
+      ]
+    },
+    {
+      "source_size": [
+        399,
+        415
+      ],
+      "uniform_scale": 0.2141280353200883,
+      "origin": [
+        22,
+        21
+      ]
+    }
+  ],
+  "head_stabilization": {
+    "source": "existing drink frame0 head",
+    "old_neck_y": 70,
+    "reference_neck_y": 64,
+    "body_translation_y": -6,
+    "limbs": "new articulated source poses retained"
+  }
+}

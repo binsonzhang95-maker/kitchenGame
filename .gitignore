@@ -1,0 +1,33 @@
+.godot/
+*.tmp
+.DS_Store
+
+# Local secrets; keep the shareable template.
+.env
+.env.*
+!.env.example
+
+# Player save data and its auxiliary files.
+restaurant_multi_save_v2.json
+restaurant_multi_save_v2.json.audio.json
+restaurant_multi_save_v2.json.tmp
+restaurant_multi_save_v2.json.audio.json.tmp
+restaurant_save_v1.json
+restaurant_save_v1.json.tmp
+
+# Keep only publishable visual evidence from verification.
+verification/*
+!verification/visual_hall_preview.png
+!verification/visual_hall_preview.png.import
+!verification/cooking_animation_pour_water.png
+!verification/cooking_animation_pour_water.png.import
+!verification/cooking_animation_chop.png
+!verification/cooking_animation_chop.png.import
+!verification/cooking_animation_soup_loop.png
+!verification/cooking_animation_soup_loop.png.import
+!verification/cooking_animation_stir_fry_loop.png
+!verification/cooking_animation_stir_fry_loop.png.import
+!verification/cooking_animation_oven_static.png
+!verification/cooking_animation_oven_static.png.import
+!verification/cooking_animation_drink_static.png
+!verification/cooking_animation_drink_static.png.import

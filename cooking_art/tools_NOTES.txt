@@ -1,0 +1,6 @@
+10 static key-state tool assets, generated with built-in imagegen from a two-column/five-row atlas.
+Tools are 256×256 RGBA; a common [128,236] nominal placement pivot is supplied. Pot/pan/board/cup pairs share scaling and bottom alignment. Oven pairs share scaling and top alignment32; open door extends farther down, so the nominal pivot is a slot anchor, not the lowest opaque pixel.
+Source rows required measured crop boundaries and connected-component cleanup rather than naive equal cells. All visible neighboring fragments were removed and final overview inspected.
+Non-glass assets use binary alpha. Cups intentionally retain partial alpha for glass, including translucent border highlights; empty cup has transparent center and handle hole. Do not threshold these to opaque white.
+Nearest-neighbor 2× pixel-block rendering and limited opaque palette applied. Some internal source texture and small paired silhouette changes remain, so these are usable static first-pass states, not precision animation frames.
+No baked labels, grid, UI, shadows or characters in individual PNGs. Overview labels are development-only.

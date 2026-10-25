@@ -1,0 +1,158 @@
+{
+  "species": "bear",
+  "role": "owner",
+  "cell_size": [
+    128,
+    128
+  ],
+  "anchor_pixels": [
+    64,
+    120
+  ],
+  "alpha": "binary",
+  "frame_indexing": "zero_based",
+  "generation": "built-in imagegen; crop, alpha threshold, nearest-neighbor resizing, alignment and assembly only",
+  "cook": {
+    "sheet": "cook.png",
+    "direction": "down",
+    "loop": true,
+    "frame_count": 4,
+    "duration_ms": [
+      180,
+      180,
+      180,
+      180
+    ],
+    "pot_and_utensil_baked_in": true,
+    "prop_layer_enabled": false,
+    "events": []
+  },
+  "serve": {
+    "sheet": "serve.png",
+    "direction": "down",
+    "loop": false,
+    "duration_ms": [
+      200,
+      240,
+      180,
+      220
+    ],
+    "dish_baked_in": false,
+    "frames": [
+      {
+        "index": 0,
+        "name": "serve_00",
+        "sheet": "serve.png",
+        "x": 0,
+        "y": 0,
+        "w": 128,
+        "h": 128,
+        "duration_ms": 200,
+        "hand_anchor": [
+          64,
+          91
+        ],
+        "dish_anchor": [
+          64,
+          91
+        ],
+        "dish_attached": true,
+        "file": "frames/serve_00.png"
+      },
+      {
+        "index": 1,
+        "name": "serve_01",
+        "sheet": "serve.png",
+        "x": 128,
+        "y": 0,
+        "w": 128,
+        "h": 128,
+        "duration_ms": 240,
+        "hand_anchor": [
+          64,
+          88
+        ],
+        "dish_anchor": [
+          64,
+          88
+        ],
+        "dish_attached": true,
+        "file": "frames/serve_01.png"
+      },
+      {
+        "index": 2,
+        "name": "serve_02",
+        "sheet": "serve.png",
+        "x": 256,
+        "y": 0,
+        "w": 128,
+        "h": 128,
+        "duration_ms": 180,
+        "hand_anchor": [
+          64,
+          88
+        ],
+        "dish_anchor": [
+          64,
+          88
+        ],
+        "dish_attached": false,
+        "file": "frames/serve_02.png"
+      },
+      {
+        "index": 3,
+        "name": "serve_03",
+        "sheet": "serve.png",
+        "x": 384,
+        "y": 0,
+        "w": 128,
+        "h": 128,
+        "duration_ms": 220,
+        "hand_anchor": [
+          64,
+          91
+        ],
+        "dish_anchor": [
+          64,
+          88
+        ],
+        "dish_attached": false,
+        "file": "frames/serve_03.png"
+      }
+    ],
+    "events": [
+      {
+        "frame": 2,
+        "event": "release_dish",
+        "anchor": [
+          64,
+          88
+        ]
+      }
+    ]
+  },
+  "props": {
+    "dish": {
+      "file": "dish.png",
+      "size": [
+        34,
+        20
+      ],
+      "origin": [
+        17,
+        16
+      ],
+      "use_only_for": [
+        "serve"
+      ],
+      "visible_attached_frames": [
+        0,
+        1
+      ],
+      "release_frame": 2,
+      "after_release": "detach and leave at table/pass position; never follow retracting hands",
+      "source": "shared transparent dish prop"
+    }
+  },
+  "authoritative_clip_index": "clips.json"
+}

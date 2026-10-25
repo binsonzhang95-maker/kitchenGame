@@ -1,0 +1,20 @@
+{
+  "collect": {
+    "count": 4,
+    "unique": 4,
+    "binary_alpha": true,
+    "size": [
+      128,
+      128
+    ]
+  },
+  "wipe": {
+    "count": 4,
+    "unique": 4,
+    "binary_alpha": true,
+    "size": [
+      128,
+      128
+    ]
+  }
+}

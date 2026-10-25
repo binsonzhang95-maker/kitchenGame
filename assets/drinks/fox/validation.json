@@ -1,0 +1,21 @@
+{
+  "frame_count": 20,
+  "expected_frame_size": [
+    128,
+    128
+  ],
+  "binary_alpha": true,
+  "all_baselines_120": true,
+  "cup_binary_alpha": true,
+  "cup_transparent_corner": true,
+  "cup_opaque_pixel_count": 290,
+  "generated_leg_articulation": true,
+  "place_release_frame": 2,
+  "place_cup_baked": false,
+  "carry_unique_frames_per_direction": {
+    "down": 4,
+    "left": 4,
+    "right": 4,
+    "up": 4
+  }
+}

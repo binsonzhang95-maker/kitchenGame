@@ -1,0 +1,1 @@
+1536x1024 imagegen reference edit. Visually inspected: no animals, no dining tables/chairs/stools, no UI/words; four empty left rooms; empty central hall and right bar zone. Kitchen static counter retained. Palette and framing track reference. Not a tilemap, collision mesh or pre-layered occlusion asset.

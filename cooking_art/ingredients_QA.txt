@@ -1,0 +1,1 @@
+9 unique ingredient icons; all64x64RGBA; transparent corners; binary alpha; visually reviewed source and normalized icons. Imagegen original art, alpha threshold/crop/nearest normalization only. No text in ingredient images. Ice uses stylized opaque pale-blue faces rather than physical glass translucency.

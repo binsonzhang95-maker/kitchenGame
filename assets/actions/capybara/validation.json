@@ -1,0 +1,98 @@
+{
+  "species": "capybara",
+  "frames": 12,
+  "sheets": [
+    512,
+    128
+  ],
+  "frame": [
+    128,
+    128
+  ],
+  "alpha_values": [
+    0,
+    255
+  ],
+  "bounds": [
+    [
+      22,
+      10,
+      105,
+      112
+    ],
+    [
+      23,
+      10,
+      106,
+      112
+    ],
+    [
+      22,
+      10,
+      105,
+      112
+    ],
+    [
+      22,
+      10,
+      106,
+      112
+    ],
+    [
+      22,
+      10,
+      105,
+      110
+    ],
+    [
+      23,
+      10,
+      118,
+      110
+    ],
+    [
+      23,
+      10,
+      113,
+      110
+    ],
+    [
+      23,
+      10,
+      106,
+      110
+    ],
+    [
+      19,
+      10,
+      109,
+      112
+    ],
+    [
+      23,
+      10,
+      105,
+      112
+    ],
+    [
+      23,
+      10,
+      106,
+      112
+    ],
+    [
+      18,
+      10,
+      109,
+      112
+    ]
+  ],
+  "distinct_frames_per_action": [
+    4,
+    4,
+    4
+  ],
+  "reference_identity_checked": true,
+  "no_furniture_or_dishes": true,
+  "notes": "Tested first draft. Generated shape details may vary slightly between frames; no fake static transformations. Preview cycles all actions; action loop flags in animation.json are authoritative."
+}

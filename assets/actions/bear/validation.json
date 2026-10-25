@@ -1,0 +1,26 @@
+{
+  "cook.png": {
+    "size": [
+      512,
+      128
+    ],
+    "binary_alpha": true
+  },
+  "serve.png": {
+    "size": [
+      512,
+      128
+    ],
+    "binary_alpha": true
+  },
+  "dish.png": {
+    "size": [
+      29,
+      12
+    ],
+    "binary_alpha": true
+  },
+  "frame_count": 8,
+  "unique_frame_count": 8,
+  "baseline": 120
+}

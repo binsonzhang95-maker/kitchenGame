@@ -1,0 +1,14 @@
+{
+  "size": [
+    128,
+    128
+  ],
+  "frames": 4,
+  "unique": 4,
+  "alpha_values": [
+    0,
+    255
+  ],
+  "head_alignment": "crown and width reference-matched",
+  "clipping": false
+}

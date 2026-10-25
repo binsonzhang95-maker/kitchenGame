@@ -1,0 +1,11 @@
+Cat dining actions v1
+Created with built-in imagegen using output/animal_cast_delivery_v1/cat/idle.png as identity reference. Existing v1 files unchanged.
+All three sheets are RGBA 512x128, four 128x128 frames left-to-right. Actual generated arm keyframes, not transforms of a static character. Frames aligned by ear center to x64 and ear top y10; no expression replacement/compositing was applied.
+Facing down/front, body intended behind restaurant table. Furniture is NOT included. Bend-legged seated interpretation strongest in complaint/happy. Eat legs are short front-facing with bent knee/shorts silhouette; table should mask lap.
+Nominal floor/seat compositing pivot (64,110); feet bounds vary y108-112 between actions. Head top stays y10 across all actions. This pivot is an alignment anchor, not an actual rendered chair height.
+Eating spoon tips approximately: frame0 (49,99), frame1 (60,64), frame2 (33,61), frame3 (48,100). Mouth approximately (64,57). For dish contact, set dish eating point near sprite-local (49,99). Hands approximately frame0 (39,88), frame1 (43,69), frame2 (41,71), frame3 (39,89).
+Suggested layering: table-top below character/utensil, foreground table fascia above lap/legs; avoid overlaying the entire table top on spoon.
+Eat loop timing 260/220/360/260 ms. Complain and happy once 220/180/260/220 ms; preview GIF intentionally repeats all three for visual inspection only.
+Each action has slight generated silhouette differences. Complaint starts with the opposite paw before switching into an emphatic wave/point. Happy is open hands, approach, contact, open. Frown/mouth and happy closed eyes remain distinct.
+Generation prompts: identity-preserving 2x2 transparent pixel-art sheets, same cream/orange-striped cat coral sweater brown shorts; fixed head/torso; down-facing seated knees; no table/chair or text. Eat frames reach spoon down-forward, lift to open mouth, chew with spoon beside cheek, lower spoon. Complain frames palm-up, arm sideward, raised open paw and open mouth, point down at dish. Happy frames hands wide, approach chest, clap contact, hands apart with delighted eyes and smile.
+Pillow postprocessing limited to crop, nearest-neighbor resize, alpha threshold, alignment and sheet/preview assembly. No hand/face artwork was synthesized in code.

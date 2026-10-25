@@ -1,0 +1,91 @@
+{
+  "species": "hamster",
+  "frame_size": [
+    128,
+    128
+  ],
+  "animation": "sit_down",
+  "sheet": "sit_down.png",
+  "direction": "front_down",
+  "frame_count": 4,
+  "duration_ms": [
+    180,
+    220,
+    220,
+    300
+  ],
+  "loop": false,
+  "standing_anchor": [
+    64,
+    120
+  ],
+  "seat_pivot": [
+    64,
+    110
+  ],
+  "final_actor_origin_matches_drink": true,
+  "frames": [
+    {
+      "index": 0,
+      "file": "frames/sit_down_00.png",
+      "rect": [
+        0,
+        0,
+        128,
+        128
+      ],
+      "foot_baseline": 120,
+      "phase": "turn_at_chair"
+    },
+    {
+      "index": 1,
+      "file": "frames/sit_down_01.png",
+      "rect": [
+        128,
+        0,
+        128,
+        128
+      ],
+      "foot_baseline": 116,
+      "phase": "bend_knees"
+    },
+    {
+      "index": 2,
+      "file": "frames/sit_down_02.png",
+      "rect": [
+        256,
+        0,
+        128,
+        128
+      ],
+      "foot_baseline": 112,
+      "phase": "lower_hips"
+    },
+    {
+      "index": 3,
+      "file": "frames/sit_down_03.png",
+      "rect": [
+        384,
+        0,
+        128,
+        128
+      ],
+      "foot_baseline": 110,
+      "phase": "settled_seated"
+    }
+  ],
+  "events": [
+    {
+      "frame": 3,
+      "event": "seated",
+      "next": "drink or eat or seated idle"
+    }
+  ],
+  "layer_order": [
+    "chair",
+    "actor",
+    "table",
+    "foreground hands"
+  ],
+  "notes": "Fresh imagegen poses with genuinely changed knees/hips/arms. Same scale all four frames. Some head/outline variation; final state aligns nominal drink pivot but head may jump slightly. Single front-facing chair direction, not all directions."
+}

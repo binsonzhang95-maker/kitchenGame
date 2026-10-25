@@ -1,0 +1,152 @@
+{
+  "pot_empty": {
+    "size": [
+      256,
+      256
+    ],
+    "alpha_min": 0,
+    "alpha_max": 255,
+    "partial_alpha_pixels": 0,
+    "bbox": [
+      16,
+      60,
+      240,
+      236
+    ]
+  },
+  "pot_soup": {
+    "size": [
+      256,
+      256
+    ],
+    "alpha_min": 0,
+    "alpha_max": 255,
+    "partial_alpha_pixels": 0,
+    "bbox": [
+      16,
+      60,
+      240,
+      236
+    ]
+  },
+  "pan_empty": {
+    "size": [
+      256,
+      256
+    ],
+    "alpha_min": 0,
+    "alpha_max": 255,
+    "partial_alpha_pixels": 0,
+    "bbox": [
+      16,
+      44,
+      240,
+      236
+    ]
+  },
+  "pan_egg_tomato": {
+    "size": [
+      256,
+      256
+    ],
+    "alpha_min": 0,
+    "alpha_max": 255,
+    "partial_alpha_pixels": 0,
+    "bbox": [
+      17,
+      44,
+      239,
+      236
+    ]
+  },
+  "board_whole": {
+    "size": [
+      256,
+      256
+    ],
+    "alpha_min": 0,
+    "alpha_max": 255,
+    "partial_alpha_pixels": 0,
+    "bbox": [
+      16,
+      88,
+      240,
+      236
+    ]
+  },
+  "board_chopped": {
+    "size": [
+      256,
+      256
+    ],
+    "alpha_min": 0,
+    "alpha_max": 255,
+    "partial_alpha_pixels": 0,
+    "bbox": [
+      16,
+      90,
+      240,
+      236
+    ]
+  },
+  "oven_closed": {
+    "size": [
+      256,
+      256
+    ],
+    "alpha_min": 0,
+    "alpha_max": 255,
+    "partial_alpha_pixels": 0,
+    "bbox": [
+      25,
+      32,
+      231,
+      206
+    ]
+  },
+  "oven_open": {
+    "size": [
+      256,
+      256
+    ],
+    "alpha_min": 0,
+    "alpha_max": 255,
+    "partial_alpha_pixels": 0,
+    "bbox": [
+      16,
+      32,
+      240,
+      228
+    ]
+  },
+  "cup_empty": {
+    "size": [
+      256,
+      256
+    ],
+    "alpha_min": 0,
+    "alpha_max": 253,
+    "partial_alpha_pixels": 15260,
+    "bbox": [
+      29,
+      24,
+      227,
+      236
+    ]
+  },
+  "cup_milk_coffee_ice": {
+    "size": [
+      256,
+      256
+    ],
+    "alpha_min": 0,
+    "alpha_max": 255,
+    "partial_alpha_pixels": 29632,
+    "bbox": [
+      29,
+      24,
+      227,
+      236
+    ]
+  }
+}

@@ -1,0 +1,96 @@
+{
+  "sheet_size": [
+    512,
+    128
+  ],
+  "alpha_values": [
+    0,
+    255
+  ],
+  "unique_frames": 4,
+  "body_bottom_y": 110,
+  "eyes_unobstructed": true,
+  "clothing_reference_match": true,
+  "new_drinking_art": true,
+  "source": "built-in image_gen",
+  "release_on_clip_exit": true,
+  "cup_baked": true,
+  "cup_bounds": [
+    {
+      "frame": 0,
+      "cup_bbox": {
+        "x": 44,
+        "y": 73,
+        "w": 28,
+        "h": 25
+      },
+      "cup_center": [
+        58.0,
+        85.5
+      ],
+      "cup_anchor": [
+        58.0,
+        98
+      ],
+      "cup_baked": true,
+      "phase": "grip"
+    },
+    {
+      "frame": 1,
+      "cup_bbox": {
+        "x": 49,
+        "y": 55,
+        "w": 28,
+        "h": 25
+      },
+      "cup_center": [
+        63.0,
+        67.5
+      ],
+      "cup_anchor": [
+        63.0,
+        80
+      ],
+      "cup_baked": true,
+      "phase": "lift"
+    },
+    {
+      "frame": 2,
+      "cup_bbox": {
+        "x": 49,
+        "y": 53,
+        "w": 26,
+        "h": 25
+      },
+      "cup_center": [
+        62.0,
+        65.5
+      ],
+      "cup_anchor": [
+        62.0,
+        78
+      ],
+      "cup_baked": true,
+      "phase": "sip"
+    },
+    {
+      "frame": 3,
+      "cup_bbox": {
+        "x": 43,
+        "y": 73,
+        "w": 30,
+        "h": 25
+      },
+      "cup_center": [
+        58.0,
+        85.5
+      ],
+      "cup_anchor": [
+        58.0,
+        98
+      ],
+      "cup_baked": true,
+      "phase": "lower"
+    }
+  ]
+}

@@ -1,0 +1,257 @@
+{
+  "species": "fox",
+  "role": "waiter",
+  "cell_size": [
+    128,
+    128
+  ],
+  "anchor_pixels": [
+    64,
+    120
+  ],
+  "direction": "left_only",
+  "actor_origin_demo": [
+    130,
+    61
+  ],
+  "table_origin_demo": [
+    35,
+    127
+  ],
+  "props_directory": "../props",
+  "props_baked_in": false,
+  "animations": {
+    "collect": {
+      "sheet": "collect.png",
+      "loop": false,
+      "duration_ms": [
+        220,
+        240,
+        260,
+        240
+      ],
+      "frames": [
+        {
+          "index": 0,
+          "file": "frames/collect_00.png",
+          "rect": [
+            0,
+            0,
+            128,
+            128
+          ],
+          "hand_anchor": [
+            14,
+            103
+          ],
+          "prop_attached": true,
+          "phase": "grasp_table_items",
+          "foreground_file": "hands_foreground/collect_00.png"
+        },
+        {
+          "index": 1,
+          "file": "frames/collect_01.png",
+          "rect": [
+            128,
+            0,
+            128,
+            128
+          ],
+          "hand_anchor": [
+            33,
+            86
+          ],
+          "prop_attached": true,
+          "phase": "lift_items",
+          "foreground_file": "hands_foreground/collect_01.png"
+        },
+        {
+          "index": 2,
+          "file": "frames/collect_02.png",
+          "rect": [
+            256,
+            0,
+            128,
+            128
+          ],
+          "hand_anchor": [
+            51,
+            94
+          ],
+          "prop_attached": true,
+          "phase": "draw_items_in",
+          "foreground_file": "hands_foreground/collect_02.png"
+        },
+        {
+          "index": 3,
+          "file": "frames/collect_03.png",
+          "rect": [
+            384,
+            0,
+            128,
+            128
+          ],
+          "hand_anchor": null,
+          "prop_attached": false,
+          "phase": "stow_and_stand",
+          "foreground_file": "hands_foreground/collect_03.png"
+        }
+      ],
+      "events": [
+        {
+          "frame": 0,
+          "timing": "on_frame_end",
+          "event": "pickup",
+          "hide_world_empty_plate": true,
+          "hide_world_empty_cup": true,
+          "show_attached_items": true
+        },
+        {
+          "frame": 3,
+          "timing": "on_frame_start",
+          "event": "transfer_items_to_inventory",
+          "hide_attached_items": true,
+          "loop_guard": "once_per_clip_instance"
+        }
+      ]
+    },
+    "wipe": {
+      "sheet": "wipe.png",
+      "loop": false,
+      "duration_ms": [
+        220,
+        240,
+        260,
+        240
+      ],
+      "frames": [
+        {
+          "index": 0,
+          "file": "frames/wipe_00.png",
+          "rect": [
+            0,
+            0,
+            128,
+            128
+          ],
+          "hand_anchor": [
+            17,
+            96
+          ],
+          "prop_attached": true,
+          "phase": "wipe_left"
+        },
+        {
+          "index": 1,
+          "file": "frames/wipe_01.png",
+          "rect": [
+            128,
+            0,
+            128,
+            128
+          ],
+          "hand_anchor": [
+            27,
+            92
+          ],
+          "prop_attached": true,
+          "phase": "wipe_right"
+        },
+        {
+          "index": 2,
+          "file": "frames/wipe_02.png",
+          "rect": [
+            256,
+            0,
+            128,
+            128
+          ],
+          "hand_anchor": [
+            44,
+            88
+          ],
+          "prop_attached": true,
+          "phase": "lift_cloth"
+        },
+        {
+          "index": 3,
+          "file": "frames/wipe_03.png",
+          "rect": [
+            384,
+            0,
+            128,
+            128
+          ],
+          "hand_anchor": null,
+          "prop_attached": false,
+          "phase": "retract_and_stand"
+        }
+      ],
+      "events": [
+        {
+          "frame": 0,
+          "event": "show_cloth_in_hand"
+        },
+        {
+          "frame": 1,
+          "event": "wipe_progress",
+          "stain_visible_fraction": 0.45
+        },
+        {
+          "frame": 2,
+          "event": "table_clean",
+          "hide_world_stain": true,
+          "loop_guard": "once_per_clip_instance"
+        },
+        {
+          "frame": 3,
+          "event": "stow_cloth",
+          "hide_attached_cloth": true
+        }
+      ]
+    }
+  },
+  "table_items_initial": {
+    "plate_bottom_center": [
+      144,
+      164
+    ],
+    "cup_bottom_center": [
+      144,
+      157
+    ]
+  },
+  "cloth_origin": [
+    13,
+    7
+  ],
+  "plate_origin": [
+    17,
+    20
+  ],
+  "cup_origin": [
+    8,
+    14
+  ],
+  "cup_render_size": [
+    16,
+    14
+  ],
+  "cup_offset_from_plate": [
+    0,
+    -7
+  ],
+  "stain_center": [
+    150,
+    156
+  ],
+  "layer_order": [
+    "table",
+    "remaining_stain",
+    "cloth_if_wiping",
+    "actor",
+    "plate_cup_if_collecting",
+    "hand_foreground"
+  ],
+  "hand_foreground": "Use provided 128px hands_foreground images at actor origin after held plate/cup."
+}

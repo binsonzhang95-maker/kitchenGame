@@ -1,0 +1,38 @@
+{
+  "eat": {
+    "size": [
+      512,
+      128
+    ],
+    "mode": "RGBA",
+    "alpha_values": [
+      0,
+      255
+    ],
+    "unique_frames": 4
+  },
+  "complain": {
+    "size": [
+      512,
+      128
+    ],
+    "mode": "RGBA",
+    "alpha_values": [
+      0,
+      255
+    ],
+    "unique_frames": 4
+  },
+  "happy": {
+    "size": [
+      512,
+      128
+    ],
+    "mode": "RGBA",
+    "alpha_values": [
+      0,
+      255
+    ],
+    "unique_frames": 4
+  }
+}

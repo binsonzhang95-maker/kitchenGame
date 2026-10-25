@@ -1,0 +1,20 @@
+{
+  "collect": {
+    "frames": 4,
+    "unique": 4,
+    "alpha": [
+      0,
+      255
+    ],
+    "loop": false
+  },
+  "wipe": {
+    "frames": 4,
+    "unique": 4,
+    "alpha": [
+      0,
+      255
+    ],
+    "loop": false
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "carry_walk.png": {
+    "size": [
+      512,
+      512
+    ],
+    "binary_alpha": true
+  },
+  "place_dish.png": {
+    "size": [
+      512,
+      128
+    ],
+    "binary_alpha": true
+  },
+  "dish.png": {
+    "size": [
+      29,
+      12
+    ],
+    "binary_alpha": true
+  },
+  "frame_count": 20,
+  "unique_frame_count": 20,
+  "baseline": 120
+}

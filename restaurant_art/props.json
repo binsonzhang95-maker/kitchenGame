@@ -1,0 +1,140 @@
+{
+  "style": "simple Japanese RPG 3/4 overhead, horizontal axes",
+  "filter": "nearest",
+  "source": "individual imagegen-generated artwork, alpha cleanup and nearest-neighbor scale only",
+  "props": {
+    "plant": {
+      "file": "props/plant.png",
+      "size": [
+        48,
+        72
+      ],
+      "anchor_bottom_center": [
+        24,
+        70
+      ],
+      "opaque_bbox": [
+        2,
+        9,
+        46,
+        70
+      ],
+      "atlas_rect": [
+        0,
+        0,
+        48,
+        72
+      ],
+      "note": "Suggested engine scale 1.0; adjust layout anchors after scene placement, not exact collision data."
+    },
+    "partition": {
+      "file": "props/partition.png",
+      "size": [
+        128,
+        64
+      ],
+      "anchor_bottom_center": [
+        64,
+        62
+      ],
+      "opaque_bbox": [
+        2,
+        22,
+        126,
+        62
+      ],
+      "atlas_rect": [
+        128,
+        0,
+        128,
+        64
+      ],
+      "note": "Suggested engine scale 1.0; adjust layout anchors after scene placement, not exact collision data."
+    },
+    "lamp": {
+      "file": "props/lamp.png",
+      "size": [
+        32,
+        48
+      ],
+      "anchor_bottom_center": [
+        16,
+        46
+      ],
+      "opaque_bbox": [
+        2,
+        9,
+        30,
+        46
+      ],
+      "atlas_rect": [
+        256,
+        0,
+        32,
+        48
+      ],
+      "note": "Suggested engine scale 1.0; adjust layout anchors after scene placement, not exact collision data."
+    },
+    "high_table": {
+      "file": "props/high_table.png",
+      "size": [
+        96,
+        112
+      ],
+      "anchor_bottom_center": [
+        48,
+        110
+      ],
+      "opaque_bbox": [
+        2,
+        20,
+        94,
+        110
+      ],
+      "atlas_rect": [
+        384,
+        0,
+        96,
+        112
+      ],
+      "note": "Suggested engine scale 1.0; adjust layout anchors after scene placement, not exact collision data."
+    },
+    "stool": {
+      "file": "props/stool.png",
+      "size": [
+        32,
+        56
+      ],
+      "anchor_bottom_center": [
+        16,
+        54
+      ],
+      "opaque_bbox": [
+        2,
+        8,
+        30,
+        54
+      ],
+      "atlas_rect": [
+        512,
+        0,
+        32,
+        56
+      ],
+      "note": "Suggested engine scale 1.0; adjust layout anchors after scene placement, not exact collision data."
+    }
+  },
+  "atlas": {
+    "file": "props_atlas.png",
+    "size": [
+      640,
+      128
+    ],
+    "columns": 5,
+    "cell_size": [
+      128,
+      128
+    ]
+  },
+  "bar_layout_note": "Use high_table96px width plus two32px stools at left/right =160px, fits the roughly190px bar room before spacing. Table and stools should be separate nodes."
+}

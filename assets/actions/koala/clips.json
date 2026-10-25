@@ -1,0 +1,130 @@
+{
+  "species": "koala",
+  "role": "customer",
+  "frame_size": [
+    128,
+    128
+  ],
+  "pivot": [
+    64,
+    110
+  ],
+  "clips": {
+    "eat": {
+      "sheet": "eat.png",
+      "row": 0,
+      "frame_count": 4,
+      "duration_ms": [
+        260,
+        220,
+        360,
+        260
+      ],
+      "loop": true,
+      "rects": [
+        [
+          0,
+          0,
+          128,
+          128
+        ],
+        [
+          128,
+          0,
+          128,
+          128
+        ],
+        [
+          256,
+          0,
+          128,
+          128
+        ],
+        [
+          384,
+          0,
+          128,
+          128
+        ]
+      ]
+    },
+    "complain": {
+      "sheet": "complain.png",
+      "row": 0,
+      "frame_count": 4,
+      "duration_ms": [
+        220,
+        180,
+        260,
+        220
+      ],
+      "loop": false,
+      "rects": [
+        [
+          0,
+          0,
+          128,
+          128
+        ],
+        [
+          128,
+          0,
+          128,
+          128
+        ],
+        [
+          256,
+          0,
+          128,
+          128
+        ],
+        [
+          384,
+          0,
+          128,
+          128
+        ]
+      ]
+    },
+    "happy": {
+      "sheet": "happy.png",
+      "row": 0,
+      "frame_count": 4,
+      "duration_ms": [
+        220,
+        180,
+        260,
+        220
+      ],
+      "loop": false,
+      "rects": [
+        [
+          0,
+          0,
+          128,
+          128
+        ],
+        [
+          128,
+          0,
+          128,
+          128
+        ],
+        [
+          256,
+          0,
+          128,
+          128
+        ],
+        [
+          384,
+          0,
+          128,
+          128
+        ]
+      ]
+    }
+  },
+  "detail_metadata": "animation.json",
+  "note": "Generated test draft; left carrying direction may mirror right. Check action-specific prop anchors in original metadata."
+}

@@ -1,0 +1,14 @@
+{
+  "dimensions": [
+    512,
+    128
+  ],
+  "binary_alpha": true,
+  "four_distinct_frames": true,
+  "seat_pivot": [
+    64,
+    110
+  ],
+  "visual_review": "Original species/clothing preserved. Real arm bends, clear cup lift, happy sip below eyes, return to tableheight. Frame3 release represented by clip-exit handoff, not free-standing mug within character frame.",
+  "generation": "built-in image_gen, six separate reference-guided new pose generations; no programmed redraw"
+}

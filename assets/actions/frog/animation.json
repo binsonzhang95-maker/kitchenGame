@@ -1,0 +1,273 @@
+{
+  "frame_size": [
+    128,
+    128
+  ],
+  "direction": "down",
+  "pivot": [
+    64,
+    110
+  ],
+  "actions": {
+    "eat": {
+      "sheet": "eat.png",
+      "frames": 4,
+      "duration_ms": [
+        260,
+        220,
+        360,
+        260
+      ],
+      "loop": true,
+      "playback": "loop",
+      "bounds": [
+        [
+          18,
+          10,
+          109,
+          109
+        ],
+        [
+          19,
+          10,
+          110,
+          110
+        ],
+        [
+          18,
+          10,
+          110,
+          109
+        ],
+        [
+          19,
+          10,
+          108,
+          109
+        ]
+      ],
+      "frame_rects": [
+        {
+          "x": 0,
+          "y": 0,
+          "w": 128,
+          "h": 128,
+          "duration_ms": 260,
+          "file": "frames/eat_00.png"
+        },
+        {
+          "x": 128,
+          "y": 0,
+          "w": 128,
+          "h": 128,
+          "duration_ms": 220,
+          "file": "frames/eat_01.png"
+        },
+        {
+          "x": 256,
+          "y": 0,
+          "w": 128,
+          "h": 128,
+          "duration_ms": 360,
+          "file": "frames/eat_02.png"
+        },
+        {
+          "x": 384,
+          "y": 0,
+          "w": 128,
+          "h": 128,
+          "duration_ms": 260,
+          "file": "frames/eat_03.png"
+        }
+      ],
+      "spoon_tip_approx_px": [
+        [
+          26,
+          101
+        ],
+        [
+          61,
+          65
+        ],
+        [
+          41,
+          73
+        ],
+        [
+          27,
+          102
+        ]
+      ],
+      "dish_contact_approx_px": [
+        26,
+        101
+      ]
+    },
+    "complain": {
+      "sheet": "complain.png",
+      "frames": 4,
+      "duration_ms": [
+        220,
+        180,
+        260,
+        220
+      ],
+      "loop": false,
+      "playback": "once",
+      "bounds": [
+        [
+          19,
+          10,
+          110,
+          107
+        ],
+        [
+          14,
+          10,
+          109,
+          107
+        ],
+        [
+          16,
+          10,
+          112,
+          106
+        ],
+        [
+          20,
+          10,
+          109,
+          107
+        ]
+      ],
+      "frame_rects": [
+        {
+          "x": 0,
+          "y": 0,
+          "w": 128,
+          "h": 128,
+          "duration_ms": 220,
+          "file": "frames/complain_00.png"
+        },
+        {
+          "x": 128,
+          "y": 0,
+          "w": 128,
+          "h": 128,
+          "duration_ms": 180,
+          "file": "frames/complain_01.png"
+        },
+        {
+          "x": 256,
+          "y": 0,
+          "w": 128,
+          "h": 128,
+          "duration_ms": 260,
+          "file": "frames/complain_02.png"
+        },
+        {
+          "x": 384,
+          "y": 0,
+          "w": 128,
+          "h": 128,
+          "duration_ms": 220,
+          "file": "frames/complain_03.png"
+        }
+      ]
+    },
+    "happy": {
+      "sheet": "happy.png",
+      "frames": 4,
+      "duration_ms": [
+        220,
+        180,
+        260,
+        220
+      ],
+      "loop": false,
+      "playback": "once",
+      "bounds": [
+        [
+          15,
+          10,
+          112,
+          108
+        ],
+        [
+          18,
+          10,
+          110,
+          108
+        ],
+        [
+          19,
+          10,
+          109,
+          107
+        ],
+        [
+          15,
+          10,
+          111,
+          108
+        ]
+      ],
+      "frame_rects": [
+        {
+          "x": 0,
+          "y": 0,
+          "w": 128,
+          "h": 128,
+          "duration_ms": 220,
+          "file": "frames/happy_00.png"
+        },
+        {
+          "x": 128,
+          "y": 0,
+          "w": 128,
+          "h": 128,
+          "duration_ms": 180,
+          "file": "frames/happy_01.png"
+        },
+        {
+          "x": 256,
+          "y": 0,
+          "w": 128,
+          "h": 128,
+          "duration_ms": 260,
+          "file": "frames/happy_02.png"
+        },
+        {
+          "x": 384,
+          "y": 0,
+          "w": 128,
+          "h": 128,
+          "duration_ms": 220,
+          "file": "frames/happy_03.png"
+        }
+      ]
+    }
+  },
+  "generation": "Built-in imagegen identity reference; genuine articulated original frames. Pillow alpha cleanup, cropping, uniform nearest-neighbor sizing and head alignment only.",
+  "demo_table": {
+    "character_origin": [
+      32,
+      40
+    ],
+    "table_origin": [
+      26,
+      124
+    ],
+    "dish_support": [
+      58,
+      145
+    ],
+    "dish_anchor": [
+      17,
+      16
+    ],
+    "foreground_layers": "hands_foreground/eat_00.png through eat_03.png",
+    "foreground_note": "Cropped original lower utensil/paw pixels; render at same origin as body. Inspect with actual furniture scale."
+  },
+  "authoritative_clip_index": "clips.json"
+}

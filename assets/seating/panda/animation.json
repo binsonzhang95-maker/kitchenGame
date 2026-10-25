@@ -1,0 +1,95 @@
+{
+  "species": "panda",
+  "sheet": "sit_down.png",
+  "frame_size": [
+    128,
+    128
+  ],
+  "frame_count": 4,
+  "direction": "front_down",
+  "loop": false,
+  "duration_ms": [
+    180,
+    220,
+    220,
+    300
+  ],
+  "pivot": [
+    64,
+    110
+  ],
+  "anchor": [
+    64,
+    110
+  ],
+  "target_drink_actor_offset": [
+    0,
+    0
+  ],
+  "frames": [
+    {
+      "frame": 0,
+      "phase": "turn_toward_seat",
+      "head_center_x": 64,
+      "head_top_y": 6,
+      "approx_head_width": 78,
+      "body_bounds": [
+        25,
+        6,
+        103,
+        104
+      ],
+      "source": "source_atlas.png"
+    },
+    {
+      "frame": 1,
+      "phase": "bend_knees",
+      "head_center_x": 64,
+      "head_top_y": 10,
+      "approx_head_width": 78,
+      "body_bounds": [
+        25,
+        10,
+        103,
+        102
+      ],
+      "source": "source_atlas.png"
+    },
+    {
+      "frame": 2,
+      "phase": "settle_hips",
+      "head_center_x": 64,
+      "head_top_y": 12,
+      "approx_head_width": 78,
+      "body_bounds": [
+        25,
+        12,
+        103,
+        107
+      ],
+      "source": "source_atlas.png"
+    },
+    {
+      "frame": 3,
+      "phase": "seated_idle",
+      "head_center_x": 64,
+      "head_top_y": 12,
+      "approx_head_width": 78,
+      "body_bounds": [
+        25,
+        12,
+        103,
+        108
+      ],
+      "source": "source_atlas.png"
+    }
+  ],
+  "events": [
+    {
+      "frame": 3,
+      "event": "seated",
+      "on_exit": "keep actor origin and continue drink/eat"
+    }
+  ],
+  "layers": "Draw chair behind body, table over lower body. No furniture baked in."
+}

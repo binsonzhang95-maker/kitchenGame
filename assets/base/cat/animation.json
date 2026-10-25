@@ -1,0 +1,218 @@
+{
+  "species": "cat",
+  "display_name_zh": "猫",
+  "role": "customer",
+  "cell_size": [
+    128,
+    128
+  ],
+  "anchor_pixels": [
+    64,
+    120
+  ],
+  "anchor_normalized": [
+    0.5,
+    0.9375
+  ],
+  "rows": [
+    "down",
+    "left",
+    "right",
+    "up"
+  ],
+  "sequences": {
+    "down": [
+      "down_00",
+      "down_01",
+      "down_02",
+      "down_03"
+    ],
+    "left": [
+      "left_00",
+      "left_01",
+      "left_02",
+      "left_03"
+    ],
+    "right": [
+      "right_00",
+      "right_01",
+      "right_02",
+      "right_03"
+    ],
+    "up": [
+      "up_00",
+      "up_01",
+      "up_02",
+      "up_03"
+    ],
+    "idle": [
+      "idle_00",
+      "idle_01"
+    ]
+  },
+  "loop": true,
+  "frames": [
+    {
+      "name": "down_00",
+      "sheet": "walk.png",
+      "x": 0,
+      "y": 0,
+      "w": 128,
+      "h": 128,
+      "duration_ms": 160
+    },
+    {
+      "name": "down_01",
+      "sheet": "walk.png",
+      "x": 128,
+      "y": 0,
+      "w": 128,
+      "h": 128,
+      "duration_ms": 160
+    },
+    {
+      "name": "down_02",
+      "sheet": "walk.png",
+      "x": 256,
+      "y": 0,
+      "w": 128,
+      "h": 128,
+      "duration_ms": 160
+    },
+    {
+      "name": "down_03",
+      "sheet": "walk.png",
+      "x": 384,
+      "y": 0,
+      "w": 128,
+      "h": 128,
+      "duration_ms": 160
+    },
+    {
+      "name": "left_00",
+      "sheet": "walk.png",
+      "x": 0,
+      "y": 128,
+      "w": 128,
+      "h": 128,
+      "duration_ms": 160
+    },
+    {
+      "name": "left_01",
+      "sheet": "walk.png",
+      "x": 128,
+      "y": 128,
+      "w": 128,
+      "h": 128,
+      "duration_ms": 160
+    },
+    {
+      "name": "left_02",
+      "sheet": "walk.png",
+      "x": 256,
+      "y": 128,
+      "w": 128,
+      "h": 128,
+      "duration_ms": 160
+    },
+    {
+      "name": "left_03",
+      "sheet": "walk.png",
+      "x": 384,
+      "y": 128,
+      "w": 128,
+      "h": 128,
+      "duration_ms": 160
+    },
+    {
+      "name": "right_00",
+      "sheet": "walk.png",
+      "x": 0,
+      "y": 256,
+      "w": 128,
+      "h": 128,
+      "duration_ms": 160
+    },
+    {
+      "name": "right_01",
+      "sheet": "walk.png",
+      "x": 128,
+      "y": 256,
+      "w": 128,
+      "h": 128,
+      "duration_ms": 160
+    },
+    {
+      "name": "right_02",
+      "sheet": "walk.png",
+      "x": 256,
+      "y": 256,
+      "w": 128,
+      "h": 128,
+      "duration_ms": 160
+    },
+    {
+      "name": "right_03",
+      "sheet": "walk.png",
+      "x": 384,
+      "y": 256,
+      "w": 128,
+      "h": 128,
+      "duration_ms": 160
+    },
+    {
+      "name": "up_00",
+      "sheet": "walk.png",
+      "x": 0,
+      "y": 384,
+      "w": 128,
+      "h": 128,
+      "duration_ms": 160
+    },
+    {
+      "name": "up_01",
+      "sheet": "walk.png",
+      "x": 128,
+      "y": 384,
+      "w": 128,
+      "h": 128,
+      "duration_ms": 160
+    },
+    {
+      "name": "up_02",
+      "sheet": "walk.png",
+      "x": 256,
+      "y": 384,
+      "w": 128,
+      "h": 128,
+      "duration_ms": 160
+    },
+    {
+      "name": "up_03",
+      "sheet": "walk.png",
+      "x": 384,
+      "y": 384,
+      "w": 128,
+      "h": 128,
+      "duration_ms": 160
+    },
+    {
+      "name": "idle_00",
+      "sheet": "idle.png",
+      "x": 0,
+      "y": 0,
+      "w": 128,
+      "h": 128,
+      "duration_ms": 1600
+    },
+    {
+      "name": "idle_01",
+      "sheet": "idle.png",
+      "x": 128,
+      "y": 0,
+      "w": 128,
+      "h": 128,
+      "duration_ms": 140
+    }
+  ]
+}

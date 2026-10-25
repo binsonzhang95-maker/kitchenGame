@@ -1,0 +1,295 @@
+{
+  "frame_size": [
+    256,
+    256
+  ],
+  "filter": "nearest",
+  "kind": "static tool key states, not animation",
+  "tools": {
+    "pot_empty": {
+      "file": "tools/pot_empty.png",
+      "size": [
+        256,
+        256
+      ],
+      "pivot_bottom_center": [
+        128,
+        236
+      ],
+      "atlas_rect": [
+        0,
+        0,
+        256,
+        256
+      ],
+      "state_pair": [
+        "pot_empty",
+        "pot_soup"
+      ],
+      "content_bbox": [
+        16,
+        60,
+        240,
+        236
+      ],
+      "placement": "same pair scale; oven aligned at top32; others bottom236"
+    },
+    "pot_soup": {
+      "file": "tools/pot_soup.png",
+      "size": [
+        256,
+        256
+      ],
+      "pivot_bottom_center": [
+        128,
+        236
+      ],
+      "atlas_rect": [
+        256,
+        0,
+        256,
+        256
+      ],
+      "state_pair": [
+        "pot_empty",
+        "pot_soup"
+      ],
+      "content_bbox": [
+        16,
+        60,
+        240,
+        236
+      ],
+      "placement": "same pair scale; oven aligned at top32; others bottom236"
+    },
+    "pan_empty": {
+      "file": "tools/pan_empty.png",
+      "size": [
+        256,
+        256
+      ],
+      "pivot_bottom_center": [
+        128,
+        236
+      ],
+      "atlas_rect": [
+        0,
+        256,
+        256,
+        256
+      ],
+      "state_pair": [
+        "pan_empty",
+        "pan_egg_tomato"
+      ],
+      "content_bbox": [
+        16,
+        44,
+        240,
+        236
+      ],
+      "placement": "same pair scale; oven aligned at top32; others bottom236"
+    },
+    "pan_egg_tomato": {
+      "file": "tools/pan_egg_tomato.png",
+      "size": [
+        256,
+        256
+      ],
+      "pivot_bottom_center": [
+        128,
+        236
+      ],
+      "atlas_rect": [
+        256,
+        256,
+        256,
+        256
+      ],
+      "state_pair": [
+        "pan_empty",
+        "pan_egg_tomato"
+      ],
+      "content_bbox": [
+        17,
+        44,
+        239,
+        236
+      ],
+      "placement": "same pair scale; oven aligned at top32; others bottom236"
+    },
+    "board_whole": {
+      "file": "tools/board_whole.png",
+      "size": [
+        256,
+        256
+      ],
+      "pivot_bottom_center": [
+        128,
+        236
+      ],
+      "atlas_rect": [
+        0,
+        512,
+        256,
+        256
+      ],
+      "state_pair": [
+        "board_whole",
+        "board_chopped"
+      ],
+      "content_bbox": [
+        16,
+        88,
+        240,
+        236
+      ],
+      "placement": "same pair scale; oven aligned at top32; others bottom236"
+    },
+    "board_chopped": {
+      "file": "tools/board_chopped.png",
+      "size": [
+        256,
+        256
+      ],
+      "pivot_bottom_center": [
+        128,
+        236
+      ],
+      "atlas_rect": [
+        256,
+        512,
+        256,
+        256
+      ],
+      "state_pair": [
+        "board_whole",
+        "board_chopped"
+      ],
+      "content_bbox": [
+        16,
+        90,
+        240,
+        236
+      ],
+      "placement": "same pair scale; oven aligned at top32; others bottom236"
+    },
+    "oven_closed": {
+      "file": "tools/oven_closed.png",
+      "size": [
+        256,
+        256
+      ],
+      "pivot_bottom_center": [
+        128,
+        236
+      ],
+      "atlas_rect": [
+        0,
+        768,
+        256,
+        256
+      ],
+      "state_pair": [
+        "oven_closed",
+        "oven_open"
+      ],
+      "content_bbox": [
+        25,
+        32,
+        231,
+        206
+      ],
+      "placement": "same pair scale; oven aligned at top32; others bottom236"
+    },
+    "oven_open": {
+      "file": "tools/oven_open.png",
+      "size": [
+        256,
+        256
+      ],
+      "pivot_bottom_center": [
+        128,
+        236
+      ],
+      "atlas_rect": [
+        256,
+        768,
+        256,
+        256
+      ],
+      "state_pair": [
+        "oven_closed",
+        "oven_open"
+      ],
+      "content_bbox": [
+        16,
+        32,
+        240,
+        228
+      ],
+      "placement": "same pair scale; oven aligned at top32; others bottom236"
+    },
+    "cup_empty": {
+      "file": "tools/cup_empty.png",
+      "size": [
+        256,
+        256
+      ],
+      "pivot_bottom_center": [
+        128,
+        236
+      ],
+      "atlas_rect": [
+        0,
+        1024,
+        256,
+        256
+      ],
+      "state_pair": [
+        "cup_empty",
+        "cup_milk_coffee_ice"
+      ],
+      "content_bbox": [
+        29,
+        24,
+        227,
+        236
+      ],
+      "placement": "same pair scale; oven aligned at top32; others bottom236"
+    },
+    "cup_milk_coffee_ice": {
+      "file": "tools/cup_milk_coffee_ice.png",
+      "size": [
+        256,
+        256
+      ],
+      "pivot_bottom_center": [
+        128,
+        236
+      ],
+      "atlas_rect": [
+        256,
+        1024,
+        256,
+        256
+      ],
+      "state_pair": [
+        "cup_empty",
+        "cup_milk_coffee_ice"
+      ],
+      "content_bbox": [
+        29,
+        24,
+        227,
+        236
+      ],
+      "placement": "same pair scale; oven aligned at top32; others bottom236"
+    }
+  },
+  "notes": [
+    "Generated art, sliced and aligned; paired silhouettes have small residual differences.",
+    "Glass keeps partial alpha; outside silhouette is fully transparent.",
+    "Oven open-door front extends farther down than closed, shared top alignment used."
+  ]
+}

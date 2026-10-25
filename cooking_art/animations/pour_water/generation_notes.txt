@@ -1,0 +1,1 @@
+Built-in imagegen, referenced previous static cooking tools. Generated four true cooking poses in a 2x2 transparent source atlas: pour_water. Exact original art retained in source_atlas.png. Authorised preprocessing: alpha cleanup, source-cell slicing, nearest scaling, common bottom anchor, immutable lower tool-body stabilization from frame0. No mirrored or reversed frames.

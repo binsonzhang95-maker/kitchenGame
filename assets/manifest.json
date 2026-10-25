@@ -1,0 +1,355 @@
+{
+  "version": "restaurant-complete-cleanup-test-draft-v5",
+  "expected_roles": {
+    "owner": 1,
+    "waiter": 2,
+    "customer": 17
+  },
+  "base_frames": 360,
+  "expected_business_frames": 376,
+  "business_frames": 376,
+  "character_frame": [
+    128,
+    128
+  ],
+  "characters": [
+    {
+      "species": "bear",
+      "role": "owner",
+      "business_frames": 8,
+      "path": "actions/bear",
+      "base_frames": 18,
+      "drink_frames": 0,
+      "seating_frames": 0,
+      "cleanup_frames": 0
+    },
+    {
+      "species": "rabbit",
+      "role": "waiter",
+      "business_frames": 20,
+      "path": "actions/rabbit",
+      "base_frames": 18,
+      "drink_frames": 20,
+      "seating_frames": 0,
+      "cleanup_frames": 8
+    },
+    {
+      "species": "fox",
+      "role": "waiter",
+      "business_frames": 20,
+      "path": "actions/fox",
+      "base_frames": 18,
+      "drink_frames": 20,
+      "seating_frames": 0,
+      "cleanup_frames": 8
+    },
+    {
+      "species": "cat",
+      "role": "customer",
+      "business_frames": 12,
+      "path": "actions/cat",
+      "base_frames": 18,
+      "drink_frames": 4,
+      "seating_frames": 4,
+      "cleanup_frames": 0
+    },
+    {
+      "species": "dog",
+      "role": "customer",
+      "business_frames": 12,
+      "path": "actions/dog",
+      "base_frames": 18,
+      "drink_frames": 4,
+      "seating_frames": 4,
+      "cleanup_frames": 0
+    },
+    {
+      "species": "panda",
+      "role": "customer",
+      "business_frames": 12,
+      "path": "actions/panda",
+      "base_frames": 18,
+      "drink_frames": 4,
+      "seating_frames": 4,
+      "cleanup_frames": 0
+    },
+    {
+      "species": "raccoon",
+      "role": "customer",
+      "business_frames": 12,
+      "path": "actions/raccoon",
+      "base_frames": 18,
+      "drink_frames": 4,
+      "seating_frames": 4,
+      "cleanup_frames": 0
+    },
+    {
+      "species": "red_panda",
+      "role": "customer",
+      "business_frames": 12,
+      "path": "actions/red_panda",
+      "base_frames": 18,
+      "drink_frames": 4,
+      "seating_frames": 4,
+      "cleanup_frames": 0
+    },
+    {
+      "species": "squirrel",
+      "role": "customer",
+      "business_frames": 12,
+      "path": "actions/squirrel",
+      "base_frames": 18,
+      "drink_frames": 4,
+      "seating_frames": 4,
+      "cleanup_frames": 0
+    },
+    {
+      "species": "hedgehog",
+      "role": "customer",
+      "business_frames": 12,
+      "path": "actions/hedgehog",
+      "base_frames": 18,
+      "drink_frames": 4,
+      "seating_frames": 4,
+      "cleanup_frames": 0
+    },
+    {
+      "species": "otter",
+      "role": "customer",
+      "business_frames": 12,
+      "path": "actions/otter",
+      "base_frames": 18,
+      "drink_frames": 4,
+      "seating_frames": 4,
+      "cleanup_frames": 0
+    },
+    {
+      "species": "capybara",
+      "role": "customer",
+      "business_frames": 12,
+      "path": "actions/capybara",
+      "base_frames": 18,
+      "drink_frames": 4,
+      "seating_frames": 4,
+      "cleanup_frames": 0
+    },
+    {
+      "species": "koala",
+      "role": "customer",
+      "business_frames": 12,
+      "path": "actions/koala",
+      "base_frames": 18,
+      "drink_frames": 4,
+      "seating_frames": 4,
+      "cleanup_frames": 0
+    },
+    {
+      "species": "deer",
+      "role": "customer",
+      "business_frames": 12,
+      "path": "actions/deer",
+      "base_frames": 18,
+      "drink_frames": 4,
+      "seating_frames": 4,
+      "cleanup_frames": 0
+    },
+    {
+      "species": "sheep",
+      "role": "customer",
+      "business_frames": 12,
+      "path": "actions/sheep",
+      "base_frames": 18,
+      "drink_frames": 4,
+      "seating_frames": 4,
+      "cleanup_frames": 0
+    },
+    {
+      "species": "pig",
+      "role": "customer",
+      "business_frames": 12,
+      "path": "actions/pig",
+      "base_frames": 18,
+      "drink_frames": 4,
+      "seating_frames": 4,
+      "cleanup_frames": 0
+    },
+    {
+      "species": "hamster",
+      "role": "customer",
+      "business_frames": 12,
+      "path": "actions/hamster",
+      "base_frames": 18,
+      "drink_frames": 4,
+      "seating_frames": 4,
+      "cleanup_frames": 0
+    },
+    {
+      "species": "penguin",
+      "role": "customer",
+      "business_frames": 12,
+      "path": "actions/penguin",
+      "base_frames": 18,
+      "drink_frames": 4,
+      "seating_frames": 4,
+      "cleanup_frames": 0
+    },
+    {
+      "species": "duck",
+      "role": "customer",
+      "business_frames": 12,
+      "path": "actions/duck",
+      "base_frames": 18,
+      "drink_frames": 4,
+      "seating_frames": 4,
+      "cleanup_frames": 0
+    },
+    {
+      "species": "frog",
+      "role": "customer",
+      "business_frames": 12,
+      "path": "actions/frog",
+      "base_frames": 18,
+      "drink_frames": 4,
+      "seating_frames": 4,
+      "cleanup_frames": 0
+    }
+  ],
+  "scope": "Customers: front/down seated only; waiters: carry walk four directions, place left only; owner: front/down cook and serve only.",
+  "completed_characters": 20,
+  "pending": [],
+  "core_business_frames": 252,
+  "expected_drink_frames": 108,
+  "drink_frames": 108,
+  "drinks": {
+    "rabbit": {
+      "role": "waiter",
+      "frames": 20,
+      "directory": "drinks/rabbit"
+    },
+    "fox": {
+      "role": "waiter",
+      "frames": 20,
+      "directory": "drinks/fox"
+    },
+    "cat": {
+      "role": "customer",
+      "frames": 4,
+      "directory": "drinks/cat"
+    },
+    "dog": {
+      "role": "customer",
+      "frames": 4,
+      "directory": "drinks/dog"
+    },
+    "panda": {
+      "role": "customer",
+      "frames": 4,
+      "directory": "drinks/panda"
+    },
+    "raccoon": {
+      "role": "customer",
+      "frames": 4,
+      "directory": "drinks/raccoon"
+    },
+    "red_panda": {
+      "role": "customer",
+      "frames": 4,
+      "directory": "drinks/red_panda"
+    },
+    "squirrel": {
+      "role": "customer",
+      "frames": 4,
+      "directory": "drinks/squirrel"
+    },
+    "hedgehog": {
+      "role": "customer",
+      "frames": 4,
+      "directory": "drinks/hedgehog"
+    },
+    "otter": {
+      "role": "customer",
+      "frames": 4,
+      "directory": "drinks/otter"
+    },
+    "capybara": {
+      "role": "customer",
+      "frames": 4,
+      "directory": "drinks/capybara"
+    },
+    "koala": {
+      "role": "customer",
+      "frames": 4,
+      "directory": "drinks/koala"
+    },
+    "deer": {
+      "role": "customer",
+      "frames": 4,
+      "directory": "drinks/deer"
+    },
+    "sheep": {
+      "role": "customer",
+      "frames": 4,
+      "directory": "drinks/sheep"
+    },
+    "pig": {
+      "role": "customer",
+      "frames": 4,
+      "directory": "drinks/pig"
+    },
+    "hamster": {
+      "role": "customer",
+      "frames": 4,
+      "directory": "drinks/hamster"
+    },
+    "penguin": {
+      "role": "customer",
+      "frames": 4,
+      "directory": "drinks/penguin"
+    },
+    "duck": {
+      "role": "customer",
+      "frames": 4,
+      "directory": "drinks/duck"
+    },
+    "frog": {
+      "role": "customer",
+      "frames": 4,
+      "directory": "drinks/frog"
+    }
+  },
+  "drink_pending": [],
+  "all_character_frames": 804,
+  "drink_completed_characters": 19,
+  "validated_frame_counts": {
+    "base": 360,
+    "actions": 252,
+    "drinks": 108,
+    "seating": 68,
+    "cleanup": 16
+  },
+  "total_character_frames": 804,
+  "drink_direction_scope": "Customer front/down only; waiter carry down,left,right,up; place left only.",
+  "cup_handoff": "At drink exit switch to seated sit_down frame3 and independent world cup, never standing idle",
+  "seating_frames": 68,
+  "seating_characters": 17,
+  "scene": {
+    "path": "scene/restaurant_20_tables.png",
+    "size": [
+      1536,
+      1024
+    ],
+    "tables": {
+      "hall": 14,
+      "private_rooms": 4,
+      "bar_high_tables": 2
+    },
+    "type": "complete illustration, not tilemap"
+  },
+  "seating_direction_scope": "one front/down-facing chair orientation",
+  "seating_exit": "hold seated frame3; no return to standing idle",
+  "seating_clip": "4 unique generated poses, single-shot",
+  "canonical_readme": "使用说明_中文版.txt",
+  "cleanup_frames": 16,
+  "cleanup_direction_scope": "rabbit and fox left-facing only; collect4 plus wipe4 each; single-shot",
+  "cleanup_metadata": "cleanup/{species}/animation.json"
+}

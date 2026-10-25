@@ -1,0 +1,211 @@
+{
+  "species": "rabbit",
+  "role": "waiter",
+  "frame_size": [
+    128,
+    128
+  ],
+  "pivot": [
+    64,
+    120
+  ],
+  "clips": {
+    "carry_walk_down": {
+      "sheet": "carry_walk.png",
+      "row": 0,
+      "frame_count": 4,
+      "duration_ms": [
+        140,
+        140,
+        140,
+        140
+      ],
+      "loop": true,
+      "rects": [
+        [
+          0,
+          0,
+          128,
+          128
+        ],
+        [
+          128,
+          0,
+          128,
+          128
+        ],
+        [
+          256,
+          0,
+          128,
+          128
+        ],
+        [
+          384,
+          0,
+          128,
+          128
+        ]
+      ]
+    },
+    "carry_walk_left": {
+      "sheet": "carry_walk.png",
+      "row": 1,
+      "frame_count": 4,
+      "duration_ms": [
+        140,
+        140,
+        140,
+        140
+      ],
+      "loop": true,
+      "rects": [
+        [
+          0,
+          128,
+          128,
+          128
+        ],
+        [
+          128,
+          128,
+          128,
+          128
+        ],
+        [
+          256,
+          128,
+          128,
+          128
+        ],
+        [
+          384,
+          128,
+          128,
+          128
+        ]
+      ]
+    },
+    "carry_walk_right": {
+      "sheet": "carry_walk.png",
+      "row": 2,
+      "frame_count": 4,
+      "duration_ms": [
+        140,
+        140,
+        140,
+        140
+      ],
+      "loop": true,
+      "rects": [
+        [
+          0,
+          256,
+          128,
+          128
+        ],
+        [
+          128,
+          256,
+          128,
+          128
+        ],
+        [
+          256,
+          256,
+          128,
+          128
+        ],
+        [
+          384,
+          256,
+          128,
+          128
+        ]
+      ]
+    },
+    "carry_walk_up": {
+      "sheet": "carry_walk.png",
+      "row": 3,
+      "frame_count": 4,
+      "duration_ms": [
+        140,
+        140,
+        140,
+        140
+      ],
+      "loop": true,
+      "rects": [
+        [
+          0,
+          384,
+          128,
+          128
+        ],
+        [
+          128,
+          384,
+          128,
+          128
+        ],
+        [
+          256,
+          384,
+          128,
+          128
+        ],
+        [
+          384,
+          384,
+          128,
+          128
+        ]
+      ]
+    },
+    "place_dish": {
+      "sheet": "place_dish.png",
+      "row": 0,
+      "frame_count": 4,
+      "duration_ms": [
+        180,
+        220,
+        160,
+        200
+      ],
+      "loop": false,
+      "rects": [
+        [
+          0,
+          0,
+          128,
+          128
+        ],
+        [
+          128,
+          0,
+          128,
+          128
+        ],
+        [
+          256,
+          0,
+          128,
+          128
+        ],
+        [
+          384,
+          0,
+          128,
+          128
+        ]
+      ],
+      "release_event": {
+        "frame_index": 2,
+        "detach_dish": true,
+        "place_on_table": true
+      }
+    }
+  },
+  "detail_metadata": "animation.json",
+  "note": "Generated test draft; left carrying direction may mirror right. Check action-specific prop anchors in original metadata."
+}

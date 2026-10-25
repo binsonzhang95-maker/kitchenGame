@@ -1,0 +1,244 @@
+{
+  "asset_type": "static_cooking_operation_icons",
+  "frame_size": [
+    64,
+    64
+  ],
+  "filter": "nearest",
+  "animation": false,
+  "atlas": "actions_atlas.png",
+  "columns": 4,
+  "rows": 2,
+  "icons": {
+    "heat_low": {
+      "file": "actions/heat_low.png",
+      "size": [
+        64,
+        64
+      ],
+      "pivot": [
+        32,
+        56
+      ],
+      "atlas_rect": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "opaque_bbox": [
+        21,
+        32,
+        42,
+        56
+      ],
+      "alpha": [
+        0,
+        255
+      ],
+      "state": "static",
+      "flame_count": 1,
+      "visual_height_px": 24
+    },
+    "heat_medium": {
+      "file": "actions/heat_medium.png",
+      "size": [
+        64,
+        64
+      ],
+      "pivot": [
+        32,
+        56
+      ],
+      "atlas_rect": [
+        64,
+        0,
+        64,
+        64
+      ],
+      "opaque_bbox": [
+        10,
+        27,
+        54,
+        56
+      ],
+      "alpha": [
+        0,
+        255
+      ],
+      "state": "static",
+      "flame_count": 2,
+      "visual_height_px": 29
+    },
+    "heat_high": {
+      "file": "actions/heat_high.png",
+      "size": [
+        64,
+        64
+      ],
+      "pivot": [
+        32,
+        56
+      ],
+      "atlas_rect": [
+        128,
+        0,
+        64,
+        64
+      ],
+      "opaque_bbox": [
+        3,
+        20,
+        61,
+        56
+      ],
+      "alpha": [
+        0,
+        255
+      ],
+      "state": "static",
+      "flame_count": 3,
+      "visual_height_px": 36
+    },
+    "add_water": {
+      "file": "actions/add_water.png",
+      "size": [
+        64,
+        64
+      ],
+      "pivot": [
+        32,
+        56
+      ],
+      "atlas_rect": [
+        192,
+        0,
+        64,
+        64
+      ],
+      "opaque_bbox": [
+        7,
+        4,
+        57,
+        56
+      ],
+      "alpha": [
+        0,
+        255
+      ],
+      "state": "static"
+    },
+    "stir": {
+      "file": "actions/stir.png",
+      "size": [
+        64,
+        64
+      ],
+      "pivot": [
+        32,
+        56
+      ],
+      "atlas_rect": [
+        0,
+        64,
+        64,
+        64
+      ],
+      "opaque_bbox": [
+        6,
+        6,
+        58,
+        56
+      ],
+      "alpha": [
+        0,
+        255
+      ],
+      "state": "static"
+    },
+    "flip": {
+      "file": "actions/flip.png",
+      "size": [
+        64,
+        64
+      ],
+      "pivot": [
+        32,
+        56
+      ],
+      "atlas_rect": [
+        64,
+        64,
+        64,
+        64
+      ],
+      "opaque_bbox": [
+        8,
+        4,
+        55,
+        56
+      ],
+      "alpha": [
+        0,
+        255
+      ],
+      "state": "static"
+    },
+    "confirm": {
+      "file": "actions/confirm.png",
+      "size": [
+        64,
+        64
+      ],
+      "pivot": [
+        32,
+        56
+      ],
+      "atlas_rect": [
+        128,
+        64,
+        64,
+        64
+      ],
+      "opaque_bbox": [
+        6,
+        11,
+        58,
+        56
+      ],
+      "alpha": [
+        0,
+        255
+      ],
+      "state": "static"
+    },
+    "back": {
+      "file": "actions/back.png",
+      "size": [
+        64,
+        64
+      ],
+      "pivot": [
+        32,
+        56
+      ],
+      "atlas_rect": [
+        192,
+        64,
+        64,
+        64
+      ],
+      "opaque_bbox": [
+        6,
+        9,
+        58,
+        56
+      ],
+      "alpha": [
+        0,
+        255
+      ],
+      "state": "static"
+    }
+  }
+}

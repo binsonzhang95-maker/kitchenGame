@@ -1,0 +1,106 @@
+{
+  "clip": "pour_water",
+  "sheet": "sheet.png",
+  "frame_size": [
+    256,
+    256
+  ],
+  "frame_count": 4,
+  "pivot": [
+    128,
+    242
+  ],
+  "pivot_type": "bottom-center tool base",
+  "loop": false,
+  "durations_ms": [
+    220,
+    280,
+    280,
+    220
+  ],
+  "events": [
+    {
+      "frame": 3,
+      "timing": "on_clip_exit",
+      "event": "pour_complete",
+      "guard": "once_per_clip_instance",
+      "gameplay": "water addition commits once; water does not occupy ingredient slot"
+    }
+  ],
+  "frames": [
+    {
+      "index": 0,
+      "file": "frames/pour_water_00.png",
+      "rect": [
+        0,
+        0,
+        256,
+        256
+      ],
+      "phase": "jug_tilt_drops",
+      "pivot": [
+        128,
+        242
+      ]
+    },
+    {
+      "index": 1,
+      "file": "frames/pour_water_01.png",
+      "rect": [
+        256,
+        0,
+        256,
+        256
+      ],
+      "phase": "continuous_stream",
+      "pivot": [
+        128,
+        242
+      ]
+    },
+    {
+      "index": 2,
+      "file": "frames/pour_water_02.png",
+      "rect": [
+        512,
+        0,
+        256,
+        256
+      ],
+      "phase": "continue_pour_ripples",
+      "pivot": [
+        128,
+        242
+      ]
+    },
+    {
+      "index": 3,
+      "file": "frames/pour_water_03.png",
+      "rect": [
+        768,
+        0,
+        256,
+        256
+      ],
+      "phase": "jug_upright_trailing_drops",
+      "pivot": [
+        128,
+        242
+      ]
+    }
+  ],
+  "direction": "RPG3/4 overhead",
+  "source": "4 new imagegen tool/food/utensil poses; no translated-static substitute",
+  "mirrored": false,
+  "stabilization": {
+    "copied_from_first_frame_below_y": 210,
+    "purpose": "immutable lower tool-body stability, active motion retained"
+  },
+  "runtime": "Loop visuals for stir/fry only; do not repeatedly add ingredients or commit recipe per loop. Gameplay operation completion remains controller-owned.",
+  "static_tool_alignment": "Bottom-center anchor matches static tool placement convention. Whole assembly includes raised utensil/jug, so visible pot may be smaller than standalone static PNG; do not tight-crop each frame.",
+  "limitations": [
+    "Four-pose test draft; small rim and food-shape changes remain.",
+    "Knife and water one-shot; final state differs from initial, do not force seamless loop.",
+    "Chop has a first slice by frame1, contact event is set accordingly."
+  ]
+}

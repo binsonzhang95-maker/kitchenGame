@@ -1,0 +1,78 @@
+{
+  "frames": 32,
+  "sheet_size": [
+    256,
+    512
+  ],
+  "frame_size": [
+    64,
+    64
+  ],
+  "stable_outer_bubble": true,
+  "per_animation": {
+    "hungry": {
+      "frames": 4,
+      "unique": 4,
+      "alpha": [
+        0,
+        255
+      ]
+    },
+    "question": {
+      "frames": 4,
+      "unique": 4,
+      "alpha": [
+        0,
+        255
+      ]
+    },
+    "ok": {
+      "frames": 4,
+      "unique": 4,
+      "alpha": [
+        0,
+        255
+      ]
+    },
+    "wait": {
+      "frames": 4,
+      "unique": 4,
+      "alpha": [
+        0,
+        255
+      ]
+    },
+    "upset": {
+      "frames": 4,
+      "unique": 4,
+      "alpha": [
+        0,
+        255
+      ]
+    },
+    "sorry": {
+      "frames": 4,
+      "unique": 4,
+      "alpha": [
+        0,
+        255
+      ]
+    },
+    "love": {
+      "frames": 4,
+      "unique": 4,
+      "alpha": [
+        0,
+        255
+      ]
+    },
+    "bye": {
+      "frames": 4,
+      "unique": 4,
+      "alpha": [
+        0,
+        255
+      ]
+    }
+  }
+}

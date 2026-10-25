@@ -1,0 +1,378 @@
+{
+  "version": 1,
+  "frame_size": [
+    64,
+    64
+  ],
+  "sheet": "bubble_emotes.png",
+  "columns": 4,
+  "rows": 8,
+  "anchor_pixels": [
+    32,
+    60
+  ],
+  "default_show_text": false,
+  "texture_filter": "nearest",
+  "animations": {
+    "hungry": {
+      "row": 0,
+      "frame_count": 4,
+      "frame_files": [
+        "frames/hungry_00.png",
+        "frames/hungry_01.png",
+        "frames/hungry_02.png",
+        "frames/hungry_03.png"
+      ],
+      "frame_rects": [
+        [
+          0,
+          0,
+          64,
+          64
+        ],
+        [
+          64,
+          0,
+          64,
+          64
+        ],
+        [
+          128,
+          0,
+          64,
+          64
+        ],
+        [
+          192,
+          0,
+          64,
+          64
+        ]
+      ],
+      "duration_ms": [
+        220,
+        220,
+        220,
+        300
+      ],
+      "loop": true,
+      "optional_short_text": "好香",
+      "text_in_image": false
+    },
+    "question": {
+      "row": 1,
+      "frame_count": 4,
+      "frame_files": [
+        "frames/question_00.png",
+        "frames/question_01.png",
+        "frames/question_02.png",
+        "frames/question_03.png"
+      ],
+      "frame_rects": [
+        [
+          0,
+          64,
+          64,
+          64
+        ],
+        [
+          64,
+          64,
+          64,
+          64
+        ],
+        [
+          128,
+          64,
+          64,
+          64
+        ],
+        [
+          192,
+          64,
+          64,
+          64
+        ]
+      ],
+      "duration_ms": [
+        220,
+        220,
+        220,
+        300
+      ],
+      "loop": true,
+      "optional_short_text": "咦",
+      "text_in_image": false
+    },
+    "ok": {
+      "row": 2,
+      "frame_count": 4,
+      "frame_files": [
+        "frames/ok_00.png",
+        "frames/ok_01.png",
+        "frames/ok_02.png",
+        "frames/ok_03.png"
+      ],
+      "frame_rects": [
+        [
+          0,
+          128,
+          64,
+          64
+        ],
+        [
+          64,
+          128,
+          64,
+          64
+        ],
+        [
+          128,
+          128,
+          64,
+          64
+        ],
+        [
+          192,
+          128,
+          64,
+          64
+        ]
+      ],
+      "duration_ms": [
+        220,
+        220,
+        220,
+        300
+      ],
+      "loop": false,
+      "optional_short_text": "来了",
+      "text_in_image": false
+    },
+    "wait": {
+      "row": 3,
+      "frame_count": 4,
+      "frame_files": [
+        "frames/wait_00.png",
+        "frames/wait_01.png",
+        "frames/wait_02.png",
+        "frames/wait_03.png"
+      ],
+      "frame_rects": [
+        [
+          0,
+          192,
+          64,
+          64
+        ],
+        [
+          64,
+          192,
+          64,
+          64
+        ],
+        [
+          128,
+          192,
+          64,
+          64
+        ],
+        [
+          192,
+          192,
+          64,
+          64
+        ]
+      ],
+      "duration_ms": [
+        300,
+        300,
+        300,
+        300
+      ],
+      "loop": true,
+      "optional_short_text": "等等",
+      "text_in_image": false
+    },
+    "upset": {
+      "row": 4,
+      "frame_count": 4,
+      "frame_files": [
+        "frames/upset_00.png",
+        "frames/upset_01.png",
+        "frames/upset_02.png",
+        "frames/upset_03.png"
+      ],
+      "frame_rects": [
+        [
+          0,
+          256,
+          64,
+          64
+        ],
+        [
+          64,
+          256,
+          64,
+          64
+        ],
+        [
+          128,
+          256,
+          64,
+          64
+        ],
+        [
+          192,
+          256,
+          64,
+          64
+        ]
+      ],
+      "duration_ms": [
+        220,
+        220,
+        220,
+        300
+      ],
+      "loop": false,
+      "optional_short_text": "等急了",
+      "text_in_image": false
+    },
+    "sorry": {
+      "row": 5,
+      "frame_count": 4,
+      "frame_files": [
+        "frames/sorry_00.png",
+        "frames/sorry_01.png",
+        "frames/sorry_02.png",
+        "frames/sorry_03.png"
+      ],
+      "frame_rects": [
+        [
+          0,
+          320,
+          64,
+          64
+        ],
+        [
+          64,
+          320,
+          64,
+          64
+        ],
+        [
+          128,
+          320,
+          64,
+          64
+        ],
+        [
+          192,
+          320,
+          64,
+          64
+        ]
+      ],
+      "duration_ms": [
+        220,
+        220,
+        220,
+        300
+      ],
+      "loop": false,
+      "optional_short_text": "抱歉",
+      "text_in_image": false
+    },
+    "love": {
+      "row": 6,
+      "frame_count": 4,
+      "frame_files": [
+        "frames/love_00.png",
+        "frames/love_01.png",
+        "frames/love_02.png",
+        "frames/love_03.png"
+      ],
+      "frame_rects": [
+        [
+          0,
+          384,
+          64,
+          64
+        ],
+        [
+          64,
+          384,
+          64,
+          64
+        ],
+        [
+          128,
+          384,
+          64,
+          64
+        ],
+        [
+          192,
+          384,
+          64,
+          64
+        ]
+      ],
+      "duration_ms": [
+        220,
+        220,
+        220,
+        300
+      ],
+      "loop": true,
+      "optional_short_text": "谢谢",
+      "text_in_image": false
+    },
+    "bye": {
+      "row": 7,
+      "frame_count": 4,
+      "frame_files": [
+        "frames/bye_00.png",
+        "frames/bye_01.png",
+        "frames/bye_02.png",
+        "frames/bye_03.png"
+      ],
+      "frame_rects": [
+        [
+          0,
+          448,
+          64,
+          64
+        ],
+        [
+          64,
+          448,
+          64,
+          64
+        ],
+        [
+          128,
+          448,
+          64,
+          64
+        ],
+        [
+          192,
+          448,
+          64,
+          64
+        ]
+      ],
+      "duration_ms": [
+        220,
+        220,
+        220,
+        300
+      ],
+      "loop": false,
+      "optional_short_text": "拜拜",
+      "text_in_image": false
+    }
+  }
+}

@@ -1,0 +1,112 @@
+{
+  "table": {
+    "size": [
+      140,
+      90
+    ],
+    "source_box": [
+      50,
+      50,
+      1000,
+      680
+    ],
+    "source_local_bbox": [
+      47,
+      48,
+      895,
+      587
+    ],
+    "anchor_ground": [
+      70,
+      89
+    ],
+    "top_front_split_y": 44,
+    "tabletop_center": [
+      70,
+      25
+    ],
+    "dish_anchor": [
+      70,
+      26
+    ],
+    "layering": "Same 140x90 canvas for table_top and table_front; both must share origin. Back-to-front: chair, seated animal, full table, dish. For hands atop table: chair, animal, table_top/table_front, hands, dish."
+  },
+  "chair": {
+    "size": [
+      56,
+      80
+    ],
+    "source_box": [
+      1000,
+      40,
+      1450,
+      680
+    ],
+    "source_local_bbox": [
+      45,
+      49,
+      398,
+      611
+    ],
+    "anchor_ground": [
+      28,
+      79
+    ],
+    "seat_center": [
+      28,
+      46
+    ]
+  },
+  "dish": {
+    "size": [
+      34,
+      20
+    ],
+    "source_box": [
+      240,
+      690,
+      730,
+      990
+    ],
+    "source_local_bbox": [
+      44,
+      32,
+      446,
+      258
+    ],
+    "anchor_ground": [
+      17,
+      19
+    ],
+    "anchor_place": [
+      17,
+      16
+    ]
+  },
+  "tray": {
+    "size": [
+      46,
+      20
+    ],
+    "source_box": [
+      860,
+      710,
+      1350,
+      980
+    ],
+    "source_local_bbox": [
+      26,
+      49,
+      448,
+      230
+    ],
+    "anchor_ground": [
+      23,
+      19
+    ],
+    "anchor_hold": [
+      23,
+      14
+    ]
+  }
+}

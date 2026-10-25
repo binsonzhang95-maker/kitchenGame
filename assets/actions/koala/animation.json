@@ -1,0 +1,275 @@
+{
+  "frame_size": [
+    128,
+    128
+  ],
+  "direction": "down",
+  "pivot": [
+    64,
+    110
+  ],
+  "head_top": 10,
+  "actions": {
+    "eat": {
+      "sheet": "eat.png",
+      "frames": 4,
+      "duration_ms": [
+        260,
+        220,
+        360,
+        260
+      ],
+      "loop": true,
+      "playback": "loop",
+      "bounds": [
+        [
+          8,
+          10,
+          120,
+          111
+        ],
+        [
+          8,
+          10,
+          120,
+          112
+        ],
+        [
+          7,
+          10,
+          120,
+          112
+        ],
+        [
+          8,
+          10,
+          119,
+          111
+        ]
+      ],
+      "frame_rects": [
+        {
+          "x": 0,
+          "y": 0,
+          "w": 128,
+          "h": 128,
+          "duration_ms": 260,
+          "file": "frames/eat_00.png"
+        },
+        {
+          "x": 128,
+          "y": 0,
+          "w": 128,
+          "h": 128,
+          "duration_ms": 220,
+          "file": "frames/eat_01.png"
+        },
+        {
+          "x": 256,
+          "y": 0,
+          "w": 128,
+          "h": 128,
+          "duration_ms": 360,
+          "file": "frames/eat_02.png"
+        },
+        {
+          "x": 384,
+          "y": 0,
+          "w": 128,
+          "h": 128,
+          "duration_ms": 260,
+          "file": "frames/eat_03.png"
+        }
+      ],
+      "spoon_tip_anchors_approx": [
+        [
+          29,
+          100
+        ],
+        [
+          57,
+          72
+        ],
+        [
+          59,
+          72
+        ],
+        [
+          29,
+          100
+        ]
+      ],
+      "food_contact_approx": [
+        29,
+        100
+      ],
+      "anchor_note": "Approximate pixel locations inspected from art; null means spoon hidden during chewing. Food/table prop should be aligned to first anchor; characters have different reach lengths."
+    },
+    "complain": {
+      "sheet": "complain.png",
+      "frames": 4,
+      "duration_ms": [
+        220,
+        180,
+        260,
+        220
+      ],
+      "loop": false,
+      "playback": "once",
+      "bounds": [
+        [
+          8,
+          10,
+          120,
+          111
+        ],
+        [
+          8,
+          10,
+          120,
+          111
+        ],
+        [
+          8,
+          10,
+          121,
+          112
+        ],
+        [
+          8,
+          10,
+          120,
+          112
+        ]
+      ],
+      "frame_rects": [
+        {
+          "x": 0,
+          "y": 0,
+          "w": 128,
+          "h": 128,
+          "duration_ms": 220,
+          "file": "frames/complain_00.png"
+        },
+        {
+          "x": 128,
+          "y": 0,
+          "w": 128,
+          "h": 128,
+          "duration_ms": 180,
+          "file": "frames/complain_01.png"
+        },
+        {
+          "x": 256,
+          "y": 0,
+          "w": 128,
+          "h": 128,
+          "duration_ms": 260,
+          "file": "frames/complain_02.png"
+        },
+        {
+          "x": 384,
+          "y": 0,
+          "w": 128,
+          "h": 128,
+          "duration_ms": 220,
+          "file": "frames/complain_03.png"
+        }
+      ]
+    },
+    "happy": {
+      "sheet": "happy.png",
+      "frames": 4,
+      "duration_ms": [
+        220,
+        180,
+        260,
+        220
+      ],
+      "loop": false,
+      "playback": "once",
+      "bounds": [
+        [
+          7,
+          10,
+          120,
+          112
+        ],
+        [
+          7,
+          10,
+          120,
+          112
+        ],
+        [
+          7,
+          10,
+          120,
+          112
+        ],
+        [
+          7,
+          10,
+          120,
+          112
+        ]
+      ],
+      "frame_rects": [
+        {
+          "x": 0,
+          "y": 0,
+          "w": 128,
+          "h": 128,
+          "duration_ms": 220,
+          "file": "frames/happy_00.png"
+        },
+        {
+          "x": 128,
+          "y": 0,
+          "w": 128,
+          "h": 128,
+          "duration_ms": 180,
+          "file": "frames/happy_01.png"
+        },
+        {
+          "x": 256,
+          "y": 0,
+          "w": 128,
+          "h": 128,
+          "duration_ms": 260,
+          "file": "frames/happy_02.png"
+        },
+        {
+          "x": 384,
+          "y": 0,
+          "w": 128,
+          "h": 128,
+          "duration_ms": 220,
+          "file": "frames/happy_03.png"
+        }
+      ]
+    }
+  },
+  "generation": "Built-in imagegen original articulated poses; Pillow alpha threshold, crop, nearest-neighbor scale, alignment and assembly only.",
+  "demo_table": {
+    "character_origin": [
+      32,
+      40
+    ],
+    "table_origin": [
+      26,
+      124
+    ],
+    "dish_support": [
+      61,
+      144
+    ],
+    "dish_anchor": [
+      17,
+      16
+    ],
+    "foreground_layers": "hands_foreground/eat_00.png through eat_03.png",
+    "foreground_note": "Cropped original lower utensil/paw pixels; render at same origin as body. Inspect with actual furniture scale."
+  },
+  "authoritative_clip_index": "clips.json"
+}

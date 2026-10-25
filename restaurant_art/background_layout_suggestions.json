@@ -1,0 +1,139 @@
+{
+  "image_size": [
+    1536,
+    1024
+  ],
+  "coordinate_origin": "top-left",
+  "units": "pixels",
+  "status": "visual placement suggestions only; not engine collision bounds",
+  "hall_floor_rect": [
+    390,
+    260,
+    820,
+    665
+  ],
+  "hall_table_centers": [
+    [
+      610,
+      315
+    ],
+    [
+      930,
+      315
+    ],
+    [
+      610,
+      405
+    ],
+    [
+      930,
+      405
+    ],
+    [
+      610,
+      495
+    ],
+    [
+      930,
+      495
+    ],
+    [
+      610,
+      585
+    ],
+    [
+      930,
+      585
+    ],
+    [
+      610,
+      675
+    ],
+    [
+      930,
+      675
+    ],
+    [
+      610,
+      765
+    ],
+    [
+      930,
+      765
+    ],
+    [
+      610,
+      855
+    ],
+    [
+      930,
+      855
+    ]
+  ],
+  "suggested_table_chair_envelope": [
+    200,
+    90
+  ],
+  "private_room_table_centers": [
+    [
+      175,
+      170
+    ],
+    [
+      160,
+      390
+    ],
+    [
+      145,
+      615
+    ],
+    [
+      135,
+      840
+    ]
+  ],
+  "bar_floor_rect": [
+    1300,
+    210,
+    190,
+    610
+  ],
+  "bar_high_table_centers": [
+    [
+      1385,
+      390
+    ],
+    [
+      1400,
+      680
+    ]
+  ],
+  "main_aisles": {
+    "left": [
+      350,
+      270,
+      130,
+      650
+    ],
+    "middle": [
+      730,
+      270,
+      80,
+      650
+    ],
+    "right": [
+      1070,
+      270,
+      140,
+      650
+    ]
+  },
+  "counter_service_front_y": 250,
+  "notes": [
+    "Background contains no actors or freestanding tables/chairs/stools.",
+    "Static plants, architecture, kitchen and service counter are baked in.",
+    "Keep top kitchen behind service counter, place interactive furniture/actors in empty floor zones.",
+    "Depth sorting and foreground wall occlusion need engine setup.",
+    "Coordinates depend on chosen sprite draw scale; use them only as starting positions."
+  ]
+}

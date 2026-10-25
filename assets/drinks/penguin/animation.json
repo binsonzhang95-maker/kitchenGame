@@ -1,0 +1,156 @@
+{
+  "frame_size": [
+    128,
+    128
+  ],
+  "direction": "down",
+  "pivot": [
+    64,
+    110
+  ],
+  "actions": {
+    "drink": {
+      "sheet": "drink.png",
+      "frames": 4,
+      "duration_ms": [
+        240,
+        220,
+        420,
+        280
+      ],
+      "loop": false,
+      "playback": "single-shot",
+      "cup_baked": true,
+      "frame_rects": [
+        {
+          "x": 0,
+          "y": 0,
+          "w": 128,
+          "h": 128
+        },
+        {
+          "x": 128,
+          "y": 0,
+          "w": 128,
+          "h": 128
+        },
+        {
+          "x": 256,
+          "y": 0,
+          "w": 128,
+          "h": 128
+        },
+        {
+          "x": 384,
+          "y": 0,
+          "w": 128,
+          "h": 128
+        }
+      ],
+      "frame_data": [
+        {
+          "frame": 0,
+          "cup_bbox": {
+            "x": 34,
+            "y": 74,
+            "w": 27,
+            "h": 23
+          },
+          "cup_center": [
+            47.5,
+            85.5
+          ],
+          "cup_anchor": [
+            47.5,
+            97
+          ],
+          "cup_baked": true,
+          "phase": "grip"
+        },
+        {
+          "frame": 1,
+          "cup_bbox": {
+            "x": 42,
+            "y": 58,
+            "w": 27,
+            "h": 24
+          },
+          "cup_center": [
+            55.5,
+            70.0
+          ],
+          "cup_anchor": [
+            55.5,
+            82
+          ],
+          "cup_baked": true,
+          "phase": "lift"
+        },
+        {
+          "frame": 2,
+          "cup_bbox": {
+            "x": 48,
+            "y": 53,
+            "w": 27,
+            "h": 23
+          },
+          "cup_center": [
+            61.5,
+            64.5
+          ],
+          "cup_anchor": [
+            61.5,
+            76
+          ],
+          "cup_baked": true,
+          "phase": "sip"
+        },
+        {
+          "frame": 3,
+          "cup_bbox": {
+            "x": 35,
+            "y": 74,
+            "w": 26,
+            "h": 23
+          },
+          "cup_center": [
+            48.0,
+            85.5
+          ],
+          "cup_anchor": [
+            48.0,
+            97
+          ],
+          "cup_baked": true,
+          "phase": "lower"
+        }
+      ],
+      "events": [
+        {
+          "frame": 0,
+          "event": "hide_world_cup"
+        },
+        {
+          "frame": 3,
+          "at": "clip_exit",
+          "event": "release_cup",
+          "stop_baked_clip": true,
+          "switch_to_world_cup": true
+        }
+      ]
+    }
+  },
+  "cup": {
+    "file": "cup.png",
+    "size": [
+      27,
+      23
+    ],
+    "anchor": [
+      13.5,
+      23
+    ],
+    "draw_during_drink": false
+  },
+  "notes": "Cup bounds are tight visual-review bounds, include handle and dark outline. Frame 3 remains gripping; release occurs on clip exit when baked character clip stops. GIF loops for review only."
+}

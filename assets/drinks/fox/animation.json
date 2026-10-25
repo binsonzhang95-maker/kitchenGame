@@ -1,0 +1,448 @@
+{
+  "species": "fox",
+  "role": "waiter",
+  "cell_size": [
+    128,
+    128
+  ],
+  "anchor_pixels": [
+    64,
+    120
+  ],
+  "rows": [
+    "down",
+    "left",
+    "right",
+    "up"
+  ],
+  "cup_asset": {
+    "file": "cup.png",
+    "size": [
+      22,
+      18
+    ],
+    "origin": [
+      11,
+      18
+    ],
+    "anchor_type": "bottom_center"
+  },
+  "carry_drinks": {
+    "sheet": "carry_drinks.png",
+    "loop": true,
+    "frame_count_per_direction": 4,
+    "duration_ms": 140,
+    "cup_baked_in": true,
+    "frames": [
+      {
+        "name": "carry_down_00",
+        "direction": "down",
+        "index": 0,
+        "x": 0,
+        "y": 0,
+        "w": 128,
+        "h": 128,
+        "hand_anchor": [
+          62,
+          94
+        ],
+        "cup_anchor": [
+          60,
+          87
+        ],
+        "cup_visible": true,
+        "cup_baked_in": true
+      },
+      {
+        "name": "carry_down_01",
+        "direction": "down",
+        "index": 1,
+        "x": 128,
+        "y": 0,
+        "w": 128,
+        "h": 128,
+        "hand_anchor": [
+          62,
+          94
+        ],
+        "cup_anchor": [
+          60,
+          87
+        ],
+        "cup_visible": true,
+        "cup_baked_in": true
+      },
+      {
+        "name": "carry_down_02",
+        "direction": "down",
+        "index": 2,
+        "x": 256,
+        "y": 0,
+        "w": 128,
+        "h": 128,
+        "hand_anchor": [
+          62,
+          94
+        ],
+        "cup_anchor": [
+          60,
+          87
+        ],
+        "cup_visible": true,
+        "cup_baked_in": true
+      },
+      {
+        "name": "carry_down_03",
+        "direction": "down",
+        "index": 3,
+        "x": 384,
+        "y": 0,
+        "w": 128,
+        "h": 128,
+        "hand_anchor": [
+          62,
+          94
+        ],
+        "cup_anchor": [
+          60,
+          87
+        ],
+        "cup_visible": true,
+        "cup_baked_in": true
+      },
+      {
+        "name": "carry_left_00",
+        "direction": "left",
+        "index": 0,
+        "x": 0,
+        "y": 128,
+        "w": 128,
+        "h": 128,
+        "hand_anchor": [
+          48,
+          92
+        ],
+        "cup_anchor": [
+          32,
+          88
+        ],
+        "cup_visible": true,
+        "cup_baked_in": true
+      },
+      {
+        "name": "carry_left_01",
+        "direction": "left",
+        "index": 1,
+        "x": 128,
+        "y": 128,
+        "w": 128,
+        "h": 128,
+        "hand_anchor": [
+          48,
+          92
+        ],
+        "cup_anchor": [
+          32,
+          88
+        ],
+        "cup_visible": true,
+        "cup_baked_in": true
+      },
+      {
+        "name": "carry_left_02",
+        "direction": "left",
+        "index": 2,
+        "x": 256,
+        "y": 128,
+        "w": 128,
+        "h": 128,
+        "hand_anchor": [
+          48,
+          92
+        ],
+        "cup_anchor": [
+          32,
+          88
+        ],
+        "cup_visible": true,
+        "cup_baked_in": true
+      },
+      {
+        "name": "carry_left_03",
+        "direction": "left",
+        "index": 3,
+        "x": 384,
+        "y": 128,
+        "w": 128,
+        "h": 128,
+        "hand_anchor": [
+          48,
+          92
+        ],
+        "cup_anchor": [
+          32,
+          88
+        ],
+        "cup_visible": true,
+        "cup_baked_in": true
+      },
+      {
+        "name": "carry_right_00",
+        "direction": "right",
+        "index": 0,
+        "x": 0,
+        "y": 256,
+        "w": 128,
+        "h": 128,
+        "hand_anchor": [
+          79,
+          92
+        ],
+        "cup_anchor": [
+          95,
+          88
+        ],
+        "cup_visible": true,
+        "cup_baked_in": true
+      },
+      {
+        "name": "carry_right_01",
+        "direction": "right",
+        "index": 1,
+        "x": 128,
+        "y": 256,
+        "w": 128,
+        "h": 128,
+        "hand_anchor": [
+          79,
+          92
+        ],
+        "cup_anchor": [
+          95,
+          88
+        ],
+        "cup_visible": true,
+        "cup_baked_in": true
+      },
+      {
+        "name": "carry_right_02",
+        "direction": "right",
+        "index": 2,
+        "x": 256,
+        "y": 256,
+        "w": 128,
+        "h": 128,
+        "hand_anchor": [
+          79,
+          92
+        ],
+        "cup_anchor": [
+          95,
+          88
+        ],
+        "cup_visible": true,
+        "cup_baked_in": true
+      },
+      {
+        "name": "carry_right_03",
+        "direction": "right",
+        "index": 3,
+        "x": 384,
+        "y": 256,
+        "w": 128,
+        "h": 128,
+        "hand_anchor": [
+          79,
+          92
+        ],
+        "cup_anchor": [
+          95,
+          88
+        ],
+        "cup_visible": true,
+        "cup_baked_in": true
+      },
+      {
+        "name": "carry_up_00",
+        "direction": "up",
+        "index": 0,
+        "x": 0,
+        "y": 384,
+        "w": 128,
+        "h": 128,
+        "hand_anchor": [
+          81,
+          88
+        ],
+        "cup_anchor": [
+          91,
+          83
+        ],
+        "cup_visible": true,
+        "cup_baked_in": true
+      },
+      {
+        "name": "carry_up_01",
+        "direction": "up",
+        "index": 1,
+        "x": 128,
+        "y": 384,
+        "w": 128,
+        "h": 128,
+        "hand_anchor": [
+          81,
+          88
+        ],
+        "cup_anchor": [
+          91,
+          83
+        ],
+        "cup_visible": true,
+        "cup_baked_in": true
+      },
+      {
+        "name": "carry_up_02",
+        "direction": "up",
+        "index": 2,
+        "x": 256,
+        "y": 384,
+        "w": 128,
+        "h": 128,
+        "hand_anchor": [
+          81,
+          88
+        ],
+        "cup_anchor": [
+          91,
+          83
+        ],
+        "cup_visible": true,
+        "cup_baked_in": true
+      },
+      {
+        "name": "carry_up_03",
+        "direction": "up",
+        "index": 3,
+        "x": 384,
+        "y": 384,
+        "w": 128,
+        "h": 128,
+        "hand_anchor": [
+          81,
+          88
+        ],
+        "cup_anchor": [
+          91,
+          83
+        ],
+        "cup_visible": true,
+        "cup_baked_in": true
+      }
+    ]
+  },
+  "place_cup": {
+    "sheet": "place_cup.png",
+    "direction": "left",
+    "loop": false,
+    "cup_baked_in": false,
+    "duration_ms": [
+      180,
+      220,
+      160,
+      240
+    ],
+    "release_frame": 2,
+    "events": [
+      {
+        "frame": 2,
+        "name": "release_cup",
+        "world_anchor_from_cell": [
+          14,
+          86
+        ]
+      }
+    ],
+    "frames": [
+      {
+        "name": "place_left_00",
+        "index": 0,
+        "x": 0,
+        "y": 0,
+        "w": 128,
+        "h": 128,
+        "hand_anchor": [
+          44,
+          88
+        ],
+        "cup_anchor": [
+          35,
+          88
+        ],
+        "world_cup_anchor": null,
+        "cup_attached": true,
+        "cup_baked_in": false,
+        "event": null
+      },
+      {
+        "name": "place_left_01",
+        "index": 1,
+        "x": 128,
+        "y": 0,
+        "w": 128,
+        "h": 128,
+        "hand_anchor": [
+          26,
+          86
+        ],
+        "cup_anchor": [
+          19,
+          86
+        ],
+        "world_cup_anchor": null,
+        "cup_attached": true,
+        "cup_baked_in": false,
+        "event": null
+      },
+      {
+        "name": "place_left_02",
+        "index": 2,
+        "x": 256,
+        "y": 0,
+        "w": 128,
+        "h": 128,
+        "hand_anchor": [
+          19,
+          85
+        ],
+        "cup_anchor": null,
+        "world_cup_anchor": [
+          14,
+          86
+        ],
+        "cup_attached": false,
+        "cup_baked_in": false,
+        "event": "release_cup"
+      },
+      {
+        "name": "place_left_03",
+        "index": 3,
+        "x": 384,
+        "y": 0,
+        "w": 128,
+        "h": 128,
+        "hand_anchor": [
+          41,
+          89
+        ],
+        "cup_anchor": null,
+        "world_cup_anchor": [
+          14,
+          86
+        ],
+        "cup_attached": false,
+        "cup_baked_in": false,
+        "event": null
+      }
+    ]
+  }
+}

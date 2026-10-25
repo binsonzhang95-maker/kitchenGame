@@ -1,0 +1,97 @@
+{
+  "species": "bear",
+  "role": "owner",
+  "frame_size": [
+    128,
+    128
+  ],
+  "pivot": [
+    64,
+    120
+  ],
+  "clips": {
+    "cook": {
+      "sheet": "cook.png",
+      "row": 0,
+      "frame_count": 4,
+      "duration_ms": [
+        180,
+        180,
+        180,
+        180
+      ],
+      "loop": true,
+      "rects": [
+        [
+          0,
+          0,
+          128,
+          128
+        ],
+        [
+          128,
+          0,
+          128,
+          128
+        ],
+        [
+          256,
+          0,
+          128,
+          128
+        ],
+        [
+          384,
+          0,
+          128,
+          128
+        ]
+      ]
+    },
+    "serve": {
+      "sheet": "serve.png",
+      "row": 0,
+      "frame_count": 4,
+      "duration_ms": [
+        200,
+        240,
+        180,
+        220
+      ],
+      "loop": false,
+      "rects": [
+        [
+          0,
+          0,
+          128,
+          128
+        ],
+        [
+          128,
+          0,
+          128,
+          128
+        ],
+        [
+          256,
+          0,
+          128,
+          128
+        ],
+        [
+          384,
+          0,
+          128,
+          128
+        ]
+      ],
+      "release_event": {
+        "frame_index": 2,
+        "detach_dish": true,
+        "place_on_table": true
+      }
+    }
+  },
+  "detail_metadata": "animation.json",
+  "note": "Generated test draft; left carrying direction may mirror right. Check action-specific prop anchors in original metadata."
+}

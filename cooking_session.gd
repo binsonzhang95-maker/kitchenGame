@@ -3,18 +3,15 @@ extends RefCounted
 const SAVE_VERSION: int = 1
 const MAX_INGREDIENTS: int = 3
 const READY_WINDOW: float = 12.0
-const RECIPES: Dictionary = {
-	"soup": {"label": "土豆胡萝卜汤", "ingredients": ["potato", "carrot"], "vessel": "pot", "steps": ["选料加水", "切块入锅", "调火慢煮", "完成料理"]},
-	"stir_fry": {"label": "番茄炒蛋", "ingredients": ["egg", "tomato"], "vessel": "pan", "steps": ["准备食材", "切番茄入锅", "调火加热", "翻炒完成"]},
-	"bake": {"label": "芝士烤吐司", "ingredients": ["bread", "cheese"], "vessel": "oven", "steps": ["准备食材", "放入烤箱", "等待烤制", "取出料理"]},
-	"drink": {"label": "冰拿铁", "ingredients": ["coffee", "milk", "ice"], "vessel": "", "steps": ["倒入咖啡", "加入牛奶", "加入冰块", "搅拌完成"]},
-}
+const RecipeCatalog = preload("res://recipe_catalog.gd")
+## Kept as a compatibility API for existing callers.
+const RECIPES: Dictionary = RecipeCatalog.RECIPES
 const PHASES: Array[String] = ["idle", "ingredients", "prep", "vessel", "heat", "cooking", "ready", "retry", "completed", "cancelled"]
 const HEAT_LEVELS: Array[String] = ["small", "medium", "high"]
 const ACTION_LABELS: Dictionary = {
 	"add_potato": "加土豆", "add_carrot": "加胡萝卜", "add_egg": "加鸡蛋", "add_tomato": "加番茄", "add_bread": "放面包", "add_cheese": "放芝士",
-	"add_coffee": "倒咖啡", "add_milk": "加牛奶", "add_ice": "加冰块", "add_water": "加清水", "cut": "切一切", "pot": "放入汤锅", "pan": "放入炒锅",
-	"oven": "放入烤箱", "heat_small": "小火", "heat_medium": "中火", "heat_high": "大火", "finish": "完成料理", "stir": "翻炒完成", "takeout": "取出烤盘",
+	"add_coffee": "倒咖啡", "add_milk": "加牛奶", "add_ice": "加冰块", "add_pumpkin": "加南瓜", "add_corn": "加玉米", "add_mushroom": "加蘑菇", "add_water": "加清水", "cut": "切一切", "pot": "放入汤锅", "pan": "放入炒锅",
+	"oven": "放入烤箱", "heat_small": "小火", "heat_medium": "中火", "heat_high": "大火", "finish": "完成料理", "stir": "翻炒完成", "flip": "翻面完成", "takeout": "取出烤盘",
 	"clear": "清空重做", "retry": "再试一次", "cancel": "返回餐厅",
 }
 
@@ -62,7 +59,7 @@ func is_bound_to(table_id: int, guest_id: int, generation: int) -> bool:
 func required_ingredients() -> Array[String]:
 	var result: Array[String] = []
 	if RECIPES.has(recipe_id):
-		result.assign(RECIPES[recipe_id].ingredients)
+		result.assign(_recipe().ingredients)
 	return result
 
 
@@ -91,12 +88,12 @@ func available_actions() -> Array[String]:
 		"ingredients":
 			for ingredient: String in ingredient_options():
 				actions.append("add_" + ingredient)
-			if recipe_id == "soup" and not water_added:
+			if bool(_recipe().need_water) and not water_added:
 				actions.append("add_water")
 		"prep": actions.append("cut")
-		"vessel": actions.append(str(RECIPES[recipe_id].vessel))
+		"vessel": actions.append(str(_recipe().vessel))
 		"heat": actions.assign(["heat_small", "heat_medium", "heat_high"])
-		"ready": actions.append("finish" if recipe_id == "soup" else ("takeout" if recipe_id == "bake" else "stir"))
+		"ready": actions.append(str(_recipe().final_action))
 		"retry": actions.append("retry")
 	actions.append("clear")
 	actions.append("cancel")
@@ -120,8 +117,8 @@ func act(action: String) -> bool:
 	if action == "retry":
 		elapsed = 0.0
 		heat_level = ""
-		phase = "vessel" if recipe_id == "bake" else "heat"
-		if recipe_id == "bake":
+		phase = "vessel" if _is_bake() else "heat"
+		if _is_bake():
 			vessel = ""
 		message = "食材和准备步骤都保留了，再来一次就好。"
 		return true
@@ -135,20 +132,20 @@ func act(action: String) -> bool:
 				return _fail("三个食材位已经满了，可以清空后重新选择。")
 			ingredients.append(ingredient)
 		if _ingredients_ready():
-			phase = "ready" if recipe_id == "drink" else ("vessel" if recipe_id == "bake" else "prep")
+			phase = "ready" if recipe_id == "drink" else ("prep" if bool(_recipe().need_cut) else "vessel")
 	elif action == "cut":
 		cut_done = true
 		phase = "vessel"
 	elif action in ["pot", "pan", "oven"]:
 		vessel = action
-		if recipe_id == "bake":
+		if _is_bake():
 			_begin_cooking()
 		else:
 			phase = "heat"
 	elif action.begins_with("heat_"):
 		heat_level = action.trim_prefix("heat_")
 		_begin_cooking()
-	elif action in ["finish", "stir", "takeout"]:
+	elif action == str(_recipe().final_action):
 		completed = true
 		phase = "completed"
 		message = "做得好，这份料理完成了！"
@@ -180,7 +177,7 @@ func _ingredients_ready() -> bool:
 	for ingredient: String in required:
 		if ingredient not in ingredients:
 			return false
-	return recipe_id != "soup" or water_added
+	return not bool(_recipe().need_water) or water_added
 
 
 func _begin_cooking() -> void:
@@ -190,12 +187,11 @@ func _begin_cooking() -> void:
 
 
 func cook_duration() -> float:
-	if recipe_id == "bake":
-		return 8.0
+	if _is_bake():
+		return float(_recipe().get("bake_duration", 8.0))
 	if heat_level not in HEAT_LEVELS:
 		return 0.0
-	var durations: Dictionary = {"small": 8.0, "medium": 6.0, "high": 4.0} if recipe_id == "soup" else {"small": 6.0, "medium": 4.0, "high": 3.0}
-	return float(durations[heat_level])
+	return float(_recipe().heat_durations[heat_level])
 
 
 func set_paused(value: bool) -> void:
@@ -228,12 +224,12 @@ func _step_index() -> int:
 
 func _prompt() -> String:
 	match phase:
-		"ingredients": return "依次加入咖啡、牛奶和冰块。" if recipe_id == "drink" else ("加入土豆、胡萝卜和清水；清水不占食材位。" if recipe_id == "soup" else "选择这份配方需要的食材。")
-		"prep": return "把番茄切一切，鸡蛋不用切。" if recipe_id == "stir_fry" else "把土豆和胡萝卜切成小块。"
-		"vessel": return "将准备好的食材放入" + ("烤箱。" if recipe_id == "bake" else ("汤锅。" if recipe_id == "soup" else "炒锅。"))
+		"ingredients": return "依次加入咖啡、牛奶和冰块。" if recipe_id == "drink" else ("加入土豆、胡萝卜和清水；清水不占食材位。" if recipe_id == "soup" else ("加入南瓜、玉米和清水；清水不占食材位。" if recipe_id == "pumpkin_corn_soup" else "选择这份配方需要的食材。"))
+		"prep": return "把番茄切一切，鸡蛋不用切。" if recipe_id == "stir_fry" else ("把土豆和胡萝卜切成小块。" if recipe_id == "soup" else "把南瓜和玉米切成小块。")
+		"vessel": return "将准备好的食材放入" + ("烤箱。" if recipe_id == "bake" else ("汤锅。" if str(_recipe().vessel) == "pot" else "炒锅。"))
 		"heat": return "选择小火、中火或大火，慢慢等它做好。"
 		"cooking": return "正在烤制，稍等一会儿。" if recipe_id == "bake" else "正在加热，稍等一会儿。"
-		"ready": return "搅拌均匀就完成啦。" if recipe_id == "drink" else ("已经做好了，取出烤盘吧。" if recipe_id == "bake" else ("翻炒一下就完成啦。" if recipe_id == "stir_fry" else "汤已经煮好了，点击完成吧。"))
+		"ready": return "搅拌均匀就完成啦。" if recipe_id == "drink" else ("已经做好了，取出烤盘吧。" if recipe_id == "bake" else ("翻炒一下就完成啦。" if recipe_id == "stir_fry" else ("翻面一下就完成啦。" if recipe_id == "pan_fried_mushrooms" else "汤已经煮好了，点击完成吧。")))
 		"retry": return "不用担心，保留食材重试，或清空重新准备。"
 		"completed": return "料理完成，返回餐厅继续送餐。"
 		"cancelled": return "已取消，这次不会完成订单。"
@@ -243,7 +239,7 @@ func _prompt() -> String:
 func status() -> Dictionary:
 	var duration: float = cook_duration()
 	var progress: float = clampf(elapsed / duration, 0.0, 1.0) if duration > 0.0 else (1.0 if completed else 0.0)
-	return {"recipe_id": recipe_id, "recipe_label": recipe_label(recipe_id), "binding": binding.duplicate(true), "phase": phase, "ingredients": ingredients.duplicate(), "water_added": water_added, "cut_done": cut_done, "vessel": vessel, "heat_level": heat_level, "elapsed": elapsed, "paused": paused, "completed": completed, "cancelled": cancelled, "message": message, "prompt": _prompt(), "ingredient_options": ingredient_options(), "required_ingredients": required_ingredients(), "actions": available_actions(), "step_index": _step_index(), "step_count": 4, "steps": RECIPES[recipe_id].steps.duplicate() if RECIPES.has(recipe_id) else [], "progress": progress, "duration": duration, "ready_remaining": maxf(0.0, duration + READY_WINDOW - elapsed) if phase == "ready" and recipe_id != "drink" else -1.0, "slots_used": ingredients.size(), "max_slots": MAX_INGREDIENTS, "attempts": attempts}
+	return {"recipe_id": recipe_id, "recipe_label": recipe_label(recipe_id), "binding": binding.duplicate(true), "phase": phase, "ingredients": ingredients.duplicate(), "water_added": water_added, "cut_done": cut_done, "vessel": vessel, "heat_level": heat_level, "elapsed": elapsed, "paused": paused, "completed": completed, "cancelled": cancelled, "message": message, "prompt": _prompt(), "ingredient_options": ingredient_options(), "required_ingredients": required_ingredients(), "actions": available_actions(), "step_index": _step_index(), "step_count": 4, "steps": _recipe().steps.duplicate() if RECIPES.has(recipe_id) else [], "progress": progress, "duration": duration, "ready_remaining": maxf(0.0, duration + READY_WINDOW - elapsed) if phase == "ready" and recipe_id != "drink" else -1.0, "slots_used": ingredients.size(), "max_slots": MAX_INGREDIENTS, "attempts": attempts}
 
 
 func to_dict() -> Dictionary:
@@ -307,13 +303,13 @@ func _valid_state() -> bool:
 		for index: int in range(ingredients.size()):
 			if ingredients[index] != required[index]:
 				return false
-	if water_added and recipe_id != "soup":
+	if water_added and not bool(_recipe().need_water):
 		return false
-	if cut_done and recipe_id not in ["soup", "stir_fry"]:
+	if cut_done and not bool(_recipe().need_cut):
 		return false
-	if not vessel.is_empty() and vessel != str(RECIPES[recipe_id].vessel):
+	if not vessel.is_empty() and vessel != str(_recipe().vessel):
 		return false
-	if not heat_level.is_empty() and (heat_level not in HEAT_LEVELS or recipe_id not in ["soup", "stir_fry"]):
+	if not heat_level.is_empty() and (heat_level not in HEAT_LEVELS or _is_bake() or recipe_id == "drink"):
 		return false
 	var empty_tools: bool = not cut_done and vessel.is_empty() and heat_level.is_empty() and elapsed == 0.0
 	if current == "ingredients":
@@ -323,8 +319,8 @@ func _valid_state() -> bool:
 	if recipe_id == "drink":
 		return current in ["ready", "completed"] and empty_tools and attempts == 0
 	if current == "prep":
-		return recipe_id in ["soup", "stir_fry"] and empty_tools
-	var correctly_cut: bool = cut_done == (recipe_id in ["soup", "stir_fry"])
+		return bool(_recipe().need_cut) and empty_tools
+	var correctly_cut: bool = cut_done == bool(_recipe().need_cut)
 	if not correctly_cut:
 		return false
 	if current == "vessel":
@@ -332,10 +328,10 @@ func _valid_state() -> bool:
 	if vessel != str(RECIPES[recipe_id].vessel):
 		return false
 	if current == "heat":
-		return recipe_id in ["soup", "stir_fry"] and heat_level.is_empty() and elapsed == 0.0
+		return not _is_bake() and recipe_id != "drink" and heat_level.is_empty() and elapsed == 0.0
 	if current not in ["cooking", "ready", "retry", "completed"] or attempts < 1:
 		return false
-	if recipe_id in ["soup", "stir_fry"] and heat_level not in HEAT_LEVELS:
+	if not _is_bake() and heat_level not in HEAT_LEVELS:
 		return false
 	var duration: float = cook_duration()
 	if current == "cooking":
@@ -355,3 +351,11 @@ func _integer(value: Variant, minimum: int) -> bool:
 
 func _binding_valid(value: Dictionary) -> bool:
 	return value.size() == 3 and _integer(value.get("table_id"), 1) and int(value.table_id) <= 20 and _integer(value.get("guest_id"), 1) and _integer(value.get("generation"), 1)
+
+
+func _recipe() -> Dictionary:
+	return RecipeCatalog.get_recipe(recipe_id)
+
+
+func _is_bake() -> bool:
+	return recipe_id == "bake"

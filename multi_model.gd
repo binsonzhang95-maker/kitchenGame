@@ -4,8 +4,13 @@ extends RefCounted
 
 const Floor = preload("res://floor_plan.gd")
 const CookingSession = preload("res://cooking_session.gd")
+const RecipeCatalog = preload("res://recipe_catalog.gd")
 const SAVE_VERSION: int = 4
+## Original public menu/API. A new model deliberately starts here.
 const RECIPE_IDS: Array[String] = ["soup", "stir_fry", "bake", "drink"]
+const CLASSIC_MENU: Array[String] = ["soup", "stir_fry", "bake", "drink"]
+const SUPPORTED_RECIPE_IDS: Array[String] = ["soup", "stir_fry", "bake", "drink", "pumpkin_corn_soup", "pan_fried_mushrooms"]
+const P0_MENU: Array[String] = ["pumpkin_corn_soup", "pan_fried_mushrooms", "bake", "drink"]
 ## Schema 2 always denotes the original 1120 x 640 layout, never the new floor.
 const V2_TABLE_CENTERS: Array[Vector2] = [
 	Vector2(350, 210), Vector2(485, 210), Vector2(620, 210), Vector2(755, 210), Vector2(890, 210),
@@ -56,6 +61,8 @@ var next_table_cursor: int = 0
 var arrival_elapsed: float = 0.0
 var legacy_served: int = 0
 var legacy_lost: int = 0
+## Runtime policy only: it is intentionally absent from snapshots.
+var _order_menu: Array[String] = ["soup", "stir_fry", "bake", "drink"]
 
 
 func _init() -> void:
@@ -98,7 +105,27 @@ func enable_interactive_cooking() -> void:
 
 
 func recipe_for_guest(guest_id: int) -> String:
+	return _order_menu[(guest_id - 1) % _order_menu.size()] if guest_id > 0 else ""
+
+
+func set_order_menu(ids: Array) -> bool:
+	if ids.is_empty():
+		return false
+	var candidate: Array[String] = []
+	for value: Variant in ids:
+		if typeof(value) != TYPE_STRING or not _recipe_supported(str(value)) or candidate.has(str(value)):
+			return false
+		candidate.append(str(value))
+	_order_menu = candidate
+	return true
+
+
+func _legacy_recipe_for_guest(guest_id: int) -> String:
 	return RECIPE_IDS[(guest_id - 1) % RECIPE_IDS.size()] if guest_id > 0 else ""
+
+
+func _recipe_supported(recipe_id: String) -> bool:
+	return recipe_id in SUPPORTED_RECIPE_IDS and RecipeCatalog.has(recipe_id)
 
 
 func _cooking_binding_valid(session) -> bool:
@@ -749,7 +776,7 @@ func _read_snapshot(data: Dictionary) -> bool:
 			if typeof(raw.get("recipe_id")) != TYPE_STRING:
 				return false
 		else:
-			item.recipe_id = "" if raw.phase == "free" else recipe_for_guest(int(raw.guest_id) if int(raw.guest_id) > 0 else int(raw.id))
+			item.recipe_id = "" if raw.phase == "free" else _legacy_recipe_for_guest(int(raw.guest_id) if int(raw.guest_id) > 0 else int(raw.id))
 		item.center = _vector_value(raw.center)
 		_cast_integer_fields(item, ["id", "guest_id", "generation"])
 		decoded_tables.append(item)
@@ -970,7 +997,7 @@ func validate_invariants() -> Array[String]:
 		if int(table.id) != index + 1 or table.phase not in TABLE_PHASES or not (table.center as Vector2).is_equal_approx(Floor.table_center(int(table.id))):
 			errors.append("Invalid table identity/phase/geometry at %d" % (index + 1))
 		var guest_id: int = int(table.guest_id)
-		if (table.phase == "free" and str(table.get("recipe_id", "")) != "") or (table.phase != "free" and str(table.get("recipe_id", "")) not in RECIPE_IDS):
+		if (table.phase == "free" and str(table.get("recipe_id", "")) != "") or (table.phase != "free" and not _recipe_supported(str(table.get("recipe_id", "")))):
 			errors.append("Missing or invalid order recipe %d" % int(table.id))
 		if guest_id > 0:
 			if seen_guests.has(guest_id) or not customers.has(guest_id) or int(customers[guest_id].table_id) != int(table.id):

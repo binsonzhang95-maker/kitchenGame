@@ -14,12 +14,17 @@ const RENDER_SCALE: float = 0.75
 const CLEARANCE: float = 2.0
 const EDGE_MARGIN: float = 4.0
 const COUNTER := Rect2(506, 176, 646, 78)
+## Animal ground occupancy. This deliberately does not use the full sprite.
+const SEAT_RESERVATION_SIZE := Vector2(64, 32)
 
 static var _definitions: Array[Dictionary] = []
 static var _obstacles: Array[Rect2] = []
 static var _floor_regions: Array[Rect2] = []
 static var _walkable: PackedByteArray = PackedByteArray()
 static var _neighbors: Array = []
+static var _seat_regions: Array[Rect2] = []
+static var _seat_masks: Dictionary = {}
+static var _seat_neighbors: Dictionary = {}
 static var _initialized: bool = false
 
 
@@ -49,6 +54,11 @@ static func service_point(id: int) -> Vector2:
 	if id < 1 or id > 20:
 		return Vector2(-1, -1)
 	return table_center(id) + Vector2(84, 24)
+
+
+static func seat_reservation(id: int) -> Rect2:
+	_ensure_layout()
+	return _seat_regions[id - 1] if id >= 1 and id <= _seat_regions.size() else Rect2()
 
 
 static func kitchen_point() -> Vector2:
@@ -112,14 +122,61 @@ static func segment_is_walkable(start: Vector2, finish: Vector2) -> bool:
 
 
 static func route(start: Vector2, finish: Vector2) -> Array[Vector2]:
+	# Historical, furniture-only route used by geometry checks and old snapshots.
+	return _route_with_seats(start, finish, _all_seat_ids())
+
+
+## Runtime navigation keeps every seat reserved, except for the assigned
+## customer seat or the one reservation an old actor is currently exiting.
+static func route_avoiding_seats(start: Vector2, finish: Vector2, seat_exceptions: Array[int] = []) -> Array[Vector2]:
+	return _route_with_seats(start, finish, seat_exceptions)
+
+
+static func segment_avoids_seats(start: Vector2, finish: Vector2, seat_exceptions: Array[int] = []) -> bool:
+	if not segment_is_walkable(start, finish):
+		return false
+	var exceptions: Dictionary = _seat_exception_set(seat_exceptions)
+	for id: int in range(1, _seat_regions.size() + 1):
+		if not exceptions.has(id) and _segment_hits_box(start, finish, _seat_regions[id - 1]):
+			return false
+	return true
+
+
+static func path_avoids_seats(start: Vector2, path: Array, seat_exceptions: Array[int] = []) -> bool:
+	var exceptions: Dictionary = _seat_exception_set(seat_exceptions)
+	var exit_ids: Dictionary = _contained_unexcepted_seats(start, exceptions)
+	var previous: Vector2 = start
+	for point: Variant in path:
+		if not point is Vector2:
+			return false
+		# route() retains exact endpoints, including a zero-length first waypoint
+		# when the endpoint happens to coincide with an attachment node.
+		if previous.is_equal_approx(point):
+			continue
+		if not exit_ids.is_empty():
+			if not _segment_exits_reserved_seats(previous, point, exceptions, exit_ids):
+				return false
+			exit_ids.clear()
+		elif not segment_avoids_seats(previous, point, seat_exceptions):
+			return false
+		previous = point
+	return true
+
+
+static func _route_with_seats(start: Vector2, finish: Vector2, seat_exceptions: Array[int]) -> Array[Vector2]:
 	_ensure_grid()
 	var empty: Array[Vector2] = []
 	if not is_walkable(start) or not is_walkable(finish):
 		return empty
 	if start.distance_squared_to(finish) < 0.000001:
 		return [finish]
-	var first: int = _attachment_node(start)
-	var last: int = _attachment_node(finish)
+	var exceptions: Dictionary = _seat_exception_set(seat_exceptions)
+	var key: String = _seat_cache_key(exceptions)
+	var mask: PackedByteArray = _seat_mask(key, exceptions)
+	var neighbors: Array = _seat_neighbor_list(key, mask, exceptions)
+	var exit_ids: Dictionary = _contained_unexcepted_seats(start, exceptions)
+	var first: int = _exit_attachment_node_with_mask(start, mask, exceptions, exit_ids) if not exit_ids.is_empty() else _attachment_node_with_mask(start, mask, exceptions)
+	var last: int = _attachment_node_with_mask(finish, mask, exceptions)
 	if first < 0 or last < 0:
 		return empty
 	var parents := PackedInt32Array()
@@ -131,7 +188,7 @@ static func route(start: Vector2, finish: Vector2) -> Array[Vector2]:
 	while head < pending.size() and parents[last] == -2:
 		var current: int = pending[head]
 		head += 1
-		var adjacent: PackedInt32Array = _neighbors[current]
+		var adjacent: PackedInt32Array = neighbors[current]
 		for neighbor: int in adjacent:
 			if parents[neighbor] == -2:
 				parents[neighbor] = current
@@ -150,7 +207,8 @@ static func route(start: Vector2, finish: Vector2) -> Array[Vector2]:
 			raw.append(point)
 	if raw[-1].distance_squared_to(finish) > 0.000001:
 		raw.append(finish)
-	return _remove_collinear_points(raw)
+	var result: Array[Vector2] = _remove_collinear_points(raw)
+	return result if path_avoids_seats(start, result.slice(1), seat_exceptions) else empty
 
 
 static func _ensure_layout() -> void:
@@ -195,6 +253,7 @@ static func _ensure_layout() -> void:
 		_obstacles.append(pot.grow(CLEARANCE))
 	for definition: Dictionary in _definitions:
 		var center: Vector2 = definition["center"]
+		_seat_regions.append(Rect2(seat_point(int(definition.id)) - SEAT_RESERVATION_SIZE * 0.5, SEAT_RESERVATION_SIZE))
 		# Ground footprint: the upper sprite pixels are perspective, not solid floor.
 		# Leave the chair support point behind the table accessible for real seating.
 		var feet := Rect2(center + Vector2(-53, 18), Vector2(106, 28))
@@ -260,11 +319,83 @@ static func _ensure_grid() -> void:
 	_initialized = true
 
 
+static func _all_seat_ids() -> Array[int]:
+	var ids: Array[int] = []
+	for id: int in range(1, 21):
+		ids.append(id)
+	return ids
+
+
+static func _seat_exception_set(seat_exceptions: Array[int]) -> Dictionary:
+	_ensure_layout()
+	var result: Dictionary = {}
+	for id: int in seat_exceptions:
+		if id >= 1 and id <= _seat_regions.size():
+			result[id] = true
+	return result
+
+
+static func _contained_unexcepted_seats(position: Vector2, exceptions: Dictionary) -> Dictionary:
+	var result: Dictionary = {}
+	for id: int in range(1, _seat_regions.size() + 1):
+		if not exceptions.has(id) and _point_in_box(position, _seat_regions[id - 1]):
+			result[id] = true
+	return result
+
+
+static func _seat_cache_key(exceptions: Dictionary) -> String:
+	var ids: Array[int] = []
+	for id: Variant in exceptions:
+		ids.append(int(id))
+	ids.sort()
+	return ",".join(ids)
+
+
+static func _seat_mask(key: String, exceptions: Dictionary) -> PackedByteArray:
+	if _seat_masks.has(key):
+		return _seat_masks[key]
+	var result := PackedByteArray()
+	result.resize(COLUMNS * ROWS)
+	for index: int in range(result.size()):
+		result[index] = _walkable[index]
+		if result[index] == 0:
+			continue
+		for id: int in range(1, _seat_regions.size() + 1):
+			if not exceptions.has(id) and _point_in_box(_node_position(index), _seat_regions[id - 1]):
+				result[index] = 0
+				break
+	_seat_masks[key] = result
+	return result
+
+
+static func _seat_neighbor_list(key: String, mask: PackedByteArray, exceptions: Dictionary) -> Array:
+	if _seat_neighbors.has(key):
+		return _seat_neighbors[key]
+	var result: Array = []
+	result.resize(COLUMNS * ROWS)
+	var ids: Array[int] = []
+	for id: Variant in exceptions:
+		ids.append(int(id))
+	for index: int in range(COLUMNS * ROWS):
+		var adjacent := PackedInt32Array()
+		if mask[index] == 1:
+			for neighbor: int in _neighbors[index]:
+				if mask[neighbor] == 1 and segment_avoids_seats(_node_position(index), _node_position(neighbor), ids):
+					adjacent.append(neighbor)
+		result[index] = adjacent
+	_seat_neighbors[key] = result
+	return result
+
+
 static func _node_position(index: int) -> Vector2:
 	return Vector2((index % COLUMNS) * CELL + CELL / 2, (index / COLUMNS) * CELL + CELL / 2)
 
 
 static func _attachment_node(position: Vector2) -> int:
+	return _attachment_node_with_mask(position, _walkable, {})
+
+
+static func _attachment_node_with_mask(position: Vector2, mask: PackedByteArray, exceptions: Dictionary) -> int:
 	var base := Vector2i(floori(position.x / CELL), floori(position.y / CELL))
 	var best: int = -1
 	var best_distance: float = INF
@@ -272,14 +403,54 @@ static func _attachment_node(position: Vector2) -> int:
 	for y: int in range(maxi(0, base.y - 4), mini(ROWS, base.y + 5)):
 		for x: int in range(maxi(0, base.x - 4), mini(COLUMNS, base.x + 5)):
 			var index: int = y * COLUMNS + x
-			if _walkable[index] == 0:
+			if mask[index] == 0:
 				continue
 			var point: Vector2 = _node_position(index)
 			var distance: float = position.distance_squared_to(point)
-			if distance < best_distance and segment_is_walkable(position, point):
+			if distance < best_distance and _segment_walkable_with_exceptions(position, point, exceptions):
 				best = index
 				best_distance = distance
 	return best
+
+
+static func _exit_attachment_node_with_mask(position: Vector2, mask: PackedByteArray, exceptions: Dictionary, exit_ids: Dictionary) -> int:
+	var base := Vector2i(floori(position.x / CELL), floori(position.y / CELL))
+	var best: int = -1
+	var best_distance: float = INF
+	# An actor restored in a newly reserved support area may take exactly one
+	# visible segment out to an unmasked node. BFS itself never sees that seat.
+	for y: int in range(maxi(0, base.y - 4), mini(ROWS, base.y + 5)):
+		for x: int in range(maxi(0, base.x - 4), mini(COLUMNS, base.x + 5)):
+			var index: int = y * COLUMNS + x
+			if mask[index] == 0:
+				continue
+			var point: Vector2 = _node_position(index)
+			var distance: float = position.distance_squared_to(point)
+			if distance < best_distance and _segment_exits_reserved_seats(position, point, exceptions, exit_ids):
+				best = index
+				best_distance = distance
+	return best
+
+
+static func _segment_walkable_with_exceptions(start: Vector2, finish: Vector2, exceptions: Dictionary) -> bool:
+	var ids: Array[int] = []
+	for id: Variant in exceptions:
+		ids.append(int(id))
+	return segment_avoids_seats(start, finish, ids)
+
+
+static func _segment_exits_reserved_seats(start: Vector2, finish: Vector2, exceptions: Dictionary, exit_ids: Dictionary) -> bool:
+	if not segment_is_walkable(start, finish):
+		return false
+	# A straight segment through a convex rectangle that starts inside and ends
+	# outside leaves it once. Every hit must therefore be one of the seats the
+	# actor started in; no other reservation can be crossed on the exit prefix.
+	for id: int in range(1, _seat_regions.size() + 1):
+		if exceptions.has(id) or not _segment_hits_box(start, finish, _seat_regions[id - 1]):
+			continue
+		if not exit_ids.has(id) or _point_in_box(finish, _seat_regions[id - 1]):
+			return false
+	return true
 
 
 static func _point_in_box(point: Vector2, box: Rect2) -> bool:

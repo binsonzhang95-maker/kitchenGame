@@ -63,6 +63,10 @@ var legacy_served: int = 0
 var legacy_lost: int = 0
 ## Runtime policy only: it is intentionally absent from snapshots.
 var _order_menu: Array[String] = ["soup", "stir_fry", "bake", "drink"]
+## A V4 snapshot has no navigation-revision field. These runtime-only keys keep
+## each serialized route byte-for-byte until that particular actor first moves.
+## Customer and worker keys are namespaced because their numeric IDs overlap.
+var _legacy_route_pending: Dictionary = {}
 
 
 func _init() -> void:
@@ -445,6 +449,7 @@ func _tick_customers(delta: float) -> void:
 						_set_phase(table, "dirty")
 					else:
 						_release_table(table)
+				_clear_legacy_route(guest)
 				customers.erase(id)
 				_reflow_queue()
 			continue
@@ -580,12 +585,24 @@ func _release_table(table: Dictionary) -> void:
 
 
 func _route_to(actor: Dictionary, destination: Vector2) -> void:
-	var path: Array[Vector2] = Floor.route(actor.pos, destination)
+	var path: Array[Vector2] = Floor.route_avoiding_seats(actor.pos, destination, _seat_exceptions_for(actor, destination))
 	actor.path = path
 	actor.route_blocked = path.is_empty() and not (actor.pos as Vector2).is_equal_approx(destination)
+	# A freshly generated route is built against the current reservations, so it
+	# never needs the legacy compatibility exemption or future full-path scans.
+	_clear_legacy_route(actor)
 
 
 func _move_actor(actor: Dictionary, speed: float, delta: float) -> bool:
+	# Replan a restored path exactly once, before even a large delta can consume
+	# a later unsafe segment. New routes are known safe when _route_to creates
+	# them, so normal per-frame movement is just waypoint consumption.
+	if _legacy_route_pending.has(_actor_route_key(actor)):
+		if not actor.path.is_empty():
+			var destination: Vector2 = actor.path[-1]
+			_route_to(actor, destination)
+		else:
+			_clear_legacy_route(actor)
 	if bool(actor.get("route_blocked", false)):
 		return false
 	var distance: float = speed * delta
@@ -603,6 +620,29 @@ func _move_actor(actor: Dictionary, speed: float, delta: float) -> bool:
 			break
 	actor.path = path
 	return path.is_empty()
+
+
+func _seat_exceptions_for(actor: Dictionary, destination: Vector2) -> Array[int]:
+	# Only a customer walking into its assigned support point may enter that
+	# reservation. A leaving customer retains table_id, so state is essential.
+	if actor.has("paid") and str(actor.get("state", "")) == "walking":
+		var table_id: int = int(actor.get("table_id", 0))
+		if table_id >= 1 and table_id <= tables.size() and destination.is_equal_approx(Floor.seat_point(table_id)):
+			return [table_id]
+	return []
+
+
+func _actor_route_key(actor: Dictionary) -> String:
+	return "customer:%d" % int(actor.id) if actor.has("paid") else "worker:%d" % int(actor.id)
+
+
+func _mark_legacy_route(actor: Dictionary) -> void:
+	if not actor.path.is_empty():
+		_legacy_route_pending[_actor_route_key(actor)] = true
+
+
+func _clear_legacy_route(actor: Dictionary) -> void:
+	_legacy_route_pending.erase(_actor_route_key(actor))
 
 
 func _reflow_queue() -> void:
@@ -848,6 +888,13 @@ func _read_snapshot(data: Dictionary) -> bool:
 	arrival_elapsed = float(data.arrival_elapsed)
 	legacy_served = int(data.legacy_served)
 	legacy_lost = int(data.legacy_lost)
+	# Do not alter serialized actor paths while paused. Keep compatibility scoped
+	# to each nonempty restored route, and clear it after that actor's first move.
+	_legacy_route_pending.clear()
+	for guest: Dictionary in customers.values():
+		_mark_legacy_route(guest)
+	for worker: Dictionary in workers:
+		_mark_legacy_route(worker)
 	return true
 
 
@@ -904,6 +951,7 @@ func _copy_from(other) -> void:
 	arrival_elapsed = other.arrival_elapsed
 	legacy_served = other.legacy_served
 	legacy_lost = other.legacy_lost
+	_legacy_route_pending = other._legacy_route_pending.duplicate()
 	if interactive_cooking:
 		enable_interactive_cooking()
 	if player_mode:
@@ -1139,11 +1187,14 @@ func _valid_actor_route(actor: Dictionary, destination: Vector2) -> bool:
 	var previous: Vector2 = actor.pos
 	if bool(actor.get("route_blocked", false)) or not Floor.is_walkable(previous):
 		return false
+	var exceptions: Array[int] = _seat_exceptions_for(actor, destination)
 	for point: Vector2 in actor.path:
 		if not Floor.segment_is_walkable(previous, point):
 			return false
 		previous = point
-	return previous.is_equal_approx(destination)
+	if not previous.is_equal_approx(destination):
+		return false
+	return _legacy_route_pending.has(_actor_route_key(actor)) or Floor.path_avoids_seats(actor.pos, actor.path, exceptions)
 
 
 func save_to(path: String) -> Error:

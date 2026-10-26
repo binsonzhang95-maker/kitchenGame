@@ -14,6 +14,7 @@ const ToySimulatorView = preload("res://toy_simulator_view.gd")
 const P0Assets = preload("res://p0_assets.gd")
 const Localization = preload("res://localization.gd")
 const RecipeCatalog = preload("res://recipe_catalog.gd")
+const AutoplayDriver = preload("res://autoplay.gd")
 const SAVE_PATH := "user://restaurant_multi_save_v2.json"
 const INK := Color("574638")
 const GREEN := Color("627c60")
@@ -60,6 +61,7 @@ var cooldown: float = 0.0
 var save_clock: float = 0.0
 var order_clock: float = 0.0
 var save_allowed: bool = true
+var force_autoplay := false
 var stats: Label
 var selected_title: Label
 var selected_state: Label
@@ -85,6 +87,14 @@ var pause_overlay: Panel
 var notice: String = "点客人确认菜品，再去小厨房亲手做一份。"
 
 func _ready() -> void:
+	var autoplay := force_autoplay or AutoplayDriver.requested()
+	if autoplay:
+		# Demo mode is isolated from player input and the real save slot.
+		player_mode = false
+		interactive_cooking = false
+		seed_guests = true
+		save_allowed = false
+		save_path = "user://autoplay_demo.json"
 	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	Localization.initialize()
 	Localization.set_locale("zh_CN")
@@ -136,6 +146,11 @@ func _ready() -> void:
 	_build_completion_brief()
 	if not model.active_cooking.is_empty(): _restore_cooking()
 	_refresh()
+	if autoplay:
+		var driver := AutoplayDriver.new()
+		driver.app = self
+		add_child(driver)
+		model.set_deferred("auto_cook", true)
 
 func set_locale(locale: String) -> bool:
 	if not Localization.set_locale(locale): return false

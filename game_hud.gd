@@ -121,6 +121,7 @@ var design_root: Control
 var full_top: ColorRect
 var full_bottom: ColorRect
 var _layout: Dictionary = {}
+var _world_width := SIZE.x
 
 func setup(owner_app) -> void:
 	app = owner_app
@@ -153,9 +154,13 @@ func apply_layout(layout: Dictionary) -> void:
 	var viewport: Vector2 = layout.get("viewport", SIZE)
 	var content: Rect2 = layout.get("content_rect", Rect2(Vector2.ZERO, SIZE))
 	var scale: float = float(layout.get("scale", 1.0))
+	var world: Vector2 = layout.get("world_size", Vector2(SIZE.x, 1024))
+	_world_width = world.x
 	if design_root != null:
 		design_root.position = content.position
 		design_root.scale = Vector2.ONE * scale
+		design_root.size = Vector2(_world_width, SIZE.y)
+	_reflow_wide_controls()
 	if full_top != null:
 		full_top.position = Vector2.ZERO
 		full_top.size = Vector2(viewport.x, content.position.y + 80.0 * scale)
@@ -169,6 +174,7 @@ func apply_layout(layout: Dictionary) -> void:
 		if content_root != null:
 			content_root.position = content.position
 			content_root.scale = Vector2.ONE * scale
+			content_root.size = Vector2(_world_width, SIZE.y)
 	if app != null and app.pause_overlay != null:
 		app.pause_overlay.position = Vector2.ZERO
 		app.pause_overlay.size = viewport
@@ -176,6 +182,42 @@ func apply_layout(layout: Dictionary) -> void:
 		if pause_content != null:
 			pause_content.position = content.position
 			pause_content.scale = Vector2.ONE * scale
+			pause_content.size = Vector2(_world_width, SIZE.y)
+	_reflow_modal_cards()
+
+func _reflow_wide_controls() -> void:
+	if design_root == null:
+		return
+	var top := design_root.get_node_or_null("TopBar") as Panel
+	var bottom := design_root.get_node_or_null("BottomBar") as Panel
+	if top != null:
+		top.size.x = _world_width
+	if bottom != null:
+		bottom.position.x = 0.0
+		bottom.size.x = _world_width
+	if app != null and app.pause_button != null:
+		app.pause_button.position.x = _world_width - 152.0
+	if settings_button != null:
+		settings_button.position.x = _world_width - 82.0
+	if help_label != null:
+		help_label.size.x = maxf(220.0, _world_width * 0.42)
+	if order_button != null:
+		order_button.position.x = _world_width * 0.5 - order_button.size.x * 0.5
+
+func _reflow_modal_cards() -> void:
+	if settings_root != null:
+		var settings_card := settings_root.find_child("SettingsCard", true, false) as Control
+		if settings_card != null:
+			settings_card.position.x = (_world_width - settings_card.size.x) * 0.5
+	if debug_root != null:
+		var debug_controls := debug_root.find_child("DebugControls", true, false) as Control
+		var debug_paper := debug_root.find_child("DebugPaper", true, false) as Control
+		if debug_controls != null: debug_controls.position.x = maxf(24.0, _world_width * 0.5 - 536.0)
+		if debug_paper != null: debug_paper.position.x = minf(_world_width - debug_paper.size.x - 24.0, _world_width * 0.5 + 12.0)
+	if app != null and app.pause_overlay != null:
+		var pause_card := app.pause_overlay.find_child("PauseCard", true, false) as Control
+		if pause_card != null:
+			pause_card.position.x = (_world_width - pause_card.size.x) * 0.5
 
 func _design() -> Control:
 	return design_root if design_root != null else self
@@ -264,7 +306,8 @@ func _button(parent: Node, content: String, at: Vector2, dimensions: Vector2, ca
 	return button
 
 func _build_top() -> void:
-	_panel(_design(), Vector2.ZERO, Vector2(1536, 80), Color("eee0bd"))
+	var top := _panel(_design(), Vector2.ZERO, Vector2(1536, 80), Color("eee0bd"))
+	top.name = "TopBar"
 	_icon(_design(), "coin", Vector2(32, 23), 32)
 	money_label = _label(_design(), "0", Vector2(76, 18), Vector2(190, 44), 28)
 	money_label.tooltip_text = _tx("restaurant_coins_summary", {"coins":38, "served":1, "lost":0})
@@ -279,7 +322,8 @@ func _build_top() -> void:
 	_icon(settings_button, "settings", Vector2(14, 11), 30)
 
 func _build_bottom() -> void:
-	_panel(_design(), Vector2(0, 1104), Vector2(1536, 48), Color("eee0bd"))
+	var bottom := _panel(_design(), Vector2(0, 1104), Vector2(1536, 48), Color("eee0bd"))
+	bottom.name = "BottomBar"
 	help_label = _label(_design(), _tx("ui_order_help"), Vector2(26, 1114), Vector2(620, 28), 18, Color("7c6d51"))
 	order_button = _button(_design(), _tx("restaurant_action_order"), Vector2(696, 1108), Vector2(144, 40), app._focus_next_order, _tx("ui_focus_order_help"), "order")
 
@@ -350,6 +394,7 @@ func _build_settings() -> void:
 	settings_root = _modal_root()
 	settings_root.gui_input.connect(_settings_backdrop_input)
 	var paper := _panel(_modal_content(settings_root), Vector2(492, 216), Vector2(552, 668), CREAM, true)
+	paper.name = "SettingsCard"
 	settings_title = _label(paper, _tx("ui_small_settings"), Vector2(26, 20), Vector2(380, 40), 25)
 	settings_close_button = _button(paper, "", Vector2(480, 14), Vector2(50, 46), toggle_settings, _tx("ui_close_settings"), "close")
 	app.music_button = _button(paper, "", Vector2(24, 82), Vector2(180, 44), app._toggle_music, _tx("ui_music_toggle_help"))
@@ -390,6 +435,7 @@ func _build_debug() -> void:
 	debug_root = _modal_root()
 	debug_root.gui_input.connect(_debug_backdrop_input)
 	var controls := _panel(_modal_content(debug_root), Vector2(24, 96), Vector2(524, 650), CREAM, true)
+	controls.name = "DebugControls"
 	_label(controls, "开发控制 · 玩家模式下只读", Vector2(20, 16), Vector2(484, 34), 21, GREEN)
 	invite_button = _button(controls, "迎客", Vector2(20, 76), Vector2(232, 44), app._invite, "开发测试：招呼一位新客人", "invite")
 	debug_order_button = _button(controls, "批量点单", Vector2(272, 76), Vector2(232, 44), app._order_all, "开发测试：记录所有点单", "order")
@@ -404,6 +450,7 @@ func _build_debug() -> void:
 	toy_button.name = "ToySimulatorOpenButton"
 	_label(controls, "正常游戏由你点单、亲手做饭。\n送餐、收款与清桌会自动完成。", Vector2(20, 494), Vector2(484, 100), 18)
 	var paper := _panel(_modal_content(debug_root), Vector2(980, 96), Vector2(532, 984), CREAM, true)
+	paper.name = "DebugPaper"
 	_label(paper, "开发面板 · F3 关闭", Vector2(20, 16), Vector2(490, 34), 21, GREEN)
 	app.stats = _label(paper, "", Vector2(20, 56), Vector2(490, 56), 19)
 	app.selected_title = _label(paper, "", Vector2(20, 112), Vector2(490, 28), 17)
@@ -449,6 +496,7 @@ func _build_pause() -> void:
 	content.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	app.pause_overlay.add_child(content)
 	var paper := _panel(content, Vector2(648, 424), Vector2(240, 128), CREAM)
+	paper.name = "PauseCard"
 	_icon(paper, "pause", Vector2(28, 26), 32)
 	pause_rest_label = _label(paper, _tx("ui_rest_a_while"), Vector2(78, 20), Vector2(150, 40), 24)
 	pause_continue_label = _label(paper, _tx("ui_continue_top_right"), Vector2(28, 76), Vector2(190, 30), 18)
@@ -592,7 +640,7 @@ func refresh() -> void:
 	popup_icon.kind = action if not action.is_empty() else "wait"
 	popup_icon.queue_redraw()
 	var status_key: String = str({"free":"free", "reserved":"seating", "awaiting_cook":"waiting_food", "cooking":"cooking", "food_ready":"serving_food", "serving_food":"serving_food", "waiting_drink":"waiting_drink", "serving_drink":"serving_drink", "eating":"eating", "drinking":"drinking", "checkout":"checkout", "leaving":"leaving", "dirty":"cleaning", "collecting":"collecting", "wiping":"wiping"}.get(phase, "waiting"))
-	popup_status.text = _tx("restaurant_status_" + status_key)
+	popup_status.text = _phase_label("free") if phase == "free" else _tx("restaurant_status_" + status_key)
 	status_icon.kind = "cook" if phase in ["awaiting_cook", "cooking"] else "clean" if phase in ["dirty", "collecting", "wiping"] else "wait"
 	status_icon.queue_redraw()
 	app.patience_bar.visible = not guest.is_empty() and phase not in ["leaving", "dirty", "collecting", "wiping"]

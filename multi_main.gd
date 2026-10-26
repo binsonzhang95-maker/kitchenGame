@@ -16,6 +16,7 @@ const Localization = preload("res://localization.gd")
 const RecipeCatalog = preload("res://recipe_catalog.gd")
 const AutoplayDriver = preload("res://autoplay.gd")
 const ResponsiveLayout = preload("res://responsive_layout.gd")
+const FloorLayout = preload("res://floor_layout.gd")
 const WideBackdrop = preload("res://wide_backdrop.gd")
 const SAVE_PATH := "user://restaurant_multi_save_v2.json"
 const INK := Color("574638")
@@ -61,6 +62,8 @@ var selected_table: int = 1
 var room: Variant
 var wide_backdrop: Variant
 var responsive_layout: Dictionary = {}
+var _laid_out_world_width := -1.0
+var _resize_layout_queued := false
 var clock: float = 0.0
 var cooldown: float = 0.0
 var save_clock: float = 0.0
@@ -151,7 +154,7 @@ func _ready() -> void:
 	toy_simulator.command_requested.connect(_toy_command)
 	toy_simulator.event_requested.connect(_toy_event)
 	_build_completion_brief()
-	get_viewport().size_changed.connect(_apply_responsive_layout)
+	get_viewport().size_changed.connect(_queue_responsive_layout)
 	_apply_responsive_layout()
 	if not model.active_cooking.is_empty(): _restore_cooking()
 	_refresh()
@@ -166,6 +169,18 @@ func _apply_responsive_layout() -> void:
 	responsive_layout = ResponsiveLayout.calculate(viewport, ResponsiveLayout.web_safe_insets(viewport))
 	_apply_responsive_layout_data()
 
+## Native browser/window resize events arrive in bursts.  Coalesce one burst
+## into one transactional model relayout; test injection remains synchronous.
+func _queue_responsive_layout() -> void:
+	if _resize_layout_queued:
+		return
+	_resize_layout_queued = true
+	call_deferred("_apply_queued_responsive_layout")
+
+func _apply_queued_responsive_layout() -> void:
+	_resize_layout_queued = false
+	_apply_responsive_layout()
+
 ## Test-only injection: it exercises the same layout application as a viewport
 ## resize without changing project/window state or any business data.
 func set_responsive_layout_for_test(viewport: Vector2, insets: Dictionary = {}) -> void:
@@ -173,19 +188,40 @@ func set_responsive_layout_for_test(viewport: Vector2, insets: Dictionary = {}) 
 	_apply_responsive_layout_data()
 
 func _apply_responsive_layout_data() -> void:
+	var world: Vector2 = responsive_layout.get("world_size", Vector2(ResponsiveLayout.MIN_WORLD_WIDTH, 1024))
+	var requested_width := clampf(world.x, ResponsiveLayout.MIN_WORLD_WIDTH, ResponsiveLayout.MAX_WORLD_WIDTH)
+	# Geometry is model-owned.  Re-layout is transactional and only happens for
+	# a real world-width change, never as part of the gameplay frame loop.
+	var floor: Variant = model.get("floor")
+	var committed_width := float(floor.layout_width) if floor != null else ResponsiveLayout.MIN_WORLD_WIDTH
+	if FloorLayout.valid_width(requested_width):
+		if is_equal_approx(committed_width, requested_width):
+			_laid_out_world_width = requested_width
+		elif model.has_method("relayout"):
+			var relaid: bool = bool(model.relayout(requested_width))
+			floor = model.get("floor")
+			committed_width = float(floor.layout_width) if floor != null else committed_width
+			if relaid and is_equal_approx(committed_width, requested_width):
+				_laid_out_world_width = requested_width
+	# A rejected width is not a visual success.  Reconcile every downstream
+	# transform with the live floor, and leave the failed target unrecorded.
+	if not is_equal_approx(committed_width, requested_width):
+		responsive_layout = ResponsiveLayout.with_world_width(responsive_layout, committed_width)
 	var content: Rect2 = responsive_layout.content_rect
 	var scale: float = responsive_layout.scale
+	world = responsive_layout.get("world_size", Vector2(committed_width, 1024))
 	if is_instance_valid(wide_backdrop): wide_backdrop.set_layout(responsive_layout)
 	if is_instance_valid(room):
-		room.position = content.position + Vector2(0, ResponsiveLayout.TOP_BAR) * scale
+		room.position = responsive_layout.room_rect.position
 		room.scale = Vector2.ONE * scale
+		room.queue_redraw()
 	if is_instance_valid(hud): hud.apply_layout(responsive_layout)
 	if is_instance_valid(cooking_view): cooking_view.apply_layout(responsive_layout)
 	if is_instance_valid(toy_simulator): toy_simulator.apply_layout(responsive_layout)
 	# Layout owns the outer transform; the inner card can pop without replacing
 	# safe-area scaling during the animation or a concurrent resize.
 	if completion_layout != null:
-		completion_layout.position = content.position + Vector2(634, 116) * scale
+		completion_layout.position = content.position + Vector2(world.x * 0.5 - 134.0, 116) * scale
 		completion_layout.scale = Vector2.ONE * scale
 
 func set_locale(locale: String) -> bool:

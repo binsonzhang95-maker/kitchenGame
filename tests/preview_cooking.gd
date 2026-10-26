@@ -16,13 +16,25 @@ func _run() -> void:
 	session.tick(2.0)
 	var view = View.new()
 	root.add_child(view)
+	# Keep this preview aligned with the full-width responsive contract instead
+	# of relying on the old 1536 central composition.
+	# A desktop window can be clamped by the host.  Wait for the real root
+	# viewport, then lay out and capture that exact viewport instead of claiming
+	# the requested 2048px size in a clipped 1920/2048 screenshot.
+	DisplayServer.window_set_size(Vector2i(2048, 1085))
+	await process_frame
+	var viewport := root.get_visible_rect().size
+	view.apply_layout({
+		"viewport":viewport, "content_rect":Rect2(Vector2.ZERO, viewport),
+		"scale":1.0, "world_size":Vector2(viewport.x, 1024),
+	})
 	view.open(session, {"table_label":"1号桌"})
 	await process_frame
 	await RenderingServer.frame_post_draw
 	var path := "res://verification/cooking_interface_preview.png"
 	var pixels := root.get_texture().get_image()
 	var error := pixels.save_png(path)
-	print("COOKING_INTERFACE_PREVIEW error=%d path=%s" % [error, ProjectSettings.globalize_path(path)])
+	print("COOKING_INTERFACE_PREVIEW error=%d viewport=%dx%d path=%s" % [error, pixels.get_width(), pixels.get_height(), ProjectSettings.globalize_path(path)])
 	view.free()
 	pixels = null
 	await process_frame

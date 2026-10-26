@@ -1,4 +1,6 @@
 extends SceneTree
+## Frozen V4 door/opening regression only. Runtime geometry belongs to
+## Floor.create(...) or model.floor and is covered by test_wide_floor_v5.
 ## Headless routing acceptance test. No save files and no gameplay mutations.
 const Floor = preload("res://floor_plan.gd")
 var assertions: int = 0

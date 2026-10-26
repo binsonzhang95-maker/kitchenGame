@@ -1,5 +1,5 @@
 extends RefCounted
-## Canonical 20-table layout and deterministic four-way navigation.
+## Frozen V4 20-table layout and deterministic four-way navigation.
 ## Positions are foot/support coordinates in the 1536 x 1024 room.
 ## The four private-room passages require restaurant_open_background.png.
 ## The original closed-door illustration is not this layout's navigation artwork.
@@ -16,6 +16,13 @@ const EDGE_MARGIN: float = 4.0
 const COUNTER := Rect2(506, 176, 646, 78)
 ## Animal ground occupancy. This deliberately does not use the full sprite.
 const SEAT_RESERVATION_SIZE := Vector2(64, 32)
+const RuntimeLayout = preload("res://floor_layout.gd")
+
+## Kept solely as the frozen V4 geometry validator. Runtime models must call
+## create() and retain the returned layout instance instead of using this
+## static facade, so a resize in one game cannot mutate another game's map.
+static func create(width: float = 1536.0):
+	return RuntimeLayout.new(width, RuntimeLayout.revision_for_width(width))
 
 static var _definitions: Array[Dictionary] = []
 static var _obstacles: Array[Rect2] = []

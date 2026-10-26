@@ -1,11 +1,10 @@
 extends Node2D
 
 signal table_selected(id: int)
-const Floor = preload("res://floor_plan.gd")
-const SCALE: float = Floor.RENDER_SCALE
+const SCALE: float = 0.75
 const ROOT := "res://assets/"
 const ART_ROOT := "res://restaurant_art/"
-const BACKGROUND := ART_ROOT + "restaurant_open_background.png"
+const BACKGROUND := ART_ROOT + "restaurant_empty_background.png"
 const RECIPE_DISHES := {
 	"pumpkin_corn_soup": "food/dishes/pumpkin_corn_soup_32.png",
 	"pan_fried_mushrooms": "food/dishes/pan_seared_mushrooms_32.png",
@@ -139,15 +138,77 @@ func _draw_clip(clip: Dictionary, origin: Vector2, elapsed: float, fixed: int = 
 		draw_texture_rect_region(texture,Rect2(origin.round(),Vector2(128,128)*SCALE),Rect2(rect[0],rect[1],rect[2],rect[3]))
 	return i
 
+func _floor_instance() -> Variant:
+	# Geometry is deliberately instance-owned: a landscape viewport can have a
+	# wider restaurant without leaking a resize into another model or save.
+	return model.get("floor") if model != null else null
+
+func _tile_background(destination: Rect2, source: Rect2, tile: Vector2) -> void:
+	var y := destination.position.y
+	while y < destination.end.y:
+		var h := minf(tile.y, destination.end.y - y)
+		var x := destination.position.x
+		while x < destination.end.x:
+			var w := minf(tile.x, destination.end.x - x)
+			draw_texture_rect_region(background, Rect2(x, y, w, h), Rect2(source.position, Vector2(source.size.x * w / tile.x, source.size.y * h / tile.y)))
+			x += w
+		y += h
+
+func _draw_room_architecture(floor: Variant) -> void:
+	if background == null or floor == null:
+		return
+	var size: Vector2 = floor.SIZE
+	# Only clean wall/floor source regions are sampled.  In particular, never
+	# redraw the old baked private rooms, tables, or counter over live geometry.
+	_tile_background(Rect2(Vector2.ZERO, size), Rect2(576, 384, 256, 192), Vector2(256, 192))
+	# Build the kitchen from the original upper-room illustration at its authored
+	# scale.  Continue its surroundings in two layers: the thin top timber and
+	# the clean wall beneath it.  Keeping the wall sample above y=96 prevents the
+	# sink, plate cabinet and plant from being tiled beside the live kitchen.
+	_tile_background(Rect2(0, 0, size.x, 16), Rect2(1080, 0, 40, 16), Vector2(40, 16))
+	_tile_background(Rect2(0, 16, size.x, 160), Rect2(1080, 16, 40, 80), Vector2(40, 80))
+	var kitchen_source := Rect2(416, 0, 704, 176)
+	var kitchen_destination := Rect2((size.x - kitchen_source.size.x) * 0.5, 0, kitchen_source.size.x, kitchen_source.size.y)
+	draw_texture_rect_region(background, kitchen_destination, kitchen_source)
+	var lamp_x := 96.0
+	while lamp_x < size.x - 32.0:
+		# Lamps are decorative wall props, never an overlay for the kitchen's
+		# curtain, shelving or equipment.  Test the full native prop bounds, not
+		# merely its origin, so a lamp cannot straddle the kitchen edge.
+		var lamp_destination := Rect2(lamp_x, 102, 32, 48)
+		if not lamp_destination.intersects(kitchen_destination):
+			_art_prop("props/lamp.png", lamp_destination.position)
+		lamp_x += 264.0
+	# Do not place partitions or pots on the playable floor.  They have no
+	# navigation geometry, so even pretty room dividers would be dishonest here.
+
+func _draw_counter(counter: Rect2) -> void:
+	# Keep the counter's end caps at their native width; only the deliberately
+	# plain middle timber repeats when a wide floor requests a longer counter.
+	var source := Rect2(506, 176, 646, 78)
+	if counter.size.x < 128.0:
+		draw_texture_rect_region(background, counter, source)
+		return
+	var cap := 64.0
+	draw_texture_rect_region(background, Rect2(counter.position, Vector2(cap, counter.size.y)), Rect2(source.position, Vector2(cap, source.size.y)))
+	draw_texture_rect_region(background, Rect2(counter.end - Vector2(cap, counter.size.y), Vector2(cap, counter.size.y)), Rect2(source.end - Vector2(cap, source.size.y), Vector2(cap, source.size.y)))
+	_tile_background(Rect2(counter.position + Vector2(cap, 0), Vector2(counter.size.x - cap * 2.0, counter.size.y)), Rect2(source.position + Vector2(cap, 0), Vector2(source.size.x - cap * 2.0, source.size.y)), Vector2(source.size.x - cap * 2.0, counter.size.y))
+
 func _floor() -> void:
-	if background:
-		draw_texture(background, Vector2.ZERO)
-	# The bear is a live v5 sprite behind the baked service counter.
+	var floor: Variant = _floor_instance()
+	if floor == null:
+		return
+	_draw_room_architecture(floor)
+	# The bear is live and anchored to the current counter/kitchen geometry.
 	var cooking: bool = int(model.chef.table_id) > 0
 	var bear_clip: Dictionary = _clip("bear","actions","cook") if cooking else _clip("bear","base","idle")
-	_draw_clip(bear_clip,Vector2(856,184)-Vector2(64,120)*SCALE,float(model.chef.elapsed) if cooking else clock)
-	if background:
-		draw_texture_rect_region(background, Floor.COUNTER, Floor.COUNTER)
+	# kitchen_point() is the server's service handoff on the guest side of the
+	# counter.  The chef instead stands behind its front edge.  Draw the counter
+	# after the bear so its foreground panel naturally hides the lower body.
+	var counter: Rect2 = floor.COUNTER
+	var chef_anchor := Vector2(counter.get_center().x, counter.position.y + 8.0)
+	_draw_clip(bear_clip,chef_anchor-Vector2(64,120)*SCALE,float(model.chef.elapsed) if cooking else clock)
+	_draw_counter(counter)
 	for t in model.tables:
 		if int(t.id) == selected_table:
 			_selection_halo(t.center + Vector2(0, 44 if t.zone == "bar" else 30))
@@ -326,12 +387,12 @@ func _working(worker: Dictionary) -> void:
 			_prop("drinks/rabbit/cup.png",point-Vector2(11,18)*SCALE)
 
 func _draw() -> void:
-	if model == null or catalog.is_empty(): return
+	if model == null or catalog.is_empty() or _floor_instance() == null: return
 	_floor()
 	var events: Array[Dictionary] = []
 	for t in model.tables:
 		events.append({"kind":"chair","y":float(t.center.y),"table":t})
-		events.append({"kind":"seated","y":Floor.seat_point(int(t.id)).y,"table":t})
+		events.append({"kind":"seated","y":_floor_instance().seat_point(int(t.id)).y,"table":t})
 		events.append({"kind":"table","y":float(t.center.y)+(68 if t.zone=="bar" else 45),"table":t})
 	for guest in model.customers.values():
 		if guest.state in ["queued","walking","leaving"]: events.append({"kind":"guest","y":float(guest.pos.y),"actor":guest})
@@ -355,12 +416,9 @@ func _draw() -> void:
 		_action_icon(table)
 
 func _foreground_architecture() -> void:
-	if not background:
-		return
-	# Re-use actual foreground wall pixels, stopping before each open doorway.
-	# Feet behind a partition remain behind it rather than painting over its rail.
-	for region: Rect2 in [Rect2(28,218,256,24),Rect2(8,436,260,26),Rect2(0,666,254,25),Rect2(0,901,238,12)]:
-		draw_texture_rect_region(background,region,region)
+	# No baked architectural foreground: it belonged to the former narrow map
+	# and would cover live guests or tables after a relayout.
+	pass
 
 func _action_icon(table: Dictionary) -> void:
 	var action: String = model.table_action(int(table.id))

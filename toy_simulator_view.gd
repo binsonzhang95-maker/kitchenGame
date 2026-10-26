@@ -204,7 +204,10 @@ func apply_layout(layout: Dictionary) -> void:
 	var content: Rect2 = layout.get("content_rect", Rect2(Vector2.ZERO, VIEW_SIZE))
 	var scale: float = float(layout.get("scale", 1.0))
 	if screen_blocker != null: screen_blocker.size = viewport
-	root.position = content.position
+	# The simulator is a modal, so it may retain its compact 1536 design width;
+	# centre it in a wider safe content area while its input shield covers the
+	# entire viewport.
+	root.position = content.position + Vector2(maxf(0.0, content.size.x - VIEW_SIZE.x * scale) * 0.5, 0.0)
 	root.scale = Vector2.ONE * scale
 
 func _box(fill: Color, border: Color, thickness: int) -> StyleBoxFlat:

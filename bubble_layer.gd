@@ -5,7 +5,10 @@ extends Node2D
 ## "duration_ms":[220,220,220,300],"loop":true,"anchor":[32,60]}}}
 
 const EMOTIONS: Array[String] = ["hungry", "question", "ok", "wait", "upset", "sorry", "love", "bye"]
-const ROOM_SIZE: Vector2 = Vector2(1536, 1024)
+const DEFAULT_ROOM_SIZE: Vector2 = Vector2(1536, 1024)
+# Compatibility name for isolated asset tests; runtime bounds come from
+# model.floor.SIZE via _room_size().
+const ROOM_SIZE: Vector2 = DEFAULT_ROOM_SIZE
 const DISPLAY_SIZE: float = 64.0
 const SHORT_TEXT_SIZE: Vector2 = Vector2(80, 28)
 const STANDING_HEAD_OFFSET: float = 99.0
@@ -24,6 +27,7 @@ var _anchors: Dictionary = {}
 var _visuals: Dictionary = {}
 var _load_attempted: bool = false
 var _warned: bool = false
+var _current_room_size: Vector2 = DEFAULT_ROOM_SIZE
 
 
 func _ready() -> void:
@@ -142,6 +146,7 @@ func sync(director, model) -> void:
 	if director == null or model == null or _frame_sizes.is_empty():
 		clear_bubbles()
 		return
+	_current_room_size = _room_size(model)
 	var ordered: Array[Dictionary] = []
 	for raw: Variant in director.bubbles:
 		if raw is Dictionary:
@@ -238,12 +243,21 @@ func _speaker_anchor(speaker: String, model) -> Vector2:
 		return Vector2(model.tables[table_id - 1].center) - Vector2(0, SEATED_HEAD_OFFSET)
 	return Vector2(guest.pos) - Vector2(0, STANDING_HEAD_OFFSET)
 
+func _room_size(model) -> Vector2:
+	if model != null:
+		var floor: Variant = model.get("floor")
+		if floor != null:
+			var candidate: Variant = floor.SIZE
+			if candidate is Vector2 and candidate.x > 0.0 and candidate.y > 0.0:
+				return candidate
+	return DEFAULT_ROOM_SIZE
 
 func _place(anchor: Vector2, box: Rect2, occupied: Array[Rect2], previous_offset: Vector2) -> Vector2:
+	var room_size := _current_room_size
 	# Search around the bounded anchor so edge clamping cannot collapse every row.
 	var bounded := Vector2(
-		clampf(anchor.x, EDGE - box.position.x, ROOM_SIZE.x - EDGE - box.end.x),
-		clampf(anchor.y, EDGE - box.position.y, ROOM_SIZE.y - EDGE - box.end.y)
+		clampf(anchor.x, EDGE - box.position.x, room_size.x - EDGE - box.end.x),
+		clampf(anchor.y, EDGE - box.position.y, room_size.y - EDGE - box.end.y)
 	)
 	var options: Array[Vector2] = [anchor + previous_offset]
 	for offset: Vector2 in OFFSETS:
@@ -251,8 +265,8 @@ func _place(anchor: Vector2, box: Rect2, occupied: Array[Rect2], previous_offset
 	var tried: Array[Vector2] = []
 	for candidate: Vector2 in options:
 		var center: Vector2 = candidate
-		center.x = clampf(center.x, EDGE - box.position.x, ROOM_SIZE.x - EDGE - box.end.x)
-		center.y = clampf(center.y, EDGE - box.position.y, ROOM_SIZE.y - EDGE - box.end.y)
+		center.x = clampf(center.x, EDGE - box.position.x, room_size.x - EDGE - box.end.x)
+		center.y = clampf(center.y, EDGE - box.position.y, room_size.y - EDGE - box.end.y)
 		center = center.round()
 		if tried.has(center):
 			continue

@@ -12,7 +12,10 @@ const P0Assets = preload("res://p0_assets.gd")
 
 const VIEW_SIZE := Vector2(1536, 1152)
 const ART_ROOT := "res://cooking_art/"
-const BACKGROUND_PATH := "res://restaurant_art/restaurant_open_background.png"
+## This is a single room illustration, not a centre tile with decorative wings.
+## It is deliberately cropped by the TextureRect when a device is narrower than
+## the authored panorama, while wide devices reveal more of the same kitchen.
+const BACKGROUND_PATH := "res://assets/kitchen/background/kitchen_background_panorama_2304x1024.png"
 const INK := Color("594b39")
 const PAPER := Color("fff5dc")
 const GREEN := Color("708d60")
@@ -23,18 +26,9 @@ const ACTION_LABELS := {"cut":"切一切", "pot":"入锅", "pan":"入锅", "oven
 const ACTION_ICONS := {"cut":"knife", "add_water":"water", "stir":"stir", "flip":"flip", "heat_small":"flame_low", "heat_medium":"flame_medium", "heat_high":"flame_high", "finish":"confirm", "takeout":"confirm", "return":"confirm"}
 const PHASE_LABELS := {"idle":"小小厨房", "ingredients":"选食材", "prep":"切一切", "vessel":"放进去", "heat":"选火候", "cooking":"慢慢做", "ready":"好香呀", "retry":"再试一次", "completed":"做好啦", "cancelled":"回餐厅"}
 const ACTION_COOLDOWN_SECONDS := 0.18
-const SIDE_TEXTURE_SIZE := Vector2(384, 1024)
-const SIDE_EDGE_SOURCE_WIDTH := 2.0
-
 var root_control: Control
 var screen_root: Control
 var screen_fill: ColorRect
-var side_left_clip: Control
-var side_right_clip: Control
-var side_left: TextureRect
-var side_right: TextureRect
-var side_left_outer_edge: TextureRect
-var side_right_outer_edge: TextureRect
 var header_fill: ColorRect
 var footer_fill: ColorRect
 var pause_full_shade: ColorRect
@@ -68,6 +62,11 @@ var pause_resume_button: Button
 var ingredient_slots: Array[Dictionary] = []
 var step_icons: Array[TextureRect] = []
 var completion_badge: TextureRect
+var header_surface: Panel
+var action_surface: Panel
+var pause_note: Panel
+var _design_width := VIEW_SIZE.x
+var _layout_scale := 1.0
 var water_flow: TextureRect
 var feedback_icon: TextureRect
 var action_buttons: Dictionary = {}
@@ -450,8 +449,7 @@ func refresh_art() -> void:
 	_visual_cache.clear()
 	_p0_assets.refresh()
 	if _built:
-		background_image.texture = _p0_assets.texture("background")
-		if background_image.texture == null: background_image.texture = _texture(BACKGROUND_PATH)
+		background_image.texture = _texture(BACKGROUND_PATH)
 		background_image.modulate = Color.WHITE
 		_refresh()
 		_reconcile_loop_visual()
@@ -517,6 +515,29 @@ func _button(parent: Node, text: String, at: Vector2, dimensions: Vector2, callb
 	parent.add_child(button)
 	return button
 
+
+func _configure_header_action(button: Button) -> void:
+	# The icon itself is the visual affordance.  Keeping the surrounding target
+	# transparent lets compact layouts meet the 44px physical hit-size without
+	# turning the header into three oversized cards.
+	button.add_theme_stylebox_override("normal", _style(Color.TRANSPARENT, Color.TRANSPARENT, 0))
+	button.add_theme_stylebox_override("hover", _style(Color(1.0, 1.0, 1.0, 0.20), Color("708d60"), 2))
+	button.add_theme_stylebox_override("pressed", _style(Color(0.44, 0.55, 0.35, 0.25), Color("708d60"), 2))
+	button.add_theme_stylebox_override("disabled", _style(Color.TRANSPARENT, Color.TRANSPARENT, 0))
+	button.add_theme_stylebox_override("focus", _style(Color.TRANSPARENT, GREEN, 3))
+
+
+func _layout_header_action(button: Button, at: Vector2, touch_side: float) -> void:
+	button.position = at
+	button.size = Vector2.ONE * touch_side
+	var icon_side := minf(touch_side - 20.0, maxf(44.0, 24.0 / _layout_scale))
+	for child: Node in button.get_children():
+		if child is TextureRect:
+			var icon := child as TextureRect
+			icon.position = (button.size - Vector2.ONE * icon_side) * 0.5
+			icon.size = Vector2.ONE * icon_side
+
+
 func _image(parent: Node, at: Vector2, dimensions: Vector2) -> TextureRect:
 	var image := TextureRect.new()
 	image.position = at
@@ -537,7 +558,7 @@ func _button_icon(button: Button, key: String, size: Vector2 = Vector2(64, 64)) 
 func _play_ingredient_arrival(ingredient: String) -> void:
 	if feedback_icon == null: return
 	_kill_feedback_tween()
-	var source := Vector2(704, 242)
+	var source := _appliance_rect().get_center() + Vector2(0, -180)
 	for slot: Dictionary in ingredient_slots:
 		if str(slot.action) == "add_" + ingredient:
 			source = (slot.button as Button).position + Vector2(44, 28)
@@ -552,7 +573,7 @@ func _play_ingredient_arrival(ingredient: String) -> void:
 	_feedback_tween.finished.connect(_finish_feedback_tween.bind(epoch))
 	_feedback_paused = _visuals_paused()
 	_feedback_tween.set_parallel(true)
-	_feedback_tween.tween_property(feedback_icon, "position", Vector2(704, 520), 0.25).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	_feedback_tween.tween_property(feedback_icon, "position", _appliance_rect().get_center() - feedback_icon.size * 0.5, 0.25).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 	_feedback_tween.tween_property(feedback_icon, "modulate:a", 0.15, 0.25)
 	_feedback_tween.chain().tween_callback(_hide_feedback.bind(epoch))
 	if _feedback_paused:
@@ -562,7 +583,7 @@ func _play_knife_tap() -> void:
 	if feedback_icon == null: return
 	_kill_feedback_tween()
 	feedback_icon.texture = _texture(_art_path("icons", "knife"))
-	feedback_icon.position = Vector2(728, 470)
+	feedback_icon.position = _appliance_rect().get_center() + Vector2(-40, -42)
 	feedback_icon.modulate = Color.WHITE
 	feedback_icon.visible = feedback_icon.texture != null
 	_feedback_epoch += 1
@@ -570,8 +591,8 @@ func _play_knife_tap() -> void:
 	_feedback_tween = create_tween()
 	_feedback_tween.finished.connect(_finish_feedback_tween.bind(epoch))
 	_feedback_paused = _visuals_paused()
-	_feedback_tween.tween_property(feedback_icon, "position:y", 505.0, 0.12)
-	_feedback_tween.tween_property(feedback_icon, "position:y", 470.0, 0.12)
+	_feedback_tween.tween_property(feedback_icon, "position:y", feedback_icon.position.y + 35.0, 0.12)
+	_feedback_tween.tween_property(feedback_icon, "position:y", feedback_icon.position.y, 0.12)
 	_feedback_tween.tween_callback(_hide_feedback.bind(epoch))
 	if _feedback_paused:
 		_feedback_tween.pause()
@@ -612,45 +633,13 @@ func _build() -> void:
 	screen_fill.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	screen_fill.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	screen_root.add_child(screen_fill)
-	# These are the outer slices of one 384 + 1536 + 384 panorama.  The slice
-	# itself stays authored-sized and receives the shared layout scale; its parent
-	# clips only the outer part when a side gap is narrower than the slice.
-	for spec: Dictionary in [
-		{"name":"KitchenExtendLeft", "path":"res://assets/kitchen/background/kitchen_background_extend_left_384x1024.png", "left":true},
-		{"name":"KitchenExtendRight", "path":"res://assets/kitchen/background/kitchen_background_extend_right_384x1024.png", "left":false},
-	]:
-		var clip := Control.new()
-		clip.name = str(spec.name) + "Clip"
-		clip.clip_contents = true
-		clip.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		screen_root.add_child(clip)
-		var outer_edge := TextureRect.new()
-		outer_edge.name = str(spec.name) + "OuterEdge"
-		var edge_texture := AtlasTexture.new()
-		edge_texture.atlas = load(str(spec.path)) as Texture2D
-		edge_texture.region = Rect2(0, 0, SIDE_EDGE_SOURCE_WIDTH, SIDE_TEXTURE_SIZE.y) if bool(spec.left) else Rect2(SIDE_TEXTURE_SIZE.x - SIDE_EDGE_SOURCE_WIDTH, 0, SIDE_EDGE_SOURCE_WIDTH, SIDE_TEXTURE_SIZE.y)
-		outer_edge.texture = edge_texture
-		outer_edge.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-		outer_edge.stretch_mode = TextureRect.STRETCH_SCALE
-		outer_edge.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-		outer_edge.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		clip.add_child(outer_edge)
-		var image := TextureRect.new()
-		image.name = str(spec.name)
-		image.texture = load(str(spec.path)) as Texture2D
-		image.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-		image.stretch_mode = TextureRect.STRETCH_KEEP
-		image.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-		image.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		clip.add_child(image)
-		if bool(spec.left):
-			side_left_clip = clip
-			side_left_outer_edge = outer_edge
-			side_left = image
-		else:
-			side_right_clip = clip
-			side_right_outer_edge = outer_edge
-			side_right = image
+	# The room art belongs to the viewport, not to the scaled interactive
+	# composition.  This covers letterbox/safe-area space with the same kitchen
+	# if a native window is smaller than the size a test requested.
+	background_image = _image(screen_root, Vector2.ZERO, VIEW_SIZE)
+	background_image.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	background_image.texture = _texture(BACKGROUND_PATH)
+	background_image.modulate = Color.WHITE
 	header_fill = ColorRect.new()
 	header_fill.color = Color("eee0bd")
 	header_fill.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -669,11 +658,7 @@ func _build() -> void:
 	root_control.mouse_filter = Control.MOUSE_FILTER_STOP
 	root_control.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	add_child(root_control)
-	background_image = _image(root_control, Vector2(0, 80), Vector2(1536, 1024))
-	background_image.texture = _p0_assets.texture("background")
-	if background_image.texture == null: background_image.texture = _texture(BACKGROUND_PATH)
-	background_image.modulate = Color.WHITE
-	_panel(root_control, Vector2.ZERO, Vector2(1536, 84), Color("eee0bd"))
+	header_surface = _panel(root_control, Vector2.ZERO, Vector2(1536, 84), Color("eee0bd"))
 	cancel_button = _button(root_control, "", Vector2(24, 10), Vector2(64, 64), _request_cancel)
 	_button_icon(cancel_button, "back", Vector2(48, 48))
 	recipe_label = _label(root_control, "小小厨房", Vector2(176, 14), Vector2(1000, 56), 30)
@@ -702,8 +687,8 @@ func _build() -> void:
 		mark.texture = _t("recognition_success")
 		mark.visible = false
 		ingredient_slots.append({"button":button, "image":icon, "ring":ring, "mark":mark, "action":""})
-	# The panel is a work surface. The appliance itself is always supplied artwork.
-	_panel(root_control, Vector2(160, 350), Vector2(1216, 558), Color("e9cc99"))
+	# The appliance is deliberately placed directly in the room artwork: it is a
+	# kitchen object, not a card floating on an opaque work-surface panel.
 	utensil_image = _image(root_control, Vector2(512, 356), Vector2(512, 512))
 	art_stack = Control.new()
 	art_stack.position = utensil_image.position
@@ -727,8 +712,8 @@ func _build() -> void:
 	water_label.visible = false
 	water_hint = _label(root_control, "", Vector2.ZERO, Vector2.ZERO, 1)
 	water_hint.visible = false
-	# The flow's top midpoint is aligned to the tap artwork's source (113, 52).
 	water_flow = _image(root_control, Vector2(1185, 584), Vector2(64, 128))
+	_position_water_flow()
 	water_flow.visible = false
 	feedback_icon = _image(root_control, Vector2.ZERO, Vector2(96, 96))
 	feedback_icon.visible = false
@@ -753,7 +738,9 @@ func _build() -> void:
 	message_label = _label(root_control, "", Vector2(168, 940), Vector2(1200, 46), 20)
 	message_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	message_label.add_theme_color_override("font_color", INK)
-	_panel(root_control, Vector2(0, 996), Vector2(1536, 156), Color("eee0bd"))
+	action_surface = _panel(root_control, Vector2.ZERO, Vector2.ZERO, Color(1.0, 0.96, 0.84, 0.78))
+	action_surface.add_theme_stylebox_override("panel", _style(Color(1.0, 0.96, 0.84, 0.78), Color(0.45, 0.35, 0.22, 0.48), 2))
+	action_surface.visible = false
 	action_bar = Control.new()
 	action_bar.position = Vector2(0, 1008)
 	action_bar.size = Vector2(1536, 128)
@@ -770,14 +757,20 @@ func _build() -> void:
 	shade.color = Color(0.16, 0.19, 0.13, 0.55)
 	shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	pause_overlay.add_child(shade)
-	var note := _panel(pause_overlay, Vector2(544, 380), Vector2(448, 204), PAPER)
-	pause_title_label = _label(note, "", Vector2.ZERO, Vector2.ZERO, 1)
+	pause_note = _panel(pause_overlay, Vector2(544, 380), Vector2(448, 204), PAPER)
+	pause_title_label = _label(pause_note, "", Vector2.ZERO, Vector2.ZERO, 1)
 	pause_title_label.visible = false
-	pause_resume_button = _button(note, "", Vector2(160, 48), Vector2(128, 128), _request_pause)
+	pause_resume_button = _button(pause_note, "", Vector2(160, 48), Vector2(128, 128), _request_pause)
 	_button_icon(pause_resume_button, "play", Vector2(96, 96))
 	completion_badge = _image(root_control, Vector2(712, 842), Vector2(112, 112))
 	completion_badge.texture = _t("completion")
 	completion_badge.visible = false
+	# The pause shade must never steal the emergency back/pause targets.  These
+	# are moved above it after the overlay is built; their hit rectangles may be
+	# larger than the visible icons on compact devices.
+	for header_action: Button in [cancel_button, clear_button, pause_button]:
+		_configure_header_action(header_action)
+		root_control.move_child(header_action, -1)
 	if not _layout.is_empty(): apply_layout(_layout)
 
 func apply_layout(layout: Dictionary) -> void:
@@ -785,49 +778,116 @@ func apply_layout(layout: Dictionary) -> void:
 	if screen_root == null or root_control == null: return
 	var viewport: Vector2 = layout.get("viewport", VIEW_SIZE)
 	var content: Rect2 = layout.get("content_rect", Rect2(Vector2.ZERO, VIEW_SIZE))
-	var scale: float = float(layout.get("scale", 1.0))
+	var scale: float = maxf(0.01, float(layout.get("scale", 1.0)))
+	_layout_scale = scale
+	# New responsive layouts expose the simulation width directly.  The fallback
+	# preserves the old 1536-wide tests and also makes hand-made test layouts
+	# useful before ResponsiveLayout has been updated.
+	var world: Vector2 = layout.get("world_size", Vector2.ZERO)
+	_design_width = world.x if world.x > 0.0 else maxf(VIEW_SIZE.x, content.size.x / scale)
 	screen_root.size = viewport
+	background_image.position = Vector2.ZERO
+	background_image.size = viewport
 	root_control.position = content.position
 	root_control.scale = Vector2.ONE * scale
-	var room_top := content.position.y + 80.0 * scale
-	var room_height := SIDE_TEXTURE_SIZE.y * scale
-	_layout_side_extensions(viewport, content, room_top, room_height, scale)
+	root_control.size = Vector2(_design_width, VIEW_SIZE.y)
+	_layout_kitchen_controls()
 	header_fill.position = Vector2.ZERO
-	header_fill.size = Vector2(viewport.x, content.position.y + 84.0 * scale)
-	footer_fill.position = Vector2(0, content.end.y - 156.0 * scale)
-	footer_fill.size = Vector2(viewport.x, viewport.y - footer_fill.position.y)
+	header_fill.size = Vector2(viewport.x, viewport.y)
+	header_fill.visible = false
+	footer_fill.visible = false
 	pause_full_shade.position = Vector2.ZERO
 	pause_full_shade.size = viewport
+	_relayout_action_buttons()
 
 
-func _layout_side_extensions(viewport: Vector2, content: Rect2, room_top: float, room_height: float, scale: float) -> void:
-	var strip_width := SIDE_TEXTURE_SIZE.x * scale
-	var left_gap := maxf(0.0, content.position.x)
-	var right_gap := maxf(0.0, viewport.x - content.end.x)
-	if side_left_clip != null:
-		side_left_clip.position = Vector2(0, room_top)
-		side_left_clip.size = Vector2(left_gap, room_height)
-	if side_left != null:
-		side_left.size = SIDE_TEXTURE_SIZE
-		side_left.scale = Vector2.ONE * scale
-		# Anchor the panorama's source right edge to the central background.
-		side_left.position = Vector2(left_gap - strip_width, 0)
-	if side_left_outer_edge != null:
-		var left_extra := maxf(0.0, left_gap - strip_width)
-		side_left_outer_edge.position = Vector2.ZERO
-		side_left_outer_edge.size = Vector2(left_extra, room_height)
-	if side_right_clip != null:
-		side_right_clip.position = Vector2(content.end.x, room_top)
-		side_right_clip.size = Vector2(right_gap, room_height)
-	if side_right != null:
-		side_right.size = SIDE_TEXTURE_SIZE
-		side_right.scale = Vector2.ONE * scale
-		# Anchor the panorama's source left edge to the central background.
-		side_right.position = Vector2.ZERO
-	if side_right_outer_edge != null:
-		var right_extra := maxf(0.0, right_gap - strip_width)
-		side_right_outer_edge.position = Vector2(strip_width, 0)
-		side_right_outer_edge.size = Vector2(right_extra, room_height)
+func _layout_kitchen_controls() -> void:
+	var width := _design_width
+	var left_end := width * 0.25
+	var center_start := left_end
+	var center_end := width * 0.70
+	var right_start := center_end
+	var appliance_size := Vector2(512, 512)
+	var appliance_x := center_start + (center_end - center_start - appliance_size.x) * 0.5
+	var appliance_at := Vector2(appliance_x, 344)
+	if header_surface != null: header_surface.size = Vector2(width, 84)
+	# Every interactive ingredient has its own large vertical target in the
+	# left quarter. This remains usable even when all three are present.
+	var slot_width := minf(176.0, maxf(136.0, left_end - 84.0))
+	var slot_x := maxf(24.0, (left_end - slot_width) * 0.5)
+	for index in range(ingredient_slots.size()):
+		var button: Button = ingredient_slots[index].button
+		button.position = Vector2(slot_x, 188.0 + index * 216.0)
+		button.size = Vector2(slot_width, 176)
+		var icon: TextureRect = ingredient_slots[index].image
+		var icon_side := minf(128.0, slot_width - 36.0)
+		icon.position = Vector2((slot_width - icon_side) * 0.5, 18)
+		icon.size = Vector2(icon_side, icon_side)
+		var ring: TextureRect = ingredient_slots[index].ring
+		ring.position = Vector2((slot_width - icon_side - 16.0) * 0.5, 10)
+		ring.size = Vector2(icon_side + 16.0, icon_side + 16.0)
+		var mark: TextureRect = ingredient_slots[index].mark
+		mark.position = Vector2(slot_width - 54.0, 8)
+		mark.size = Vector2(44, 44)
+	water_button.position = Vector2(slot_x, 836)
+	water_button.size = Vector2(slot_width, 148)
+	water_icon.position = Vector2((slot_width - 96.0) * 0.5, 4)
+	# The faucet animation stays attached to its own touch target rather than
+	# drifting with the central pot when a wide layout is recalculated.
+	_position_water_flow()
+	utensil_image.position = appliance_at
+	utensil_image.size = appliance_size
+	art_stack.position = appliance_at
+	art_stack.size = appliance_size
+	for art: TextureRect in _art_layers:
+		art.size = appliance_size
+	preparation_icon.position = appliance_at + Vector2(320, 112)
+	preparation_aux_icon.position = appliance_at + Vector2(410, 168)
+	heat_icon.position = appliance_at + Vector2(224, 430)
+	feedback_icon.position = appliance_at + Vector2(208, 180)
+	guide_icon.position = appliance_at + Vector2(232, 86)
+	missing_utensil.position = appliance_at + Vector2(-72, 152)
+	missing_utensil.size = Vector2(656, 192)
+	progress_bar.position = Vector2(appliance_at.x + 32, 874)
+	progress_bar.size = Vector2(448, 32)
+	message_label.position = Vector2(center_start, 918)
+	message_label.size = Vector2(center_end - center_start, 46)
+	completion_badge.position = appliance_at + Vector2(200, 456)
+	# Header icons remain visually modest; their transparent button bounds grow
+	# to the platform touch minimum after scaling down.
+	var header_touch := maxf(64.0, 44.0 / _layout_scale)
+	var header_gap := maxf(8.0, 8.0 / _layout_scale)
+	_layout_header_action(cancel_button, Vector2(24, 10), header_touch)
+	binding_label.position = Vector2(96, 18)
+	recipe_label.position = Vector2(maxf(280.0, width * 0.25), 14)
+	recipe_label.size = Vector2(maxf(260.0, width * 0.42), 56)
+	_layout_header_action(pause_button, Vector2(width - 24.0 - header_touch, 10), header_touch)
+	_layout_header_action(clear_button, Vector2(pause_button.position.x - header_gap - header_touch, 10), header_touch)
+	prompt_label.position = Vector2(center_start, 98)
+	prompt_label.size = Vector2(center_end - center_start, 40)
+	step_label.position = Vector2(right_start + 24, 100)
+	for index in range(step_icons.size()):
+		step_icons[index].position = Vector2(center_start + 84 + index * 72, 94)
+	pause_overlay.position = Vector2(0, 84)
+	pause_overlay.size = Vector2(width, 1068)
+	if pause_overlay.get_child_count() > 0:
+		var shade := pause_overlay.get_child(0) as ColorRect
+		if shade != null: shade.size = pause_overlay.size
+	if pause_note != null:
+		pause_note.position = Vector2((width - pause_note.size.x) * 0.5, 380)
+	_relayout_action_buttons()
+
+
+func _appliance_rect() -> Rect2:
+	return Rect2(utensil_image.position, utensil_image.size) if utensil_image != null else Rect2(Vector2(512, 356), Vector2(512, 512))
+
+
+func _position_water_flow() -> void:
+	# The 128px faucet sprite's outlet is at (113, 52).  The icon is displayed
+	# at 96px, so use its live size and position the flow by its top midpoint.
+	var outlet := water_button.position + water_icon.position + Vector2(113.0, 52.0) * (water_icon.size / 128.0)
+	water_flow.position = outlet - Vector2(water_flow.size.x * 0.5, 0.0)
+
 
 func _art_path(kind: String, key: String) -> String:
 	return str(_art_overrides.get(key, ART_ROOT + kind + "/" + key + ".png"))
@@ -1059,13 +1119,11 @@ func _sync_actions(actions: Array[String], paused: bool, recipe: String) -> void
 			if child is Control: child.hide()
 			child.queue_free()
 		action_buttons.clear()
-		var width: float = 168.0
-		var start: float = (1536.0 - (actions.size() * width + maxi(0, actions.size() - 1) * 20.0)) * 0.5
 		for index in range(actions.size()):
 			var action: String = actions[index]
 			var title: String = _lt("kitchen_action_" + action) if Localization.has_key("kitchen_action_" + action) else str(ACTION_LABELS.get(action, _lt("ui_confirm")))
 			if action == "stir" and recipe == "drink": title = _lt("kitchen_action_stir_drink")
-			var button := _button(action_bar, "", Vector2(start + index * (width + 20), 0), Vector2(width, 112), _emit_action.bind(action), title)
+			var button := _button(action_bar, "", Vector2.ZERO, Vector2(168, 112), _emit_action.bind(action), title)
 			var icon_key: String = str(ACTION_ICONS.get(action, ""))
 			if action == "stir" and recipe == "stir_fry": icon_key = "flip"
 			if action == "stir" and recipe == "drink": icon_key = "drink_spoon"
@@ -1075,9 +1133,71 @@ func _sync_actions(actions: Array[String], paused: bool, recipe: String) -> void
 				var icon_size := Vector2(80, 80)
 				var icon := _image(button, (button.size - icon_size) * 0.5, icon_size)
 				icon.texture = _t(icon_key) if icon_key in P0Assets.PATHS else _texture(_art_path("utensils" if action in ["pot", "pan", "oven"] else "icons", icon_key))
-			action_buttons[action] = button
+				action_buttons[action] = button
+		# queue_free() keeps old controls in the tree until frame-end.  Hide the
+		# station immediately so a just-started cooking phase cannot flash the
+		# previous phase's empty panel for one frame.
+		if actions.is_empty():
+			action_bar.visible = false
+			if action_surface != null: action_surface.visible = false
+		else:
+			_relayout_action_buttons()
 	for action: Variant in action_buttons:
 		action_buttons[action].disabled = paused or _action_is_cooled(str(action))
+
+
+func _relayout_action_buttons() -> void:
+	if action_bar == null: return
+	var buttons: Array[Button] = []
+	# The dictionary is authoritative.  Nodes removed with queue_free() remain
+	# children until the end of this frame and must not revive a previous phase's
+	# panel during a resize/layout pass.
+	for button: Variant in action_buttons.values():
+		if is_instance_valid(button): buttons.append(button as Button)
+	var count := buttons.size()
+	if count == 0:
+		action_bar.visible = false
+		if action_surface != null: action_surface.visible = false
+		return
+	# Let the button count, rather than a fixed right-column card, determine the
+	# station's bounds.  While food cooks there is no action bar at all; the pot,
+	# flame and progress animation remain the status signal in the actual room.
+	var right_start := _design_width * 0.70
+	var available_width := maxf(1.0, _design_width - right_start - 48.0)
+	var minimum_touch := 44.0 / _layout_scale
+	var gap := maxf(16.0, 8.0 / _layout_scale)
+	var columns := mini(count, 3)
+	while columns > 1 and (available_width - gap * float(columns - 1)) / float(columns) < minimum_touch:
+		columns -= 1
+	var rows := ceili(float(count) / float(columns))
+	var preferred_cell_width := maxf(minimum_touch, 184.0)
+	var cell_width := minf(preferred_cell_width, (available_width - gap * float(columns - 1)) / float(columns))
+	var bar_width := cell_width * float(columns) + gap * float(columns - 1)
+	var cell_height := maxf(112.0, minimum_touch)
+	var bar_height := cell_height * float(rows) + gap * float(rows - 1)
+	var padding := maxf(12.0, 6.0 / _layout_scale)
+	var surface_size := Vector2(bar_width + padding * 2.0, bar_height + padding * 2.0)
+	var station_x := right_start + (available_width + 48.0 - surface_size.x) * 0.5
+	var station_y := clampf(520.0 - surface_size.y * 0.5, 160.0, 960.0 - surface_size.y)
+	action_bar.visible = true
+	action_bar.position = Vector2(station_x + padding, station_y + padding)
+	action_bar.size = Vector2(bar_width, bar_height)
+	if action_surface != null:
+		action_surface.visible = true
+		action_surface.position = Vector2(station_x, station_y)
+		action_surface.size = surface_size
+	for index in range(count):
+		var button := buttons[index]
+		var column := index % columns
+		var row := index / columns
+		button.position = Vector2(column * (cell_width + gap), row * (cell_height + gap))
+		button.size = Vector2(cell_width, cell_height)
+		for child: Node in button.get_children():
+			if child is TextureRect:
+				var icon := child as TextureRect
+				var side := minf(80.0, minf(button.size.x - 24.0, button.size.y - 24.0))
+				icon.position = (button.size - Vector2.ONE * side) * 0.5
+				icon.size = Vector2.ONE * side
 
 ## Test/integration lookup for actual pointer targets, including independent water.
 func button_for_action(action: String) -> Button:

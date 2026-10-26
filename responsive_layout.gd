@@ -1,11 +1,16 @@
 extends RefCounted
-## One coordinate contract for every 1536 x 1152 game surface.
-## The simulation never sees these values: it continues to use its authored
-## 1536 x 1024 room coordinates below the 80px header.
+## One coordinate contract for every game surface.
+##
+## The authored vertical rhythm remains 1152 high (80px HUD, 1024px room,
+## 48px footer), but the room's *design width* follows the usable viewport.
+## This is deliberately not a letterboxed 1536 scene: a wide display gives
+## the model a wider world and the renderer/input use that same transform.
 
 const DESIGN_SIZE := Vector2(1536, 1152)
 const TOP_BAR := 80.0
 const BOTTOM_BAR := 48.0
+const MIN_WORLD_WIDTH := 1536.0
+const MAX_WORLD_WIDTH := 4096.0
 
 static func calculate(viewport: Vector2, requested_insets: Dictionary = {}) -> Dictionary:
 	var screen := Vector2(maxf(1.0, viewport.x), maxf(1.0, viewport.y))
@@ -13,19 +18,47 @@ static func calculate(viewport: Vector2, requested_insets: Dictionary = {}) -> D
 	var usable := Rect2(Vector2(safe.left, safe.top), screen - Vector2(safe.left + safe.right, safe.top + safe.bottom))
 	usable.size.x = maxf(1.0, usable.size.x)
 	usable.size.y = maxf(1.0, usable.size.y)
-	# Do not upscale the original iPad composition.  Only shrink if a real
-	# inset or a smaller window would otherwise clip controls or the 20 tables.
-	var scale := minf(1.0, minf(usable.size.x / DESIGN_SIZE.x, usable.size.y / DESIGN_SIZE.y))
-	var content_size := DESIGN_SIZE * scale
-	var content_origin := usable.position + (usable.size - content_size) * 0.5
+	# Width has a minimum design width, while height is the fixed visual rhythm.
+	# Never cap at one: a large desktop gains real room width at the native
+	# sprite scale; a compact display uniformly shrinks actors and furniture.
+	var scale := minf(usable.size.x / DESIGN_SIZE.x, usable.size.y / DESIGN_SIZE.y)
+	var design_width := clampf(usable.size.x / maxf(scale, 0.0001), MIN_WORLD_WIDTH, MAX_WORLD_WIDTH)
+	# At the maximum supported simulation width, keep any extra host pixels as
+	# non-interactive safe gutters.  A wider HUD must never imply a wider model.
+	var content_size := Vector2(design_width * scale, DESIGN_SIZE.y * scale)
+	var content_origin := usable.get_center() - content_size * 0.5
+	var content := Rect2(content_origin, content_size)
 	return {
 		"viewport": screen,
 		"safe_insets": safe,
 		"safe_rect": usable,
 		"scale": scale,
-		"content_rect": Rect2(content_origin, content_size),
-		"room_rect": Rect2(content_origin + Vector2(0, TOP_BAR) * scale, Vector2(DESIGN_SIZE.x, DESIGN_SIZE.y - TOP_BAR - BOTTOM_BAR) * scale),
+		"content_rect": content,
+		"room_rect": Rect2(content_origin + Vector2(0, TOP_BAR) * scale, Vector2(design_width, DESIGN_SIZE.y - TOP_BAR - BOTTOM_BAR) * scale),
+		"world_size": Vector2(design_width, DESIGN_SIZE.y - TOP_BAR - BOTTOM_BAR),
 	}
+
+## Keeps the renderer, HUD and room transform attached to the width which the
+## model actually committed.  Main uses this after a transactional relayout
+## failure, so a failed model update cannot leave a wider UI over old geometry.
+static func with_world_width(layout: Dictionary, width: float) -> Dictionary:
+	var safe: Rect2 = layout.get("safe_rect", Rect2(Vector2.ZERO, DESIGN_SIZE))
+	var world_width := clampf(width, MIN_WORLD_WIDTH, MAX_WORLD_WIDTH)
+	# A relayout rejection keeps the previous world width.  Its existing scale
+	# may no longer fit a narrower safe area, so preserve the uniform transform
+	# only while clamping it to both committed-world dimensions.
+	var scale := minf(
+		maxf(0.0001, float(layout.get("scale", 1.0))),
+		minf(safe.size.x / world_width, safe.size.y / DESIGN_SIZE.y),
+	)
+	var content_size := Vector2(world_width * scale, DESIGN_SIZE.y * scale)
+	var content := Rect2(safe.get_center() - content_size * 0.5, content_size)
+	var result := layout.duplicate(true)
+	result["scale"] = scale
+	result["content_rect"] = content
+	result["room_rect"] = Rect2(content.position + Vector2(0, TOP_BAR) * scale, Vector2(world_width, DESIGN_SIZE.y - TOP_BAR - BOTTOM_BAR) * scale)
+	result["world_size"] = Vector2(world_width, DESIGN_SIZE.y - TOP_BAR - BOTTOM_BAR)
+	return result
 
 static func web_safe_insets(viewport: Vector2) -> Dictionary:
 	if not OS.has_feature("web"):

@@ -40,6 +40,8 @@ func _until(model, predicate: Callable, seconds: float = 90.0) -> bool:
 func _semantic(snapshot: Dictionary) -> Dictionary:
 	var result: Dictionary = snapshot.duplicate(true)
 	result.erase("version")
+	result.erase("layout_width")
+	result.erase("layout_revision")
 	# V2/V3 did not contain an interactive kitchen. Normalize only absent new
 	# metadata to its required V4 defaults; never erase values from the result.
 	# A non-default session, policy, token or return-pause would still fail.
@@ -77,11 +79,11 @@ func _migrate(old, label: String):
 		return null
 	_check(Support.same(source, before), label + " source snapshot is unchanged")
 	_check(Support.same(serialized, serialized_before), label + " caller's decoded V2 dictionary is unchanged")
-	_check(int(result.to_dict().version) == 4, label + " output schema is explicitly V4")
+	_check(int(result.to_dict().version) == 5, label + " output schema is explicitly V5")
 	_check(Support.same(_semantic(result.to_dict()), _semantic(source)), label + " business state, timers, patience and claims are unchanged")
 	_check(result.validate_invariants().is_empty(), label + " relocated actors and task references are valid")
 	for table: Dictionary in result.tables:
-		_check((table.center as Vector2).is_equal_approx(Floor.table_center(int(table.id))), label + " table uses new canonical center")
+		_check((table.center as Vector2).is_equal_approx(result.floor.table_center(int(table.id))), label + " table uses new canonical center")
 	var reopened = Model.new()
 	_check(reopened.restore(JSON.parse_string(JSON.stringify(result.to_dict()))), label + " migrated V4 snapshot reopens")
 	_check(Support.same(reopened.to_dict(), result.to_dict()), label + " V4 reopen never reruns layout migration")
@@ -103,9 +105,9 @@ func _finish(model, expected_coins: int) -> void:
 
 
 func _run() -> void:
-	_check(Model.SAVE_VERSION == 4, "current schema includes the new layout and interactive kitchen")
-	_check(Floor.SIZE == Vector2(1536, 1024), "new floor dimensions are active")
-	_check(Floor.table_center(1) != OldFloor.table_center(1), "fixtures use a distinct old layout")
+	_check(Model.SAVE_VERSION == 5, "current schema includes wide layout and interactive kitchen")
+	_check(Floor.create().SIZE == Vector2(1536, 1024), "new floor dimensions are active")
+	_check(Floor.create().table_center(1) != OldFloor.table_center(1), "fixtures use a distinct old layout")
 	_test_queue_walking_and_cooking()
 	_test_unseated_departures()
 	_test_service_claims()
@@ -125,7 +127,7 @@ func _test_queue_walking_and_cooking() -> void:
 	if migrated != null:
 		_check(migrated.paused and migrated.queue_ids().size() == 2, "queued pause and ordering survive")
 		for index: int in range(2):
-			_check((migrated.customers[index + 1].pos as Vector2).is_equal_approx(Floor.queue_point(index)), "queued guest is at new queue anchor")
+			_check((migrated.customers[index + 1].pos as Vector2).is_equal_approx(migrated.floor.queue_point(index)), "queued guest is at new queue anchor")
 	var walking = _old_model()
 	walking.spawn_customer("panda")
 	walking.assign_next(20)
@@ -133,7 +135,7 @@ func _test_queue_walking_and_cooking() -> void:
 	migrated = _migrate(walking, "reserved walking guest")
 	if migrated != null:
 		_check(migrated.customers[1].state == "walking" and migrated.tables[19].phase == "reserved", "walking reservation is not released")
-		_check((migrated.customers[1].pos as Vector2).is_equal_approx(Floor.entrance_point()), "walking route restarts at new entrance")
+		_check((migrated.customers[1].pos as Vector2).is_equal_approx(migrated.floor.entrance_point()), "walking route restarts at new entrance")
 	_check(_until(walking, func() -> bool: return walking.table_action(20) == "order"), "old guest reaches seated ordering")
 	_migrate(walking, "seated ordering guest")
 	walking.act(20, "order")
@@ -190,7 +192,7 @@ func _test_service_claims() -> void:
 	old.tick(0.2)
 	var migrated = _migrate(old, "claimed food partially placed")
 	if migrated != null:
-		_check(migrated.workers[1].path.is_empty() and (migrated.workers[1].pos as Vector2).is_equal_approx(Floor.service_point(20)), "working worker stays at the new service point")
+		_check(migrated.workers[1].path.is_empty() and (migrated.workers[1].pos as Vector2).is_equal_approx(migrated.floor.service_point(20)), "working worker stays at the new service point")
 		_finish(migrated, 38)
 	_check(_until(old, func() -> bool: return old.workers[1].state == "returning"), "old worker completes food delivery")
 	_migrate(old, "returning worker and queued drink")
@@ -250,9 +252,11 @@ func _test_rejections_and_v1() -> void:
 	mislabeled.version = 3
 	_check(not target.restore(mislabeled), "V3 never silently treats legacy geometry as V2")
 	var legacy: Dictionary = {"version": 1, "phase": "ready_next", "coins": 76, "served": 2, "lost": 1, "customer_id": 3, "paused": true}
+	target = Model.new(2560.0)
 	_check(target.restore(legacy), "existing completed V1 migration remains supported")
 	_check(target.coins == 76 and target.served == 2 and target.lost == 1 and target.paused, "V1 statistics and pause survive")
-	_check(int(target.to_dict().version) == 4, "V1 migration now writes V4")
+	_check(is_equal_approx(target.floor.layout_width, 2560.0), "V1 migration preserves receiver layout width")
+	_check(int(target.to_dict().version) == 5, "V1 migration now writes V5")
 	before = target.to_dict()
 	legacy.phase = "eating"
 	_check(not target.restore(legacy) and Support.same(target.to_dict(), before), "mid-service V1 remains explicitly rejected")

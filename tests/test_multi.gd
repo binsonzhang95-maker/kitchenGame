@@ -50,10 +50,10 @@ func _check_state(model, label: String, paths: bool = false) -> void:
 	for actor: Dictionary in actors:
 		route_samples += 1
 		var previous: Vector2 = actor.pos
-		_expect(Floor.is_walkable(previous), label + ": actor stays outside furniture")
+		_expect(model.floor.is_walkable(previous), label + ": actor stays outside furniture")
 		_expect(not bool(actor.route_blocked), label + ": actor has a valid destination route")
 		for point: Vector2 in actor.path:
-			_expect(Floor.segment_is_walkable(previous, point), label + ": entire pending path avoids furniture")
+			_expect(model.floor.segment_is_walkable(previous, point), label + ": entire pending path avoids furniture")
 			previous = point
 
 

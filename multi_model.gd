@@ -3,9 +3,10 @@ extends RefCounted
 ## Constructing this model creates no guests and performs no file IO.
 
 const Floor = preload("res://floor_plan.gd")
+const FloorLayout = preload("res://floor_layout.gd")
 const CookingSession = preload("res://cooking_session.gd")
 const RecipeCatalog = preload("res://recipe_catalog.gd")
-const SAVE_VERSION: int = 4
+const SAVE_VERSION: int = 5
 ## Original public menu/API. A new model deliberately starts here.
 const RECIPE_IDS: Array[String] = ["soup", "stir_fry", "bake", "drink"]
 const CLASSIC_MENU: Array[String] = ["soup", "stir_fry", "bake", "drink"]
@@ -63,14 +64,19 @@ var legacy_served: int = 0
 var legacy_lost: int = 0
 ## Runtime policy only: it is intentionally absent from snapshots.
 var _order_menu: Array[String] = ["soup", "stir_fry", "bake", "drink"]
-## A V4 snapshot has no navigation-revision field. These runtime-only keys keep
-## each serialized route byte-for-byte until that particular actor first moves.
+## Only V3/V4 snapshots have no navigation-revision field. These runtime-only
+## keys keep each old serialized route byte-for-byte until that actor first
+## moves. V5 paths are always checked against seat reservations on restore.
 ## Customer and worker keys are namespaced because their numeric IDs overlap.
 var _legacy_route_pending: Dictionary = {}
+## The map belongs to this model.  It is deliberately not a singleton: two
+## previews may run at different landscape widths without sharing navigation.
+var floor
 
 
-func _init() -> void:
-	for definition: Dictionary in Floor.table_definitions():
+func _init(width: float = 1536.0) -> void:
+	floor = Floor.create(width)
+	for definition: Dictionary in floor.table_definitions():
 		tables.append({"id": int(definition.id), "zone": str(definition.zone), "label": str(definition.label), "center": definition.center, "phase": "free", "guest_id": 0, "food": false, "drink": false, "elapsed": 0.0, "used": false, "generation": 0, "ordered_at": 0.0, "recipe_id": ""})
 	tables.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return int(a.id) < int(b.id))
 	for id: int in range(2):
@@ -78,7 +84,7 @@ func _init() -> void:
 
 
 func worker_home(id: int) -> Vector2:
-	return Floor.worker_home(id)
+	return floor.worker_home(id)
 
 
 func enable_player_mode() -> void:
@@ -235,9 +241,9 @@ func spawn_customer(species: String = "") -> int:
 	next_customer_id += 1
 	if species.is_empty():
 		species = SPECIES[(id - 1) % SPECIES.size()]
-	var guest: Dictionary = {"id": id, "species": species, "table_id": 0, "state": "queued", "pos": Floor.entrance_point(), "path": [], "patience": 45.0, "paid": false, "timed_out": false, "created": clock, "route_blocked": false}
+	var guest: Dictionary = {"id": id, "species": species, "table_id": 0, "state": "queued", "pos": floor.entrance_point(), "path": [], "patience": 45.0, "paid": false, "timed_out": false, "created": clock, "route_blocked": false}
 	customers[id] = guest
-	_route_to(guest, Floor.queue_point(queue_ids().size() - 1))
+	_route_to(guest, floor.queue_point(queue_ids().size() - 1))
 	return id
 
 
@@ -257,7 +263,7 @@ func assign_next(table_id: int) -> bool:
 	guest.table_id = table_id
 	guest.state = "walking"
 	guest.patience = 120.0
-	_route_to(guest, Floor.seat_point(table_id))
+	_route_to(guest, floor.seat_point(table_id))
 	next_table_cursor = table_id % tables.size()
 	_reflow_queue()
 	return true
@@ -374,10 +380,10 @@ func claim_task(worker_id: int, task_id: int) -> bool:
 	worker.elapsed = 0.0
 	if task.kind == "clean":
 		worker.state = "to_table"
-		_route_to(worker, Floor.service_point(int(task.table_id)))
+		_route_to(worker, floor.service_point(int(task.table_id)))
 	else:
 		worker.state = "to_kitchen"
-		_route_to(worker, Floor.kitchen_point())
+		_route_to(worker, floor.kitchen_point())
 		_set_phase(_table(int(task.table_id)), "serving_food" if task.kind == "food" else "serving_drink")
 	return true
 
@@ -504,7 +510,7 @@ func _tick_workers(delta: float) -> void:
 		if worker.state == "to_kitchen":
 			if _move_actor(worker, WORK_SPEED, delta):
 				worker.state = "to_table"
-				_route_to(worker, Floor.service_point(int(table.id)))
+				_route_to(worker, floor.service_point(int(table.id)))
 		elif worker.state == "to_table":
 			if _move_actor(worker, WORK_SPEED, delta):
 				worker.state = "working"
@@ -566,7 +572,7 @@ func _begin_leave(guest: Dictionary, timeout: bool) -> void:
 				tasks.erase(task)
 		_set_phase(table, "leaving")
 	guest.state = "leaving"
-	_route_to(guest, Floor.entrance_point())
+	_route_to(guest, floor.entrance_point())
 	_reflow_queue()
 
 
@@ -585,7 +591,7 @@ func _release_table(table: Dictionary) -> void:
 
 
 func _route_to(actor: Dictionary, destination: Vector2) -> void:
-	var path: Array[Vector2] = Floor.route_avoiding_seats(actor.pos, destination, _seat_exceptions_for(actor, destination))
+	var path: Array[Vector2] = floor.route_avoiding_seats(actor.pos, destination, _seat_exceptions_for(actor, destination))
 	actor.path = path
 	actor.route_blocked = path.is_empty() and not (actor.pos as Vector2).is_equal_approx(destination)
 	# A freshly generated route is built against the current reservations, so it
@@ -627,7 +633,7 @@ func _seat_exceptions_for(actor: Dictionary, destination: Vector2) -> Array[int]
 	# reservation. A leaving customer retains table_id, so state is essential.
 	if actor.has("paid") and str(actor.get("state", "")) == "walking":
 		var table_id: int = int(actor.get("table_id", 0))
-		if table_id >= 1 and table_id <= tables.size() and destination.is_equal_approx(Floor.seat_point(table_id)):
+		if table_id >= 1 and table_id <= tables.size() and destination.is_equal_approx(floor.seat_point(table_id)):
 			return [table_id]
 	return []
 
@@ -648,11 +654,11 @@ func _clear_legacy_route(actor: Dictionary) -> void:
 func _reflow_queue() -> void:
 	var ids: Array[int] = queue_ids()
 	for index: int in range(ids.size()):
-		_route_to(customers[ids[index]], Floor.queue_point(index))
+		_route_to(customers[ids[index]], floor.queue_point(index))
 
 
 func to_dict() -> Dictionary:
-	return _encode({"version": SAVE_VERSION, "tables": tables, "customers": customers, "workers": workers, "tasks": tasks, "coins": coins, "served": served, "lost": lost, "rejected": rejected, "paused": paused, "open_for_arrivals": open_for_arrivals, "auto_seat": auto_seat, "auto_dispatch": auto_dispatch, "auto_cook": auto_cook, "interactive_cooking": interactive_cooking, "active_cooking": active_cooking, "cooking_return_paused": cooking_return_paused, "cooking_session_seq": cooking_session_seq, "cooking_session_token": cooking_session_token, "max_customers": max_customers, "clock": clock, "chef": chef, "paid_ledger": paid_ledger, "lost_ledger": lost_ledger, "next_customer_id": next_customer_id, "next_task_id": next_task_id, "next_table_cursor": next_table_cursor, "arrival_elapsed": arrival_elapsed, "legacy_served": legacy_served, "legacy_lost": legacy_lost})
+	return _encode({"version": SAVE_VERSION, "layout_width": floor.layout_width, "layout_revision": floor.revision, "tables": tables, "customers": customers, "workers": workers, "tasks": tasks, "coins": coins, "served": served, "lost": lost, "rejected": rejected, "paused": paused, "open_for_arrivals": open_for_arrivals, "auto_seat": auto_seat, "auto_dispatch": auto_dispatch, "auto_cook": auto_cook, "interactive_cooking": interactive_cooking, "active_cooking": active_cooking, "cooking_return_paused": cooking_return_paused, "cooking_session_seq": cooking_session_seq, "cooking_session_token": cooking_session_token, "max_customers": max_customers, "clock": clock, "chef": chef, "paid_ledger": paid_ledger, "lost_ledger": lost_ledger, "next_customer_id": next_customer_id, "next_task_id": next_task_id, "next_table_cursor": next_table_cursor, "arrival_elapsed": arrival_elapsed, "legacy_served": legacy_served, "legacy_lost": legacy_lost})
 
 
 func _encode(value: Variant) -> Variant:
@@ -674,18 +680,34 @@ func _encode(value: Variant) -> Variant:
 func restore(data: Dictionary) -> bool:
 	if not _integer(data.get("version")):
 		return false
-	if int(data.version) < SAVE_VERSION:
+	var schema: int = int(data.version)
+	if schema in [1, 2, 3]:
 		for key: String in ["interactive_cooking", "active_cooking", "cooking_return_paused", "cooking_session_seq", "cooking_session_token"]:
 			if data.has(key):
 				return false
-	if int(data.version) == 1:
+	if schema == 1:
 		return _restore_v1(data)
-	if int(data.version) == 2:
+	if schema == 2:
 		return _restore_v2(data)
-	if int(data.version) not in [3, SAVE_VERSION]:
+	if schema not in [3, 4, SAVE_VERSION]:
 		return false
+	var receiving_width: float = floor.layout_width
 	var candidate = get_script().new()
+	# V3/V4 coordinates belong to the frozen b082 map.  They must pass all old
+	# anti-forgery/path checks there before any actor is placed on the wide map.
+	if schema in [3, 4]:
+		candidate.floor = Floor
 	if not candidate._read_snapshot(data) or not candidate.validate_invariants().is_empty():
+		return false
+	if schema in [3, 4]:
+		if not candidate._relayout_runtime(receiving_width, false):
+			return false
+	elif not is_equal_approx(candidate.floor.layout_width, receiving_width):
+		if not candidate._relayout_runtime(receiving_width):
+			return false
+	# Migration produces a different geometry.  Validate that actual target map
+	# before committing, so a bad route can never partially replace this model.
+	if not candidate.validate_invariants().is_empty():
 		return false
 	_copy_from(candidate)
 	return true
@@ -695,9 +717,12 @@ func _restore_v2(data: Dictionary) -> bool:
 	# Decode into a private candidate. Spatial data is intentionally rebuilt;
 	# economic state, phases, clocks, patience, and task identities are untouched.
 	var candidate = get_script().new()
+	candidate.floor = Floor
 	if not candidate._read_snapshot(data) or not candidate._is_v2_layout():
 		return false
 	if not candidate._relocate_v2_actors() or not candidate.validate_invariants().is_empty():
+		return false
+	if not candidate._relayout_runtime(floor.layout_width, false) or not candidate.validate_invariants().is_empty():
 		return false
 	_copy_from(candidate)
 	return true
@@ -713,9 +738,44 @@ func _is_v2_layout() -> bool:
 	return true
 
 
+func _floor_definition(id: int) -> Dictionary:
+	var definitions: Array[Dictionary] = floor.table_definitions()
+	return definitions[id - 1] if id >= 1 and id <= definitions.size() else {}
+
+
+func _map_actor_position(actor: Dictionary, old_floor, destination: Vector2, seat_exceptions: Array[int] = []) -> bool:
+	var old_position: Vector2 = actor.pos
+	if not old_floor.is_walkable(old_position):
+		return false
+	# The two 155px edge bands are anchored to their respective room edges.  In
+	# particular, return routes for the outer service columns use attachment
+	# points in these bands: scaling such a point through the middle span can put
+	# it outside the new floor (and beyond the deliberately bounded nearest-point
+	# fallback).  Only the central span is proportional.
+	var old_inner_left: float = 155.0
+	var old_inner_right: float = float(old_floor.layout_width) - 155.0
+	var mapped_x: float = old_position.x
+	if old_position.x >= old_inner_right:
+		mapped_x = floor.layout_width - (float(old_floor.layout_width) - old_position.x)
+	elif old_position.x > old_inner_left:
+		var progress: float = inverse_lerp(old_inner_left, old_inner_right, old_position.x)
+		mapped_x = lerpf(old_inner_left, floor.layout_width - old_inner_left, progress)
+	var mapped: Vector2 = Vector2(mapped_x, old_position.y)
+	var legal: Vector2 = floor.nearest_walkable_avoiding_seats(mapped, seat_exceptions)
+	if legal.x < 0.0:
+		return false
+	actor.pos = legal
+	actor.path = []
+	actor.route_blocked = false
+	# Do not accept an arbitrary nearest point across the room: it must be able
+	# to reach the actor's existing business-state destination on the new map.
+	var route: Array[Vector2] = floor.route_avoiding_seats(legal, destination, seat_exceptions)
+	return not route.is_empty() or legal.is_equal_approx(destination)
+
+
 func _relocate_v2_actors() -> bool:
 	for table: Dictionary in tables:
-		table.center = Floor.table_center(int(table.id))
+		table.center = floor.table_center(int(table.id))
 	var queue: Array[int] = queue_ids()
 	for id: int in customers:
 		var guest: Dictionary = customers[id]
@@ -732,20 +792,20 @@ func _relocate_v2_actors() -> bool:
 			"queued":
 				if table_id != 0:
 					return false
-				guest.pos = Floor.queue_point(queue.find(id))
+				guest.pos = floor.queue_point(queue.find(id))
 			"walking":
 				if table.is_empty():
 					return false
-				guest.pos = Floor.entrance_point()
-				_route_to(guest, Floor.seat_point(table_id))
+				guest.pos = floor.entrance_point()
+				_route_to(guest, floor.seat_point(table_id))
 			"seated":
 				if table.is_empty():
 					return false
-				guest.pos = Floor.seat_point(table_id)
+				guest.pos = floor.seat_point(table_id)
 			"leaving":
 				# A guest may have reserved a table but timed out before sitting.
-				guest.pos = Floor.seat_point(table_id) if not table.is_empty() and bool(table.used) else Floor.queue_point(0)
-				_route_to(guest, Floor.entrance_point())
+				guest.pos = floor.seat_point(table_id) if not table.is_empty() and bool(table.used) else floor.queue_point(0)
+				_route_to(guest, floor.entrance_point())
 	for index: int in range(workers.size()):
 		var worker: Dictionary = workers[index]
 		if int(worker.id) != index or worker.state not in WORKER_STATES or bool(worker.route_blocked):
@@ -761,28 +821,133 @@ func _relocate_v2_actors() -> bool:
 		if worker.state == "idle":
 			worker.pos = worker_home(index)
 		elif worker.state == "returning":
-			worker.pos = Floor.kitchen_point()
+			worker.pos = floor.kitchen_point()
 			_route_to(worker, worker_home(index))
 		else:
 			var task: Dictionary = _task(int(worker.task_id))
 			if task.is_empty() or _table(int(task.table_id)).is_empty():
 				return false
-			var destination: Vector2 = Floor.service_point(int(task.table_id))
+			var destination: Vector2 = floor.service_point(int(task.table_id))
 			match str(worker.state):
 				"to_kitchen":
 					worker.pos = worker_home(index)
-					_route_to(worker, Floor.kitchen_point())
+					_route_to(worker, floor.kitchen_point())
 				"to_table":
-					worker.pos = worker_home(index) if task.kind == "clean" else Floor.kitchen_point()
+					worker.pos = worker_home(index) if task.kind == "clean" else floor.kitchen_point()
 					_route_to(worker, destination)
 				"working":
 					worker.pos = destination
 	return true
 
 
+## Geometry-only migration used by viewport changes and validated legacy loads.
+## It intentionally never calls tick(), changes a phase, settles a ledger, or
+## completes a cooking session.  Actor positions/routes are the only state
+## regenerated, and their endpoints are derived from their already-validated
+## business state.
+func _relayout_runtime(width: float, preserve_runtime_position: bool = true) -> bool:
+	if not FloorLayout.valid_width(width):
+		return false
+	var previous_floor = floor
+	floor = Floor.create(width)
+	for table: Dictionary in tables:
+		var definition: Dictionary = _floor_definition(int(table.id))
+		if definition.is_empty():
+			return false
+		table.center = definition.center
+		table.zone = definition.zone
+		table.label = definition.label
+	var queue: Array[int] = queue_ids()
+	for id: int in customers:
+		var guest: Dictionary = customers[id]
+		var table_id: int = int(guest.table_id)
+		var table: Dictionary = _table(table_id)
+		guest.path = []
+		guest.route_blocked = false
+		match str(guest.state):
+			"queued":
+				if table_id != 0:
+					return false
+				guest.pos = floor.queue_point(queue.find(id))
+			"walking":
+				if table.is_empty():
+					return false
+				if preserve_runtime_position and not _map_actor_position(guest, previous_floor, floor.seat_point(table_id), [table_id]):
+					return false
+				elif not preserve_runtime_position:
+					guest.pos = floor.entrance_point()
+				_route_to(guest, floor.seat_point(table_id))
+			"seated":
+				if table.is_empty():
+					return false
+				guest.pos = floor.seat_point(table_id)
+			"leaving":
+				if preserve_runtime_position and not _map_actor_position(guest, previous_floor, floor.entrance_point()):
+					return false
+				elif not preserve_runtime_position:
+					guest.pos = floor.seat_point(table_id) if not table.is_empty() and bool(table.used) else floor.queue_point(0)
+				_route_to(guest, floor.entrance_point())
+	for index: int in range(workers.size()):
+		var worker: Dictionary = workers[index]
+		worker.path = []
+		worker.route_blocked = false
+		match str(worker.state):
+			"idle":
+				worker.pos = worker_home(index)
+			"returning":
+				if preserve_runtime_position and not _map_actor_position(worker, previous_floor, worker_home(index)):
+					return false
+				elif not preserve_runtime_position:
+					worker.pos = floor.kitchen_point()
+				_route_to(worker, worker_home(index))
+			"to_kitchen":
+				if preserve_runtime_position and not _map_actor_position(worker, previous_floor, floor.kitchen_point()):
+					return false
+				elif not preserve_runtime_position:
+					worker.pos = worker_home(index)
+				_route_to(worker, floor.kitchen_point())
+			"to_table", "working":
+				var task: Dictionary = _task(int(worker.task_id))
+				if task.is_empty():
+					return false
+				var destination: Vector2 = floor.service_point(int(task.table_id))
+				if worker.state == "working":
+					worker.pos = destination
+				else:
+					if preserve_runtime_position and not _map_actor_position(worker, previous_floor, destination):
+						return false
+					elif not preserve_runtime_position:
+						worker.pos = worker_home(index) if task.kind == "clean" else floor.kitchen_point()
+					_route_to(worker, destination)
+	return true
+
+
+func relayout(width: float) -> bool:
+	if not FloorLayout.valid_width(width):
+		return false
+	# A no-op is explicitly successful and must not churn paths, clocks or state.
+	if is_equal_approx(width, floor.layout_width):
+		return true
+	# Use the V5 decoder as a deep-copy transaction; a failed route or invariant
+	# leaves this model exactly untouched.
+	var candidate = get_script().new(floor.layout_width)
+	if not candidate.restore(to_dict()) or not candidate._relayout_runtime(width) or not candidate.validate_invariants().is_empty():
+		return false
+	_copy_from(candidate)
+	return true
+
+
 func _read_snapshot(data: Dictionary) -> bool:
 	var schema: int = int(data.get("version", 0))
 	if schema == SAVE_VERSION:
+		if not _number(data.get("layout_width")) or not _integer(data.get("layout_revision")):
+			return false
+		var saved_width: float = float(data.layout_width)
+		var saved_revision: int = int(data.layout_revision)
+		if not FloorLayout.valid_revision(saved_width, saved_revision):
+			return false
+		floor = Floor.create(saved_width)
+	if schema in [4, SAVE_VERSION]:
 		if typeof(data.get("interactive_cooking")) != TYPE_BOOL or typeof(data.get("cooking_return_paused")) != TYPE_BOOL or not data.get("active_cooking") is Dictionary or not _integer(data.get("cooking_session_seq")) or not _integer(data.get("cooking_session_token")):
 			return false
 	else:
@@ -812,7 +977,7 @@ func _read_snapshot(data: Dictionary) -> bool:
 		if not raw is Dictionary or not _fields(raw, ["id", "guest_id", "generation"], ["elapsed", "ordered_at"], ["zone", "label", "phase"], ["food", "drink", "used"]) or not _vector(raw.get("center")):
 			return false
 		var item: Dictionary = raw.duplicate(true)
-		if schema == SAVE_VERSION:
+		if schema in [4, SAVE_VERSION]:
 			if typeof(raw.get("recipe_id")) != TYPE_STRING:
 				return false
 		else:
@@ -888,13 +1053,14 @@ func _read_snapshot(data: Dictionary) -> bool:
 	arrival_elapsed = float(data.arrival_elapsed)
 	legacy_served = int(data.legacy_served)
 	legacy_lost = int(data.legacy_lost)
-	# Do not alter serialized actor paths while paused. Keep compatibility scoped
-	# to each nonempty restored route, and clear it after that actor's first move.
+	# V5 paths are current, persisted geometry and must pass reservation checks.
+	# Only actual V3/V4 routes get the one-move compatibility exemption.
 	_legacy_route_pending.clear()
-	for guest: Dictionary in customers.values():
-		_mark_legacy_route(guest)
-	for worker: Dictionary in workers:
-		_mark_legacy_route(worker)
+	if schema in [3, 4]:
+		for guest: Dictionary in customers.values():
+			_mark_legacy_route(guest)
+		for worker: Dictionary in workers:
+			_mark_legacy_route(worker)
 	return true
 
 
@@ -908,7 +1074,7 @@ func _restore_v1(data: Dictionary) -> bool:
 			return false
 	if int(data.coins) != int(data.served) * MEAL_PRICE or int(data.customer_id) != int(data.served) + int(data.lost):
 		return false
-	var candidate = get_script().new()
+	var candidate = get_script().new(floor.layout_width)
 	candidate.coins = int(data.coins)
 	candidate.served = int(data.served)
 	candidate.lost = int(data.lost)
@@ -916,16 +1082,21 @@ func _restore_v1(data: Dictionary) -> bool:
 	candidate.legacy_lost = int(data.lost)
 	candidate.next_customer_id = int(data.customer_id) + 1
 	candidate.paused = data.paused
+	if not candidate.validate_invariants().is_empty():
+		return false
 	_copy_from(candidate)
 	return true
 
 
 func _copy_from(other) -> void:
 	var keep_interactive: bool = interactive_cooking
-	tables = other.tables
-	customers = other.customers
-	workers = other.workers
-	tasks = other.tasks
+	# The candidate owns an isolated, lazily-built layout.  Transfer it rather
+	# than rebuilding a second grid during every resize/restore transaction.
+	floor = other.floor
+	tables = other.tables.duplicate(true)
+	customers = other.customers.duplicate(true)
+	workers = other.workers.duplicate(true)
+	tasks = other.tasks.duplicate(true)
 	coins = other.coins
 	served = other.served
 	lost = other.lost
@@ -942,9 +1113,9 @@ func _copy_from(other) -> void:
 	cooking_session_token = other.cooking_session_token
 	max_customers = other.max_customers
 	clock = other.clock
-	chef = other.chef
-	paid_ledger = other.paid_ledger
-	lost_ledger = other.lost_ledger
+	chef = other.chef.duplicate(true)
+	paid_ledger = other.paid_ledger.duplicate(true)
+	lost_ledger = other.lost_ledger.duplicate(true)
 	next_customer_id = other.next_customer_id
 	next_task_id = other.next_task_id
 	next_table_cursor = other.next_table_cursor
@@ -1042,7 +1213,8 @@ func validate_invariants() -> Array[String]:
 	var unresolved_guests: int = 0
 	for index: int in range(tables.size()):
 		var table: Dictionary = tables[index]
-		if int(table.id) != index + 1 or table.phase not in TABLE_PHASES or not (table.center as Vector2).is_equal_approx(Floor.table_center(int(table.id))):
+		var definition: Dictionary = _floor_definition(index + 1)
+		if int(table.id) != index + 1 or table.phase not in TABLE_PHASES or definition.is_empty() or str(table.zone) != str(definition.zone) or str(table.label) != str(definition.label) or not (table.center as Vector2).is_equal_approx(floor.table_center(int(table.id))):
 			errors.append("Invalid table identity/phase/geometry at %d" % (index + 1))
 		var guest_id: int = int(table.guest_id)
 		if (table.phase == "free" and str(table.get("recipe_id", "")) != "") or (table.phase != "free" and not _recipe_supported(str(table.get("recipe_id", "")))):
@@ -1099,11 +1271,11 @@ func validate_invariants() -> Array[String]:
 				errors.append("Leaving guest table released too early")
 			if guest.state == "seated" and table.phase in ["free", "reserved", "leaving", "dirty", "collecting", "wiping"]:
 				errors.append("Seated guest has incompatible table phase")
-		var destination: Vector2 = Floor.entrance_point()
+		var destination: Vector2 = floor.entrance_point()
 		if guest.state == "queued":
-			destination = Floor.queue_point(queue_ids().find(id))
+			destination = floor.queue_point(queue_ids().find(id))
 		elif guest.state in ["walking", "seated"]:
-			destination = Floor.seat_point(int(guest.table_id))
+			destination = floor.seat_point(int(guest.table_id))
 		if not _valid_actor_route(guest, destination):
 			errors.append("Customer route crosses furniture or has wrong destination %d" % id)
 	if next_customer_id - 1 != served + lost + unresolved_guests:
@@ -1163,13 +1335,13 @@ func validate_invariants() -> Array[String]:
 				errors.append("Free worker retains task")
 		elif not worker_claims.has(index) or int(worker.task_id) != int(worker_claims[index]):
 			errors.append("Busy worker has no matching claim")
-		var destination: Vector2 = Floor.kitchen_point()
+		var destination: Vector2 = floor.kitchen_point()
 		if worker.state in ["idle", "returning"]:
 			destination = worker_home(index)
 		elif worker.state in ["to_table", "working"]:
 			var task: Dictionary = _task(int(worker.task_id))
 			if not task.is_empty():
-				destination = Floor.service_point(int(task.table_id))
+				destination = floor.service_point(int(task.table_id))
 		if not _valid_actor_route(worker, destination):
 			errors.append("Worker route crosses furniture or has wrong destination %d" % index)
 		if worker.state == "working" and (not worker.path.is_empty() or not (worker.pos as Vector2).is_equal_approx(destination)):
@@ -1185,16 +1357,16 @@ func validate_invariants() -> Array[String]:
 
 func _valid_actor_route(actor: Dictionary, destination: Vector2) -> bool:
 	var previous: Vector2 = actor.pos
-	if bool(actor.get("route_blocked", false)) or not Floor.is_walkable(previous):
+	if bool(actor.get("route_blocked", false)) or not floor.is_walkable(previous):
 		return false
 	var exceptions: Array[int] = _seat_exceptions_for(actor, destination)
 	for point: Vector2 in actor.path:
-		if not Floor.segment_is_walkable(previous, point):
+		if not floor.segment_is_walkable(previous, point):
 			return false
 		previous = point
 	if not previous.is_equal_approx(destination):
 		return false
-	return _legacy_route_pending.has(_actor_route_key(actor)) or Floor.path_avoids_seats(actor.pos, actor.path, exceptions)
+	return _legacy_route_pending.has(_actor_route_key(actor)) or floor.path_avoids_seats(actor.pos, actor.path, exceptions)
 
 
 func save_to(path: String) -> Error:

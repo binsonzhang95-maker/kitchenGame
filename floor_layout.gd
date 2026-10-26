@@ -1,0 +1,464 @@
+extends RefCounted
+## Runtime-wide restaurant geometry.  Every Model owns one of these; no layout
+## cache is shared between games.  Coordinates remain in the 1024-unit tall
+## world so responsive_layout can apply one uniform scale.
+
+const HEIGHT := 1024.0
+const RENDER_SCALE := 0.75
+## 24-unit cells keep a 4096-wide route search responsive while leaving more
+## than four nodes between the closest table footprints.
+const CELL := 24
+const CLEARANCE := 2.0
+const EDGE_MARGIN := 4.0
+const SEAT_RESERVATION_SIZE := Vector2(64, 32)
+const MIN_WIDTH := 1536.0
+const MAX_WIDTH := 4096.0
+
+var SIZE := Vector2(MIN_WIDTH, HEIGHT)
+var COUNTER := Rect2()
+var layout_width: float = MIN_WIDTH
+var revision: int = 1
+var _definitions: Array[Dictionary] = []
+var _obstacles: Array[Rect2] = []
+var _floor_regions: Array[Rect2] = []
+var _seat_regions: Array[Rect2] = []
+var _columns: int = 0
+var _rows: int = 0
+var _walkable := PackedByteArray()
+var _neighbors: Array = []
+var _seat_masks: Dictionary = {}
+var _seat_nodes: Array = []
+
+
+func _init(width: float = MIN_WIDTH, layout_revision: int = 1) -> void:
+	if not valid_width(width) or layout_revision != revision_for_width(width):
+		width = MIN_WIDTH
+		layout_revision = revision_for_width(width)
+	layout_width = snappedf(width, 0.01)
+	revision = layout_revision
+	SIZE = Vector2(layout_width, HEIGHT)
+	_build()
+
+
+static func valid_width(width: float) -> bool:
+	return is_finite(width) and width >= MIN_WIDTH and width <= MAX_WIDTH
+
+
+static func revision_for_width(width: float) -> int:
+	# Layouts are entirely geometric; quantising to the persisted hundredth makes
+	# the revision reproducible and prevents a forged width/revision pairing.
+	return int(roundi(snappedf(width, 0.01) * 100.0))
+
+
+static func valid_revision(width: float, value: int) -> bool:
+	return valid_width(width) and value == revision_for_width(width)
+
+
+func table_definitions() -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	for item: Dictionary in _definitions:
+		result.append(item.duplicate(true))
+	return result
+
+
+func table_center(id: int) -> Vector2:
+	return _definitions[id - 1].center if id >= 1 and id <= _definitions.size() else Vector2(-1, -1)
+
+
+func seat_point(id: int) -> Vector2:
+	if id < 1 or id > 20:
+		return Vector2(-1, -1)
+	# The bar stools are drawn one pixel higher than ordinary chairs.  This is
+	# the sprite support point used by both navigation and the renderer.
+	return table_center(id) + Vector2(0, 1 if id >= 19 else 12)
+
+
+func service_point(id: int) -> Vector2:
+	if id < 1 or id > 20:
+		return Vector2(-1, -1)
+	return table_center(id) + Vector2(84, 24)
+
+
+func seat_reservation(id: int) -> Rect2:
+	return _seat_regions[id - 1] if id >= 1 and id <= _seat_regions.size() else Rect2()
+
+
+func kitchen_point() -> Vector2:
+	return Vector2(layout_width * 0.5 + 88, 278)
+
+
+func worker_home(id: int) -> Vector2:
+	return Vector2(layout_width * 0.5 - 176 + 64 * clampi(id, 0, 1), 278)
+
+
+func entrance_point() -> Vector2:
+	return Vector2(layout_width * 0.5, 1000)
+
+
+func queue_point(index: int) -> Vector2:
+	# Eight 96px-tall actors stand here.  Keeping their support line below the
+	# final table row prevents their sprites and hit targets from covering it.
+	return Vector2(layout_width * 0.5 - 126 + 36 * clampi(index, 0, 7), 985)
+
+
+func floor_regions() -> Array[Rect2]:
+	return _floor_regions.duplicate()
+
+
+func obstacles() -> Array[Rect2]:
+	return _obstacles.duplicate()
+
+
+func is_walkable(position: Vector2) -> bool:
+	if not is_finite(position.x) or not is_finite(position.y):
+		return false
+	if position.x < EDGE_MARGIN or position.x > SIZE.x - EDGE_MARGIN or position.y < EDGE_MARGIN or position.y > SIZE.y - EDGE_MARGIN:
+		return false
+	var on_floor := false
+	for region: Rect2 in _floor_regions:
+		if _point_in_box(position, region):
+			on_floor = true
+			break
+	if not on_floor:
+		return false
+	for box: Rect2 in _obstacles:
+		if _point_in_box(position, box):
+			return false
+	return true
+
+
+func segment_is_walkable(start: Vector2, finish: Vector2) -> bool:
+	if not is_walkable(start) or not is_walkable(finish) or not _segment_inside_floor(start, finish):
+		return false
+	for box: Rect2 in _obstacles:
+		if _segment_hits_box(start, finish, box):
+			return false
+	return true
+
+
+func route(start: Vector2, finish: Vector2) -> Array[Vector2]:
+	return _route_with_seats(start, finish, _all_seat_ids())
+
+
+func route_avoiding_seats(start: Vector2, finish: Vector2, seat_exceptions: Array[int] = []) -> Array[Vector2]:
+	return _route_with_seats(start, finish, seat_exceptions)
+
+
+func segment_avoids_seats(start: Vector2, finish: Vector2, seat_exceptions: Array[int] = []) -> bool:
+	if not segment_is_walkable(start, finish):
+		return false
+	var exceptions := _seat_exception_set(seat_exceptions)
+	for id: int in range(1, _seat_regions.size() + 1):
+		if not exceptions.has(id) and _segment_hits_box(start, finish, _seat_regions[id - 1]):
+			return false
+	return true
+
+
+func path_avoids_seats(start: Vector2, path: Array, seat_exceptions: Array[int] = []) -> bool:
+	var exceptions := _seat_exception_set(seat_exceptions)
+	var exit_ids := _contained_unexcepted_seats(start, exceptions)
+	var previous := start
+	for point: Variant in path:
+		if not point is Vector2:
+			return false
+		if previous.is_equal_approx(point):
+			continue
+		if not exit_ids.is_empty():
+			if not _segment_exits_reserved_seats(previous, point, exceptions, exit_ids):
+				return false
+			exit_ids.clear()
+		elif not segment_avoids_seats(previous, point, seat_exceptions):
+			return false
+		previous = point
+	return true
+
+
+func _build() -> void:
+	_definitions.clear()
+	_obstacles.clear()
+	_floor_regions.clear()
+	_seat_regions.clear()
+	_seat_masks.clear()
+	_seat_nodes.clear()
+	# Five columns / four rows: private rooms left, twelve hall tables in the
+	# three middle columns, and hall/bar on the right. IDs never depend on width.
+	var xs: Array[float] = []
+	for column: int in range(5):
+		xs.append(lerpf(155.0, layout_width - 155.0, float(column) / 4.0))
+	var ys: Array[float] = [340.0, 490.0, 645.0, 800.0]
+	for row: int in range(4):
+		_definitions.append({"id": 15 + row, "zone": "private", "label": "包厢 %02d" % (row + 1), "center": Vector2(xs[0], ys[row])})
+	var id := 1
+	for column: int in range(1, 4):
+		for row: int in range(4):
+			_definitions.append({"id": id, "zone": "hall", "label": "大厅 %02d" % id, "center": Vector2(xs[column], ys[row])})
+			id += 1
+	_definitions.append({"id": 13, "zone": "hall", "label": "大厅 13", "center": Vector2(xs[4], ys[0])})
+	_definitions.append({"id": 14, "zone": "hall", "label": "大厅 14", "center": Vector2(xs[4], ys[1])})
+	_definitions.append({"id": 19, "zone": "bar", "label": "吧台 01", "center": Vector2(xs[4], ys[2])})
+	_definitions.append({"id": 20, "zone": "bar", "label": "吧台 02", "center": Vector2(xs[4], ys[3])})
+	_definitions.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return int(a.id) < int(b.id))
+	COUNTER = Rect2(layout_width * 0.5 - 323.0, 176.0, 646.0, 78.0)
+	# The rendered wall and kitchen end at the counter's front edge (y=254).
+	# Actors may use only the restaurant floor below it, including the new
+	# entrance/queue strip through y=1008.
+	_floor_regions.append(Rect2(EDGE_MARGIN, 256.0, layout_width - EDGE_MARGIN * 2.0, 752.0))
+	_obstacles.append(COUNTER.grow(CLEARANCE))
+	for definition: Dictionary in _definitions:
+		var center: Vector2 = definition.center
+		_seat_regions.append(Rect2(seat_point(int(definition.id)) - SEAT_RESERVATION_SIZE * 0.5, SEAT_RESERVATION_SIZE))
+		var feet := Rect2(center + Vector2(-53, 18), Vector2(106, 28))
+		if definition.zone == "bar":
+			feet = Rect2(center + Vector2(-48, 24), Vector2(96, 44))
+		_obstacles.append(feet.grow(CLEARANCE))
+	# Constructing/relayouting a model is cheap.  The per-layout navigation grid
+	# is built lazily by the first actual route request.
+
+
+func _build_grid() -> void:
+	if _columns > 0:
+		return
+	_columns = ceili(layout_width / CELL)
+	_rows = ceili(HEIGHT / CELL)
+	_walkable.resize(_columns * _rows)
+	_neighbors.resize(_columns * _rows)
+	_seat_nodes.resize(_seat_regions.size())
+	for id: int in range(_seat_regions.size()):
+		_seat_nodes[id] = PackedInt32Array()
+	for index: int in range(_walkable.size()):
+		_walkable[index] = 1 if is_walkable(_node_position(index)) else 0
+		if _walkable[index] == 1:
+			for id: int in range(_seat_regions.size()):
+				if _point_in_box(_node_position(index), _seat_regions[id]):
+					_seat_nodes[id].append(index)
+	for index: int in range(_walkable.size()):
+		var adjacent := PackedInt32Array()
+		if _walkable[index] == 1:
+			var cell := Vector2i(index % _columns, index / _columns)
+			for direction: Vector2i in [Vector2i.RIGHT, Vector2i.DOWN, Vector2i.LEFT, Vector2i.UP]:
+				var next := cell + direction
+				if next.x >= 0 and next.x < _columns and next.y >= 0 and next.y < _rows:
+					var neighbor := next.y * _columns + next.x
+					if _walkable[neighbor] == 1 and segment_is_walkable(_node_position(index), _node_position(neighbor)):
+						adjacent.append(neighbor)
+		_neighbors[index] = adjacent
+
+
+func _route_with_seats(start: Vector2, finish: Vector2, seat_exceptions: Array[int]) -> Array[Vector2]:
+	var empty: Array[Vector2] = []
+	if not is_walkable(start) or not is_walkable(finish):
+		return empty
+	_build_grid()
+	if start.distance_squared_to(finish) < 0.000001:
+		return [finish]
+	var exceptions := _seat_exception_set(seat_exceptions)
+	var key := _seat_cache_key(exceptions)
+	var mask := _seat_mask(key, exceptions)
+	var exit_ids := _contained_unexcepted_seats(start, exceptions)
+	var first := _exit_attachment_node_with_mask(start, mask, exceptions, exit_ids) if not exit_ids.is_empty() else _attachment_node_with_mask(start, mask, exceptions)
+	var last := _attachment_node_with_mask(finish, mask, exceptions)
+	if first < 0 or last < 0:
+		return empty
+	var parents := PackedInt32Array()
+	parents.resize(_columns * _rows)
+	parents.fill(-2)
+	parents[first] = -1
+	var pending := PackedInt32Array([first])
+	var head := 0
+	while head < pending.size() and parents[last] == -2:
+		var current := pending[head]
+		head += 1
+		for neighbor: int in _neighbors[current]:
+			if mask[neighbor] == 1 and parents[neighbor] == -2:
+				parents[neighbor] = current
+				pending.append(neighbor)
+	if parents[last] == -2:
+		return empty
+	var reversed: Array[Vector2] = []
+	var cursor := last
+	while cursor >= 0:
+		reversed.append(_node_position(cursor))
+		cursor = parents[cursor]
+	reversed.reverse()
+	var raw: Array[Vector2] = [start]
+	for point: Vector2 in reversed:
+		if raw[-1].distance_squared_to(point) > 0.000001:
+			raw.append(point)
+	if raw[-1].distance_squared_to(finish) > 0.000001:
+		raw.append(finish)
+	var result := _remove_collinear_points(raw)
+	return result if path_avoids_seats(start, result.slice(1), seat_exceptions) else empty
+
+
+func _all_seat_ids() -> Array[int]:
+	var ids: Array[int] = []
+	for id: int in range(1, 21): ids.append(id)
+	return ids
+
+func _seat_exception_set(seat_exceptions: Array[int]) -> Dictionary:
+	var result := {}
+	for id: int in seat_exceptions:
+		if id >= 1 and id <= _seat_regions.size(): result[id] = true
+	return result
+
+func _contained_unexcepted_seats(position: Vector2, exceptions: Dictionary) -> Dictionary:
+	var result := {}
+	for id: int in range(1, _seat_regions.size() + 1):
+		if not exceptions.has(id) and _point_in_box(position, _seat_regions[id - 1]): result[id] = true
+	return result
+
+func _seat_cache_key(exceptions: Dictionary) -> String:
+	var ids: Array[int] = []
+	for id: Variant in exceptions: ids.append(int(id))
+	ids.sort()
+	return ",".join(ids)
+
+func _seat_mask(key: String, exceptions: Dictionary) -> PackedByteArray:
+	_build_grid()
+	if _seat_masks.has(key): return _seat_masks[key]
+	var result: PackedByteArray = _walkable.duplicate()
+	for id: int in range(1, _seat_nodes.size() + 1):
+		if not exceptions.has(id):
+			for index: int in _seat_nodes[id - 1]:
+				result[index] = 0
+	_seat_masks[key] = result
+	return result
+
+func _node_position(index: int) -> Vector2:
+	return Vector2((index % _columns) * CELL + CELL * 0.5, (index / _columns) * CELL + CELL * 0.5)
+
+
+## Used only during a real viewport resize.  It keeps the actor near its
+## geometrically mapped location when a moved table makes that exact point
+## illegal; it never returns a point in furniture or another seat.
+func nearest_walkable_avoiding_seats(position: Vector2, seat_exceptions: Array[int] = [], maximum_distance: float = 120.0) -> Vector2:
+	var exceptions := _seat_exception_set(seat_exceptions)
+	if is_walkable(position) and _contained_unexcepted_seats(position, exceptions).is_empty():
+		return position
+	_build_grid()
+	var mask := _seat_mask(_seat_cache_key(exceptions), exceptions)
+	var base := Vector2i(floori(position.x / CELL), floori(position.y / CELL))
+	var cells := ceili(maximum_distance / float(CELL))
+	var best := Vector2(-1, -1)
+	var best_distance := INF
+	for y: int in range(maxi(0, base.y - cells), mini(_rows, base.y + cells + 1)):
+		for x: int in range(maxi(0, base.x - cells), mini(_columns, base.x + cells + 1)):
+			var index := y * _columns + x
+			if mask[index] == 0:
+				continue
+			var point := _node_position(index)
+			var distance := point.distance_squared_to(position)
+			if distance <= maximum_distance * maximum_distance and distance < best_distance and _fallback_exit_is_clear(position, point, exceptions):
+				best = point
+				best_distance = distance
+	return best
+
+
+func _fallback_exit_is_clear(start: Vector2, finish: Vector2, exceptions: Dictionary) -> bool:
+	# If scaling has placed an actor inside a moved table/seat, let it leave only
+	# that collision.  It may not jump through any second piece of furniture or
+	# a different reserved seat to reach a convenient point on the far side.
+	for box: Rect2 in _obstacles:
+		if _segment_hits_box(start, finish, box) and not _point_in_box(start, box):
+			return false
+	for id: int in range(1, _seat_regions.size() + 1):
+		if not exceptions.has(id) and _segment_hits_box(start, finish, _seat_regions[id - 1]) and not _point_in_box(start, _seat_regions[id - 1]):
+			return false
+	return true
+
+func _attachment_node_with_mask(position: Vector2, mask: PackedByteArray, exceptions: Dictionary) -> int:
+	var base := Vector2i(floori(position.x / CELL), floori(position.y / CELL))
+	var best := -1
+	var best_distance := INF
+	for y: int in range(maxi(0, base.y - 5), mini(_rows, base.y + 6)):
+		for x: int in range(maxi(0, base.x - 5), mini(_columns, base.x + 6)):
+			var index := y * _columns + x
+			if mask[index] == 0: continue
+			var point := _node_position(index)
+			var distance := position.distance_squared_to(point)
+			if distance < best_distance and _segment_walkable_with_exceptions(position, point, exceptions):
+				best = index
+				best_distance = distance
+	return best
+
+func _exit_attachment_node_with_mask(position: Vector2, mask: PackedByteArray, exceptions: Dictionary, exit_ids: Dictionary) -> int:
+	var base := Vector2i(floori(position.x / CELL), floori(position.y / CELL))
+	var best := -1
+	var best_distance := INF
+	for y: int in range(maxi(0, base.y - 5), mini(_rows, base.y + 6)):
+		for x: int in range(maxi(0, base.x - 5), mini(_columns, base.x + 6)):
+			var index := y * _columns + x
+			if mask[index] == 0: continue
+			var point := _node_position(index)
+			var distance := position.distance_squared_to(point)
+			if distance < best_distance and _segment_exits_reserved_seats(position, point, exceptions, exit_ids):
+				best = index
+				best_distance = distance
+	return best
+
+func _segment_walkable_with_exceptions(start: Vector2, finish: Vector2, exceptions: Dictionary) -> bool:
+	var ids: Array[int] = []
+	for id: Variant in exceptions: ids.append(int(id))
+	return segment_avoids_seats(start, finish, ids)
+
+func _segment_exits_reserved_seats(start: Vector2, finish: Vector2, exceptions: Dictionary, exit_ids: Dictionary) -> bool:
+	if not segment_is_walkable(start, finish): return false
+	for id: int in range(1, _seat_regions.size() + 1):
+		if not exceptions.has(id) and _segment_hits_box(start, finish, _seat_regions[id - 1]) and (not exit_ids.has(id) or _point_in_box(finish, _seat_regions[id - 1])):
+			return false
+	return true
+
+func _segment_inside_floor(start: Vector2, finish: Vector2) -> bool:
+	var spans: Array[Vector2] = []
+	var difference := finish - start
+	for region: Rect2 in _floor_regions:
+		var low := 0.0
+		var high := 1.0
+		var intersects := true
+		for axis: int in range(2):
+			if absf(difference[axis]) < 0.000001:
+				if start[axis] < region.position[axis] or start[axis] > region.end[axis]: intersects = false; break
+			else:
+				var a := (region.position[axis] - start[axis]) / difference[axis]
+				var b := (region.end[axis] - start[axis]) / difference[axis]
+				low = maxf(low, minf(a, b)); high = minf(high, maxf(a, b))
+				if low > high: intersects = false; break
+		if intersects: spans.append(Vector2(low, high))
+	spans.sort_custom(func(a: Vector2, b: Vector2) -> bool: return a.x < b.x)
+	var covered := 0.0
+	for span: Vector2 in spans:
+		if span.x > covered + 0.000001: return false
+		covered = maxf(covered, span.y)
+		if covered >= 1.0 - 0.000001: return true
+	return false
+
+func _point_in_box(point: Vector2, box: Rect2) -> bool:
+	return point.x >= box.position.x and point.x <= box.end.x and point.y >= box.position.y and point.y <= box.end.y
+
+func _segment_hits_box(start: Vector2, finish: Vector2, box: Rect2) -> bool:
+	var low := 0.0
+	var high := 1.0
+	var difference := finish - start
+	for axis: int in range(2):
+		var origin: float = start[axis]; var direction: float = difference[axis]
+		var minimum: float = box.position[axis]; var maximum: float = box.end[axis]
+		if absf(direction) < 0.000001:
+			if origin < minimum or origin > maximum: return false
+			continue
+		var near := (minimum - origin) / direction; var far := (maximum - origin) / direction
+		if near > far: var swap := near; near = far; far = swap
+		low = maxf(low, near); high = minf(high, far)
+		if low > high: return false
+	return true
+
+func _remove_collinear_points(points: Array[Vector2]) -> Array[Vector2]:
+	var result: Array[Vector2] = []
+	for point: Vector2 in points:
+		if result.size() >= 2:
+			var previous := result[-1] - result[-2]
+			var next := point - result[-1]
+			if absf(previous.cross(next)) < 0.0001 and previous.dot(next) > 0:
+				result[-1] = point
+				continue
+		result.append(point)
+	return result

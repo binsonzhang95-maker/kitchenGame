@@ -45,16 +45,14 @@ func _run() -> void:
 		{"name":"lobby_16_9", "size":Vector2i(2048, 1152), "insets":{}},
 		{"name":"lobby_19_5_9", "size":Vector2i(2496, 1152), "insets":{}}
 	]:
-		DisplayServer.window_set_size(spec.size)
-		await _frame()
-		app.set_responsive_layout_for_test(Vector2(spec.size), spec.insets)
-		await _frame()
+		var viewport := await _set_test_viewport(spec.size, spec.insets)
 		_check(app.room.position == app.responsive_layout.room_rect.position and app.room.scale == Vector2.ONE * float(app.responsive_layout.scale), str(spec.name) + " room uses layout room_rect")
+		_check(Vector2(app.responsive_layout.viewport).is_equal_approx(viewport), str(spec.name) + " layout uses the drawable viewport")
 		_capture(str(spec.name))
 		await _restaurant_pause_click_path(str(spec.name))
 	# A real bottom safe area shrinks the card's layout parent. Its child keeps
 	# its own pop scale, so a resize cannot replace it with an unscaled transform.
-	var safe_viewport := Vector2(2496, 1152)
+	var safe_viewport := _actual_viewport_size()
 	app.set_responsive_layout_for_test(safe_viewport, {"left":150.0, "right":150.0, "bottom":60.0})
 	await _frame()
 	app._show_completion_brief("drink")
@@ -76,7 +74,7 @@ func _run() -> void:
 	await _frame()
 	await _open_drink_kitchen()
 	if app.cooking_session != null:
-		await _capture_kitchen_side_regressions()
+		await _capture_kitchen_panorama_regressions()
 		await _kitchen_pause_click_path()
 	_finish()
 
@@ -164,40 +162,56 @@ func _capture(name: String) -> void:
 	var path := directory.path_join("widescreen_" + name + ".png")
 	var image := root.get_texture().get_image()
 	_check(image != null and not image.is_empty() and image.save_png(path) == OK, "capture " + name)
+	if image != null and not image.is_empty():
+		_check(Vector2(image.get_width(), image.get_height()).is_equal_approx(_actual_viewport_size()), "capture " + name + " matches drawable viewport")
 
 func _screenshot_directory() -> String:
 	var requested := OS.get_environment("KITCHEN_SCREENSHOT_DIR").strip_edges()
 	if requested.is_empty(): requested = DEFAULT_SCREENSHOT_DIR
 	return ProjectSettings.globalize_path(requested) if requested.begins_with("res://") or requested.begins_with("user://") else requested
 
-func _capture_kitchen_side_regressions() -> void:
+func _set_test_viewport(requested: Vector2i, insets: Dictionary = {}) -> Vector2:
+	DisplayServer.window_set_size(requested)
+	await _frame()
+	var drawable := _actual_viewport_size()
+	app.set_responsive_layout_for_test(drawable, insets)
+	await _frame()
+	return drawable
+
+func _actual_viewport_size() -> Vector2:
+	var texture := root.get_texture()
+	if texture != null and texture.get_width() > 0 and texture.get_height() > 0:
+		return Vector2(texture.get_width(), texture.get_height())
+	return root.get_visible_rect().size
+
+func _capture_kitchen_panorama_regressions() -> void:
 	for spec: Dictionary in [
 		{"name":"kitchen_16_9", "size":Vector2i(2048, 1152), "insets":{}},
 		{"name":"kitchen_safe_scale", "size":Vector2i(2496, 1152), "insets":{"left":150.0, "right":150.0, "bottom":60.0}},
 	]:
-		DisplayServer.window_set_size(spec.size)
-		await _frame()
-		app.set_responsive_layout_for_test(Vector2(spec.size), spec.insets)
-		await _frame()
-		_check_kitchen_side_strips(app.responsive_layout, str(spec.name))
+		var viewport := await _set_test_viewport(spec.size, spec.insets)
+		_check(Vector2(app.responsive_layout.viewport).is_equal_approx(viewport), str(spec.name) + " kitchen layout uses the drawable viewport")
+		_check_kitchen_panorama(app.responsive_layout, str(spec.name))
 		_capture(str(spec.name))
 
-func _check_kitchen_side_strips(layout: Dictionary, label: String) -> void:
+func _check_kitchen_panorama(layout: Dictionary, label: String) -> void:
 	var view = app.cooking_view
 	var content: Rect2 = layout.content_rect
-	var viewport: Vector2 = layout.viewport
-	var scale: float = float(layout.scale)
-	var room_top := content.position.y + 80.0 * scale
-	var strip_width := 384.0 * scale
-	var left_gap := content.position.x
-	var right_gap := viewport.x - content.end.x
-	_check(view.side_left_clip.clip_contents and view.side_right_clip.clip_contents, label + " clips side strips")
-	_check(_near(view.side_left.scale.x, scale) and _near(view.side_right.scale.x, scale), label + " scales source strips uniformly")
-	_check(_near(view.side_left.get_global_rect().end.x, content.position.x) and _near(view.side_right.get_global_rect().position.x, content.end.x), label + " joins both source strips to the countertop and floor")
-	_check(_near(view.side_left_clip.position.y, room_top) and _near(view.side_right_clip.position.y, room_top), label + " aligns side strips to room top")
-	_check(_near(view.side_left_clip.size.x, left_gap) and _near(view.side_right_clip.size.x, right_gap), label + " clips exactly to side gaps")
-	if left_gap < strip_width:
-		_check(view.side_left.position.x < 0.0 and _near(view.side_right.position.x, 0.0), label + " crops only outer source pixels when a gap is narrow")
+	var viewport_rect := Rect2(Vector2.ZERO, layout.viewport)
+	_check(view.background_image.texture != null and view.background_image.texture.resource_path.ends_with("kitchen_background_panorama_2304x1024.png"), label + " uses the kitchen panorama texture")
+	_check(view.background_image.stretch_mode == TextureRect.STRETCH_KEEP_ASPECT_COVERED, label + " panorama uses aspect cover")
+	_check(viewport_rect.grow(0.1).encloses(view.background_image.get_global_rect()) and view.background_image.get_global_rect().grow(0.1).encloses(viewport_rect), label + " panorama global rect covers the complete viewport")
+	_check(content.grow(0.1).encloses(view.cancel_button.get_global_rect()) and content.grow(0.1).encloses(view.pause_button.get_global_rect()), label + " header controls use safe left and right edges")
+	for slot: Dictionary in view.ingredient_slots:
+		_check(content.grow(0.1).encloses(slot.button.get_global_rect()), label + " ingredient target remains in safe content")
+	for button: Button in view.action_buttons.values():
+		_check(content.grow(0.1).encloses(button.get_global_rect()), label + " action target remains in safe content")
+	var appliance_screen: Vector2 = view.root_control.get_global_transform_with_canvas() * view._appliance_rect().get_center()
+	_check(content.grow(0.1).encloses(view.utensil_image.get_global_rect()), label + " cookware remains in safe content")
+	_check(view.ingredient_slots[0].button.get_global_rect().get_center().x < appliance_screen.x, label + " ingredient station stays left of cookware")
+	if not view.action_buttons.is_empty():
+		_check(appliance_screen.x < view.action_bar.get_global_rect().get_center().x, label + " actual action station stays right of cookware")
+		_check(content.grow(0.1).encloses(view.action_surface.get_global_rect()), label + " actual action surface remains in safe content")
 
 func _near(a: float, b: float) -> bool:
 	return is_equal_approx(a, b) or absf(a - b) < 0.05

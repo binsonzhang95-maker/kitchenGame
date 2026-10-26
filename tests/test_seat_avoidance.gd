@@ -26,40 +26,46 @@ func _check(value: bool, reason: String) -> void:
 
 
 func _safe(path: Array, start: Vector2, exceptions: Array[int] = []) -> bool:
+	# Static Floor is the deliberately frozen V4 facade, used only below for
+	# migration fixtures. Runtime geometry tests use _runtime_safe/Floor.create.
 	return not path.is_empty() and Floor.path_avoids_seats(start, path.slice(1), exceptions)
 
 
+func _runtime_safe(layout, path: Array, start: Vector2, exceptions: Array[int] = []) -> bool:
+	return not path.is_empty() and layout.path_avoids_seats(start, path.slice(1), exceptions)
+
+
 func _check_floor_routes() -> void:
-	# Regression: 509,357 is just inside table 1's left reservation edge. Its
-	# nearest grid point (504,360) is already outside, so a legal exit prefix
-	# must not turn into a blanket table-1 exemption for the later BFS route.
-	var edge_start := Vector2(509, 357)
-	var edge_service: Vector2 = Floor.service_point(1)
-	var edge_route: Array[Vector2] = Floor.route_avoiding_seats(edge_start, edge_service)
+	var layout = Floor.create()
+	# Regression: an actor just inside table 1's left reservation edge must get
+	# one legal exit prefix, never a blanket table-1 exemption for the route.
+	var reservation: Rect2 = layout.seat_reservation(1)
+	var edge_start := reservation.position + Vector2(1.0, reservation.size.y * 0.5)
+	var edge_service: Vector2 = layout.service_point(1)
+	var edge_route: Array[Vector2] = layout.route_avoiding_seats(edge_start, edge_service)
 	_check(not edge_route.is_empty() and edge_route[0].is_equal_approx(edge_start) and edge_route[-1].is_equal_approx(edge_service), "inside-edge actor reaches table-1 service with exact endpoints")
-	_check(_safe(edge_route, edge_start), "inside-edge actor gets one-way exit prefix without re-entering table 1")
+	_check(_runtime_safe(layout, edge_route, edge_start), "inside-edge actor gets one-way exit prefix without re-entering table 1")
 	var edge_destination: Vector2 = edge_route[-1] if not edge_route.is_empty() else edge_start
 	_check(not edge_destination.is_equal_approx(edge_start), "inside-edge actor route makes physical progress instead of teleporting or blocking")
-	var old_return: Array[Vector2] = Floor.route(Floor.service_point(1), Floor.worker_home(0))
-	_check(not Floor.path_avoids_seats(Floor.service_point(1), old_return.slice(1)), "old table-1 worker return crosses its seated support area")
-	var safe_return: Array[Vector2] = Floor.route_avoiding_seats(Floor.service_point(1), Floor.worker_home(0))
-	_check(_safe(safe_return, Floor.service_point(1)), "table-1 worker return detours around seat reservation")
+	var safe_return: Array[Vector2] = layout.route_avoiding_seats(layout.service_point(1), layout.worker_home(0))
+	_check(_runtime_safe(layout, safe_return, layout.service_point(1)), "table-1 worker return detours around seat reservation")
 	for id: int in range(1, 21):
-		var to_seat: Array[Vector2] = Floor.route_avoiding_seats(Floor.entrance_point(), Floor.seat_point(id), [id])
-		_check(_safe(to_seat, Floor.entrance_point(), [id]), "entry reaches only its own seat %d" % id)
-		var leave: Array[Vector2] = Floor.route_avoiding_seats(Floor.seat_point(id), Floor.entrance_point())
-		_check(_safe(leave, Floor.seat_point(id)), "leaving route exits without reusing seat %d" % id)
-		var kitchen_to_service: Array[Vector2] = Floor.route_avoiding_seats(Floor.kitchen_point(), Floor.service_point(id))
-		var service_to_home: Array[Vector2] = Floor.route_avoiding_seats(Floor.service_point(id), Floor.worker_home(id % 2))
-		_check(_safe(kitchen_to_service, Floor.kitchen_point()), "kitchen reaches service point %d" % id)
-		_check(_safe(service_to_home, Floor.service_point(id)), "service returns home %d" % id)
-	_check_non_grid_seat_exits()
+		var exceptions: Array[int] = [id]
+		var to_seat: Array[Vector2] = layout.route_avoiding_seats(layout.entrance_point(), layout.seat_point(id), exceptions)
+		_check(_runtime_safe(layout, to_seat, layout.entrance_point(), exceptions), "entry reaches only its own seat %d" % id)
+		var leave: Array[Vector2] = layout.route_avoiding_seats(layout.seat_point(id), layout.entrance_point())
+		_check(_runtime_safe(layout, leave, layout.seat_point(id)), "leaving route exits without reusing seat %d" % id)
+		var kitchen_to_service: Array[Vector2] = layout.route_avoiding_seats(layout.kitchen_point(), layout.service_point(id))
+		var service_to_home: Array[Vector2] = layout.route_avoiding_seats(layout.service_point(id), layout.worker_home(id % 2))
+		_check(_runtime_safe(layout, kitchen_to_service, layout.kitchen_point()), "kitchen reaches service point %d" % id)
+		_check(_runtime_safe(layout, service_to_home, layout.service_point(id)), "service returns home %d" % id)
+	_check_non_grid_seat_exits(layout)
 
 
-func _check_non_grid_seat_exits() -> void:
+func _check_non_grid_seat_exits(layout) -> void:
 	var checked: int = 0
 	for id: int in range(1, 21):
-		var reservation: Rect2 = Floor.seat_reservation(id)
+		var reservation: Rect2 = layout.seat_reservation(id)
 		var candidates: Array[Vector2] = [
 			reservation.position + Vector2(1.25, reservation.size.y * 0.49),
 			reservation.position + Vector2(reservation.size.x * 0.31, 2.75),
@@ -67,16 +73,16 @@ func _check_non_grid_seat_exits() -> void:
 		]
 		var start := Vector2(-1, -1)
 		for candidate: Vector2 in candidates:
-			if Floor.is_walkable(candidate):
+			if layout.is_walkable(candidate):
 				start = candidate
 				break
-		if not Floor.is_walkable(start):
+		if not layout.is_walkable(start):
 			continue # Some visual chair support areas overlap immutable furniture.
 		checked += 1
-		for destination: Vector2 in [Floor.service_point(id), Floor.kitchen_point(), Floor.worker_home(id % 2), Floor.entrance_point()]:
-			var route: Array[Vector2] = Floor.route_avoiding_seats(start, destination)
+		for destination: Vector2 in [layout.service_point(id), layout.kitchen_point(), layout.worker_home(id % 2), layout.entrance_point()]:
+			var route: Array[Vector2] = layout.route_avoiding_seats(start, destination)
 			_check(not route.is_empty() and route[0].is_equal_approx(start) and route[-1].is_equal_approx(destination), "non-grid seat exit preserves endpoints %d" % id)
-			_check(_safe(route, start), "non-grid seat exit avoids all reservations after prefix %d" % id)
+			_check(_runtime_safe(layout, route, start), "non-grid seat exit avoids all reservations after prefix %d" % id)
 	_check(checked == 20, "all twenty non-grid seat edge/interior samples are statically walkable")
 
 
@@ -89,7 +95,7 @@ func _check_live_seating_and_leaving() -> void:
 		if guest_id <= 0:
 			continue
 		var guest: Dictionary = model.customers[guest_id]
-		_check(_safe(guest.path, guest.pos, [id]), "live arrival avoids other seats %d" % id)
+		_check(_runtime_safe(model.floor, guest.path, guest.pos, [id]), "live arrival avoids other seats %d" % id)
 		# Timeout uses the production leave transition while the guest still has
 		# table_id, proving that this is not treated as an own-seat exception.
 		guest.patience = 0.01
@@ -97,45 +103,70 @@ func _check_live_seating_and_leaving() -> void:
 		guest = model.customers.get(guest_id, {})
 		_check(not guest.is_empty() and guest.state == "leaving", "live guest begins leaving %d" % id)
 		if not guest.is_empty():
-			_check(_safe(guest.path, guest.pos), "live leave avoids every seat %d" % id)
+			_check(_runtime_safe(model.floor, guest.path, guest.pos), "live leave avoids every seat %d" % id)
 	_check(model.validate_invariants().is_empty(), "concurrent live leave routes retain model invariants")
 
 
 func _check_restored_legacy_routes() -> void:
 	var source = Model.new()
 	source.open_for_arrivals = false
-	source.paused = true
 	var legacy_path: Array[Vector2] = Floor.route(Floor.service_point(1), Floor.worker_home(0))
-	source.workers[0].state = "returning"
-	source.workers[0].pos = Floor.service_point(1)
-	source.workers[0].path = legacy_path
-	var snapshot: Dictionary = source.to_dict().duplicate(true)
+	var snapshot: Dictionary = _v4_worker_snapshot(source, Floor.service_point(1), legacy_path)
 	var restored = Model.new()
-	_check(restored.restore(snapshot), "paused V4 static-only route restores")
-	_check(Support.same(restored.to_dict(), snapshot), "paused V4 restore preserves position and old path exactly")
-	restored.paused = false
-	restored.tick(1.0)
+	_check(restored.restore(snapshot), "genuine frozen V4 route migrates")
 	var worker: Dictionary = restored.workers[0]
-	_check(not worker.pos.is_equal_approx(Floor.service_point(1)) and worker.pos.distance_to(Floor.service_point(1)) <= 262.51, "legacy worker exits by movement without teleport")
-	_check(Floor.path_avoids_seats(worker.pos, worker.path), "legacy crossing is replanned before a multi-segment tick")
-	worker.pos = Floor.service_point(1)
-	worker.path = legacy_path.duplicate()
-	_check(not restored.validate_invariants().is_empty(), "after first repair, a new seat-crossing route is rejected by invariants")
-	var inside = Model.new()
-	inside.open_for_arrivals = false
-	inside.paused = true
-	inside.workers[0].state = "returning"
-	inside.workers[0].pos = Floor.seat_point(1)
-	inside.workers[0].path = Floor.route(Floor.seat_point(1), Floor.worker_home(0))
-	var inside_snapshot: Dictionary = inside.to_dict().duplicate(true)
-	var restored_inside = Model.new()
-	_check(restored_inside.restore(inside_snapshot), "old actor inside newly reserved seat restores")
-	_check(Support.same(restored_inside.to_dict(), inside_snapshot), "inside-seat restore does not relocate actor")
-	restored_inside.paused = false
-	restored_inside.tick(0.1)
-	var exiting: Dictionary = restored_inside.workers[0]
-	_check(not exiting.pos.is_equal_approx(Floor.seat_point(1)) and exiting.pos.distance_to(Floor.seat_point(1)) <= 26.26, "inside-seat actor takes a short physical exit")
-	_check(Floor.path_avoids_seats(exiting.pos, exiting.path), "exiting actor subsequently avoids all reservations")
+	_check(_runtime_safe(restored.floor, worker.path, worker.pos), "migrated V4 route is regenerated on the V5 floor")
+	var before: Dictionary = restored.to_dict()
+	var forged: Dictionary = before.duplicate(true)
+	# Find a legal furniture-only V5 route which crosses another seat.  The
+	# candidate proves the V5 parser cannot use the V3/V4 legacy exemption.
+	var unsafe_route := _unsafe_returning_route(restored.floor)
+	_check(not unsafe_route.is_empty(), "test fixture finds a furniture-valid seat crossing")
+	if unsafe_route.is_empty():
+		return
+	var unsafe_start: Vector2 = unsafe_route.pop_front()
+	forged.workers[0].pos = [unsafe_start.x, unsafe_start.y]
+	forged.workers[0].path = []
+	for point: Vector2 in unsafe_route:
+		forged.workers[0].path.append([point.x, point.y])
+	_check(not restored.restore(forged), "V5 seat-crossing route is rejected without legacy exemption")
+	_check(Support.same(restored.to_dict(), before), "rejected V5 route leaves current model unchanged")
+
+
+func _v4_worker_snapshot(source, position: Vector2, path: Array[Vector2]) -> Dictionary:
+	# Freeze the actual V4 geometry and remove V5 geometry fields.  This is not
+	# a relabelled V5 snapshot: every table/worker coordinate is old-map data.
+	var snapshot: Dictionary = source.to_dict().duplicate(true)
+	snapshot.version = 4
+	snapshot.erase("layout_width")
+	snapshot.erase("layout_revision")
+	for index: int in range(snapshot.tables.size()):
+		var center: Vector2 = Floor.table_center(index + 1)
+		snapshot.tables[index].center = [center.x, center.y]
+	for index: int in range(snapshot.workers.size()):
+		var home: Vector2 = Floor.worker_home(index)
+		snapshot.workers[index].pos = [home.x, home.y]
+		snapshot.workers[index].path = []
+	snapshot.workers[0].state = "returning"
+	snapshot.workers[0].pos = [position.x, position.y]
+	snapshot.workers[0].path = []
+	for point: Vector2 in path:
+		snapshot.workers[0].path.append([point.x, point.y])
+	return snapshot
+
+
+func _unsafe_returning_route(layout) -> Array[Vector2]:
+	var home: Vector2 = layout.worker_home(0)
+	for y: float in [280.0, 340.0, 430.0, 490.0, 570.0, 645.0, 730.0, 800.0, 900.0, 985.0]:
+		for x: float in [80.0, 180.0, 320.0, 480.0, 640.0, 800.0, 960.0, 1120.0, 1280.0, 1440.0]:
+			var start := Vector2(x, y)
+			if not layout.is_walkable(start):
+				continue
+			var path: Array[Vector2] = layout.route(start, home)
+			if not path.is_empty() and not layout.path_avoids_seats(start, path.slice(1)):
+				path.push_front(start)
+				return path
+	return []
 
 
 func _check_peak_progress() -> void:

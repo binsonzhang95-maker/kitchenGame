@@ -44,6 +44,10 @@ func _run() -> void:
 	owned = true
 	Engine.time_scale = 10.0
 	_new_main()
+	await _check_compact_header_escape_targets()
+	if failures > 0:
+		_finish()
+		return
 	for recipe: String in ["soup", "stir_fry", "bake", "drink"]:
 		var table_id: int = 0
 		while table_id == 0 and not done:
@@ -81,14 +85,20 @@ func _run() -> void:
 			await _tap("add_" + ingredient)
 			if done: return
 			_check(app.cooking_session.ingredients.size() <= 3, "ingredient limit maintained")
+		if recipe == "soup":
+			_capture("ingredient_selection", "prep")
 		if recipe in ["soup", "stir_fry"]: await _tap("cut")
 		if recipe != "drink":
 			await _tap({"soup":"pot", "stir_fry":"pan", "bake":"oven"}[recipe])
+			if recipe == "bake":
+				_capture("in_progress", "cooking", false)
 			if recipe == "soup" and not done: _capture("heat")
 			if recipe != "bake": await _tap("heat_high")
 			if recipe == "bake": await _restore_paused()
 			await _until_phase("ready")
 		if done: return
+		if recipe == "drink":
+			_capture("ready_operation", "ready")
 		_capture({"stir_fry":"fry"}.get(recipe, recipe))
 		if recipe == "soup":
 			await _until_phase("retry")
@@ -130,6 +140,26 @@ func _new_main() -> void:
 	app.player_mode = true
 	app.interactive_cooking = true
 	root.add_child(app)
+
+
+func _check_compact_header_escape_targets() -> void:
+	# At a 667×375 landscape viewport the authored 64px icons would otherwise
+	# become ~21px targets.  Verify their transparent hit bounds are 44px and
+	# separated, then restore the live viewport before exercising real input.
+	app.set_responsive_layout_for_test(Vector2(667, 375))
+	await process_frame
+	await RenderingServer.frame_post_draw
+	var controls: Array[Button] = [app.cooking_view.cancel_button, app.cooking_view.clear_button, app.cooking_view.pause_button]
+	for control: Button in controls:
+		var rect := control.get_global_rect()
+		_check(rect.size.x >= 43.9 and rect.size.y >= 43.9, "compact header " + control.name + " keeps a 44px escape target")
+	for first in range(controls.size()):
+		for second in range(first + 1, controls.size()):
+			_check(not controls[first].get_global_rect().intersects(controls[second].get_global_rect()), "compact header escape targets do not overlap")
+	_check(app.cooking_view.cancel_button.get_index() > app.cooking_view.pause_overlay.get_index() and app.cooking_view.pause_button.get_index() > app.cooking_view.pause_overlay.get_index(), "back and pause remain above the pause shield")
+	app.set_responsive_layout_for_test(root.get_visible_rect().size)
+	await process_frame
+	await RenderingServer.frame_post_draw
 
 func _business() -> Dictionary:
 	var data: Dictionary = app.model.to_dict()
@@ -238,17 +268,29 @@ func _restore_paused() -> void:
 	await _tap("pause")
 	print("COOKING_GUI_PAUSED_RESTORE_OK")
 
-func _capture(name: String) -> void:
+func _capture(name: String, expected_phase: String = "", expect_actions: bool = true) -> void:
 	var has_appliance := app.cooking_view.utensil_image.texture != null
 	for layer: TextureRect in app.cooking_view._art_layers:
 		has_appliance = has_appliance or layer.visible and layer.texture != null
 	_check((app.cooking_view.art_status().required_missing as Dictionary).is_empty() and has_appliance, "supplied kitchen artwork loaded")
-	_check(app.cooking_view.utensil_image.size == Vector2(512, 512) and app.cooking_session.ingredients.size() >= 2 and not app.cooking_view.action_buttons.is_empty(), "capture shows ingredients, large appliance, and current operation")
+	# Layout scale round-trips can leave a sub-pixel float in an otherwise fixed
+	# 512px appliance canvas; visual/input geometry is what this UI test owns.
+	var appliance_is_large := is_equal_approx(app.cooking_view.utensil_image.size.x, 512.0) and is_equal_approx(app.cooking_view.utensil_image.size.y, 512.0)
+	_check(expected_phase.is_empty() or app.cooking_session.phase == expected_phase, "capture phase " + name + " is " + expected_phase)
+	_check(appliance_is_large and app.cooking_session.ingredients.size() >= 2, "capture shows ingredients and large appliance")
+	if expect_actions:
+		_check(not app.cooking_view.action_buttons.is_empty() and app.cooking_view.action_surface.visible, "capture exposes the current operation")
+	else:
+		_check(app.cooking_view.action_buttons.is_empty() and not app.cooking_view.action_surface.visible, "cooking hides an empty right action panel")
 	var error: Error = DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path("res://verification"))
 	_check(error == OK or error == ERR_ALREADY_EXISTS, "capture directory available")
 	var image: Image = root.get_texture().get_image()
 	var target: String = "res://verification/cooking_" + name + ".png"
-	_check(image != null and not image.is_empty() and image.save_png(target) == OK, "actual GUI capture " + target)
+	# In canvas-items stretch mode the logical root viewport can differ from the
+	# native framebuffer.  The screenshot itself is therefore the authority for
+	# its dimensions; preview_cooking.gd records those dimensions when it targets
+	# a native viewport explicitly.
+	_check(image != null and not image.is_empty() and image.get_width() > 0 and image.get_height() > 0 and image.save_png(target) == OK, "actual GUI capture " + target)
 	print("COOKING_GUI_CAPTURE " + ProjectSettings.globalize_path(target))
 
 func _free_main() -> void:

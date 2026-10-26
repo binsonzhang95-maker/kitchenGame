@@ -117,11 +117,28 @@ var pause_rest_label: Label
 var pause_continue_label: Label
 var settings_close_button: Button
 var _selection_open: bool = false
+var design_root: Control
+var full_top: ColorRect
+var full_bottom: ColorRect
+var _layout: Dictionary = {}
 
 func setup(owner_app) -> void:
 	app = owner_app
 	Localization.initialize()
 	layer = 30
+	full_top = ColorRect.new()
+	full_top.color = Color("eee0bd")
+	full_top.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(full_top)
+	full_bottom = ColorRect.new()
+	full_bottom.color = Color("eee0bd")
+	full_bottom.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(full_bottom)
+	design_root = Control.new()
+	design_root.name = "ResponsiveDesignRoot"
+	design_root.size = SIZE
+	design_root.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(design_root)
 	_build_top()
 	_build_bottom()
 	_build_popup()
@@ -130,6 +147,38 @@ func setup(owner_app) -> void:
 	_build_pause()
 	_apply_theme(self)
 	refresh()
+
+func apply_layout(layout: Dictionary) -> void:
+	_layout = layout.duplicate(true)
+	var viewport: Vector2 = layout.get("viewport", SIZE)
+	var content: Rect2 = layout.get("content_rect", Rect2(Vector2.ZERO, SIZE))
+	var scale: float = float(layout.get("scale", 1.0))
+	if design_root != null:
+		design_root.position = content.position
+		design_root.scale = Vector2.ONE * scale
+	if full_top != null:
+		full_top.position = Vector2.ZERO
+		full_top.size = Vector2(viewport.x, content.position.y + 80.0 * scale)
+	if full_bottom != null:
+		full_bottom.position = Vector2(0, content.end.y - 48.0 * scale)
+		full_bottom.size = Vector2(viewport.x, viewport.y - full_bottom.position.y)
+	for modal: Control in [settings_root, debug_root]:
+		if modal == null: continue
+		modal.size = viewport
+		var content_root := modal.get_node_or_null("DesignContent") as Control
+		if content_root != null:
+			content_root.position = content.position
+			content_root.scale = Vector2.ONE * scale
+	if app != null and app.pause_overlay != null:
+		app.pause_overlay.position = Vector2.ZERO
+		app.pause_overlay.size = viewport
+		var pause_content := app.pause_overlay.get_node_or_null("DesignContent") as Control
+		if pause_content != null:
+			pause_content.position = content.position
+			pause_content.scale = Vector2.ONE * scale
+
+func _design() -> Control:
+	return design_root if design_root != null else self
 
 func apply_locale() -> void:
 	_apply_theme(self)
@@ -215,24 +264,24 @@ func _button(parent: Node, content: String, at: Vector2, dimensions: Vector2, ca
 	return button
 
 func _build_top() -> void:
-	_panel(self, Vector2.ZERO, Vector2(1536, 80), Color("eee0bd"))
-	_icon(self, "coin", Vector2(32, 23), 32)
-	money_label = _label(self, "0", Vector2(76, 18), Vector2(190, 44), 28)
+	_panel(_design(), Vector2.ZERO, Vector2(1536, 80), Color("eee0bd"))
+	_icon(_design(), "coin", Vector2(32, 23), 32)
+	money_label = _label(_design(), "0", Vector2(76, 18), Vector2(190, 44), 28)
 	money_label.tooltip_text = _tx("restaurant_coins_summary", {"coins":38, "served":1, "lost":0})
 	money_label.mouse_filter = Control.MOUSE_FILTER_PASS
-	_icon(self, "guest", Vector2(280, 25), 28)
-	count_label = _label(self, "", Vector2(322, 22), Vector2(160, 36), 22)
+	_icon(_design(), "guest", Vector2(280, 25), 28)
+	count_label = _label(_design(), "", Vector2(322, 22), Vector2(160, 36), 22)
 	count_label.tooltip_text = _tx("ui_capacity", {"count":""})
 	count_label.mouse_filter = Control.MOUSE_FILTER_PASS
-	app.pause_button = _button(self, "", Vector2(1384, 14), Vector2(58, 52), app._pause, _tx("ui_pause_business"))
+	app.pause_button = _button(_design(), "", Vector2(1384, 14), Vector2(58, 52), app._pause, _tx("ui_pause_business"))
 	pause_icon = _icon(app.pause_button, "pause", Vector2(14, 11), 30)
-	settings_button = _button(self, "", Vector2(1454, 14), Vector2(58, 52), toggle_settings, _tx("ui_settings"))
+	settings_button = _button(_design(), "", Vector2(1454, 14), Vector2(58, 52), toggle_settings, _tx("ui_settings"))
 	_icon(settings_button, "settings", Vector2(14, 11), 30)
 
 func _build_bottom() -> void:
-	_panel(self, Vector2(0, 1104), Vector2(1536, 48), Color("eee0bd"))
-	help_label = _label(self, _tx("ui_order_help"), Vector2(26, 1114), Vector2(620, 28), 18, Color("7c6d51"))
-	order_button = _button(self, _tx("restaurant_action_order"), Vector2(696, 1108), Vector2(144, 40), app._focus_next_order, _tx("ui_focus_order_help"), "order")
+	_panel(_design(), Vector2(0, 1104), Vector2(1536, 48), Color("eee0bd"))
+	help_label = _label(_design(), _tx("ui_order_help"), Vector2(26, 1114), Vector2(620, 28), 18, Color("7c6d51"))
+	order_button = _button(_design(), _tx("restaurant_action_order"), Vector2(696, 1108), Vector2(144, 40), app._focus_next_order, _tx("ui_focus_order_help"), "order")
 
 func _demand_icon(texture: Texture2D, at: Vector2, tip: String) -> TextureRect:
 	var icon := TextureRect.new()
@@ -255,7 +304,7 @@ func _recipe_texture(recipe: String) -> Texture2D:
 	return texture if texture != null else NEUTRAL_RECIPE_TEXTURES.get(recipe, RECIPE_TEXTURES.get(recipe, RECIPE_TEXTURES.soup))
 
 func _build_popup() -> void:
-	popup = _panel(self, Vector2.ZERO, Vector2(144, 104), Color("fff9e6"), true)
+	popup = _panel(_design(), Vector2.ZERO, Vector2(144, 104), Color("fff9e6"), true)
 	popup.visible = false
 	demand_row = Control.new()
 	demand_row.position = Vector2.ZERO
@@ -278,21 +327,29 @@ func _build_popup() -> void:
 
 func _modal_root() -> Control:
 	var root := Control.new()
-	root.size = SIZE
+	root.size = _layout.get("viewport", SIZE)
 	root.mouse_filter = Control.MOUSE_FILTER_STOP
 	root.visible = false
 	add_child(root)
 	var veil := ColorRect.new()
-	veil.size = SIZE
+	veil.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	veil.color = Color(0.12, 0.16, 0.10, 0.48)
 	veil.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(veil)
+	var content := Control.new()
+	content.name = "DesignContent"
+	content.size = SIZE
+	content.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(content)
 	return root
+
+func _modal_content(root: Control) -> Control:
+	return root.get_node("DesignContent") as Control
 
 func _build_settings() -> void:
 	settings_root = _modal_root()
 	settings_root.gui_input.connect(_settings_backdrop_input)
-	var paper := _panel(settings_root, Vector2(492, 216), Vector2(552, 668), CREAM, true)
+	var paper := _panel(_modal_content(settings_root), Vector2(492, 216), Vector2(552, 668), CREAM, true)
 	settings_title = _label(paper, _tx("ui_small_settings"), Vector2(26, 20), Vector2(380, 40), 25)
 	settings_close_button = _button(paper, "", Vector2(480, 14), Vector2(50, 46), toggle_settings, _tx("ui_close_settings"), "close")
 	app.music_button = _button(paper, "", Vector2(24, 82), Vector2(180, 44), app._toggle_music, _tx("ui_music_toggle_help"))
@@ -332,7 +389,7 @@ func _build_settings() -> void:
 func _build_debug() -> void:
 	debug_root = _modal_root()
 	debug_root.gui_input.connect(_debug_backdrop_input)
-	var controls := _panel(debug_root, Vector2(24, 96), Vector2(524, 650), CREAM, true)
+	var controls := _panel(_modal_content(debug_root), Vector2(24, 96), Vector2(524, 650), CREAM, true)
 	_label(controls, "开发控制 · 玩家模式下只读", Vector2(20, 16), Vector2(484, 34), 21, GREEN)
 	invite_button = _button(controls, "迎客", Vector2(20, 76), Vector2(232, 44), app._invite, "开发测试：招呼一位新客人", "invite")
 	debug_order_button = _button(controls, "批量点单", Vector2(272, 76), Vector2(232, 44), app._order_all, "开发测试：记录所有点单", "order")
@@ -346,7 +403,7 @@ func _build_debug() -> void:
 	var toy_button := _button(controls, "本地玩具模拟", Vector2(20, 426), Vector2(484, 44), app._open_toy_simulator, "仅本地开发模拟；不会连接硬件")
 	toy_button.name = "ToySimulatorOpenButton"
 	_label(controls, "正常游戏由你点单、亲手做饭。\n送餐、收款与清桌会自动完成。", Vector2(20, 494), Vector2(484, 100), 18)
-	var paper := _panel(debug_root, Vector2(980, 96), Vector2(532, 984), CREAM, true)
+	var paper := _panel(_modal_content(debug_root), Vector2(980, 96), Vector2(532, 984), CREAM, true)
 	_label(paper, "开发面板 · F3 关闭", Vector2(20, 16), Vector2(490, 34), 21, GREEN)
 	app.stats = _label(paper, "", Vector2(20, 56), Vector2(490, 56), 19)
 	app.selected_title = _label(paper, "", Vector2(20, 112), Vector2(490, 28), 17)
@@ -383,15 +440,31 @@ func _build_debug() -> void:
 	app.save_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 
 func _build_pause() -> void:
-	app.pause_overlay = _panel(self, Vector2(0, 80), Vector2(1536, 1024), Color(0.12, 0.16, 0.10, 0.34))
+	app.pause_overlay = _panel(self, Vector2.ZERO, _layout.get("viewport", SIZE), Color(0.12, 0.16, 0.10, 0.34), true)
+	app.pause_overlay.gui_input.connect(_pause_overlay_input)
 	app.pause_overlay.visible = false
-	var paper := _panel(app.pause_overlay, Vector2(648, 424), Vector2(240, 128), CREAM)
+	var content := Control.new()
+	content.name = "DesignContent"
+	content.size = SIZE
+	content.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	app.pause_overlay.add_child(content)
+	var paper := _panel(content, Vector2(648, 424), Vector2(240, 128), CREAM)
 	_icon(paper, "pause", Vector2(28, 26), 32)
 	pause_rest_label = _label(paper, _tx("ui_rest_a_while"), Vector2(78, 20), Vector2(150, 40), 24)
 	pause_continue_label = _label(paper, _tx("ui_continue_top_right"), Vector2(28, 76), Vector2(190, 30), 18)
 	# Settings and diagnostics must remain usable while the restaurant is paused.
 	move_child(settings_root, get_child_count() - 1)
 	move_child(debug_root, get_child_count() - 1)
+
+func _pause_overlay_input(event: InputEvent) -> void:
+	if not (event is InputEventMouseButton) or not event.pressed or event.button_index != MOUSE_BUTTON_LEFT:
+		return
+	# The full-screen shield intentionally absorbs hall taps, while the two
+	# permanent top-bar escape routes stay usable during a restaurant pause.
+	if settings_button != null and settings_button.get_global_rect().has_point(event.position):
+		toggle_settings()
+	elif app != null and app.pause_button != null and app.pause_button.get_global_rect().has_point(event.position):
+		app._pause()
 
 func select_table() -> void:
 	_selection_open = true
@@ -433,27 +506,30 @@ func _debug_backdrop_input(event: InputEvent) -> void:
 
 func _popup_position(table: Dictionary) -> Vector2:
 	var center: Vector2 = app.room.get_global_transform_with_canvas() * Vector2(table.center)
+	var room_bounds: Rect2 = _layout.get("room_rect", Rect2(Vector2(0, 80), Vector2(1536, 1024)))
+	var screen_scale := design_root.get_global_transform_with_canvas().get_scale().x if design_root != null else 1.0
+	var popup_screen_size := popup.size * screen_scale
 	# A 144 px control fits the 148 px gap between the hall's table bounds.
-	var candidates: Array[Vector2] = [center + Vector2(60, -18), center + Vector2(-204, -18), center + Vector2(94, -18), center + Vector2(-238, -18), center + Vector2(-72, 70)]
+	var candidates: Array[Vector2] = [center + Vector2(60, -18) * screen_scale, center + Vector2(-204, -18) * screen_scale, center + Vector2(94, -18) * screen_scale, center + Vector2(-238, -18) * screen_scale, center + Vector2(-72, 70) * screen_scale]
 	var actor_bounds: Array[Rect2] = []
 	for actor: Dictionary in app.model.customers.values() + app.model.workers:
 		var feet: Vector2 = app.room.get_global_transform_with_canvas() * Vector2(actor.pos)
-		actor_bounds.append(Rect2(feet - Vector2(34, 80), Vector2(68, 84)))
+		actor_bounds.append(Rect2(feet - Vector2(34, 80) * screen_scale, Vector2(68, 84) * screen_scale))
 	var bubble_bounds: Array[Rect2] = []
 	for visual: Dictionary in app.bubble_layer._visuals.values():
 		var bubble_center: Vector2 = visual.sprite.get_global_transform_with_canvas().origin
-		bubble_bounds.append(Rect2(bubble_center - Vector2(36, 36), Vector2(72, 72)))
+		bubble_bounds.append(Rect2(bubble_center - Vector2(36, 36) * screen_scale, Vector2(72, 72) * screen_scale))
 		if visual.label.visible: bubble_bounds.append(visual.label.get_global_rect().grow(4))
 	var best := candidates[0]
 	var best_score: float = INF
 	for point: Vector2 in candidates:
-		point.x = clampf(point.x, 8, 1536 - popup.size.x - 8)
-		point.y = clampf(point.y, 88, 1104 - popup.size.y - 8)
-		var bounds := Rect2(point, popup.size)
-		var score: float = center.distance_squared_to(point + popup.size * 0.5) * 0.001
+		point.x = clampf(point.x, room_bounds.position.x + 8 * screen_scale, room_bounds.end.x - popup_screen_size.x - 8 * screen_scale)
+		point.y = clampf(point.y, room_bounds.position.y + 8 * screen_scale, room_bounds.end.y - popup_screen_size.y - 8 * screen_scale)
+		var bounds := Rect2(point, popup_screen_size)
+		var score: float = center.distance_squared_to(point + popup_screen_size * 0.5) * 0.001
 		for other: Dictionary in app.model.tables:
 			var other_center: Vector2 = app.room.get_global_transform_with_canvas() * Vector2(other.center)
-			if bounds.intersects(Rect2(other_center - Vector2(56, 76), Vector2(112, 132))): score += 10000
+			if bounds.intersects(Rect2(other_center - Vector2(56, 76) * screen_scale, Vector2(112, 132) * screen_scale)): score += 10000
 		for actor_rect: Rect2 in actor_bounds:
 			if bounds.intersects(actor_rect): score += 12000
 		for bubble_rect: Rect2 in bubble_bounds:
@@ -461,7 +537,7 @@ func _popup_position(table: Dictionary) -> Vector2:
 		if score < best_score:
 			best_score = score
 			best = point
-	return best.round()
+	return (design_root.get_global_transform_with_canvas().affine_inverse() * best).round()
 
 func refresh() -> void:
 	if app == null or app.model.tables.is_empty(): return

@@ -294,30 +294,6 @@
       "sha256": "a07f29a63b277bd638d424b186fc708261903e69d59e7da680e412711efdf82e"
     },
     {
-      "path": "assets/kitchen/background/kitchen_background_panorama_2304x1024.png",
-      "source_package": "kitchen_missing_assets_p0_v1",
-      "source_file": "kitchen_missing_assets_p0_v1/background/kitchen_background_panorama_2304x1024.png",
-      "sha256": "a6ed6b638937005ea6380312ef0a9cdc1ae41108c1830f33d7fd65bbdf3129be"
-    },
-    {
-      "path": "assets/kitchen/background/kitchen_background_extend_left_384x1024.png",
-      "source_package": "kitchen_missing_assets_p0_v1",
-      "source_file": "kitchen_missing_assets_p0_v1/background/kitchen_background_extend_left_384x1024.png",
-      "sha256": "8fff99063a6caab7c0766540f19009c2c2622958df81293b9f7ee226dd65409a"
-    },
-    {
-      "path": "assets/kitchen/background/kitchen_background_extend_right_384x1024.png",
-      "source_package": "kitchen_missing_assets_p0_v1",
-      "source_file": "kitchen_missing_assets_p0_v1/background/kitchen_background_extend_right_384x1024.png",
-      "sha256": "fbd1ffa72c4282d8e577bae2a391a1087af4d1de603c51be7ef7e6f0852e1f4c"
-    },
-    {
-      "path": "assets/kitchen/background/kitchen_background_main_1536x1024.png",
-      "source_package": "kitchen_missing_assets_p0_v1",
-      "source_file": "kitchen_missing_assets_p0_v1/background/kitchen_background_main_1536x1024.png",
-      "sha256": "2e76857b398ae90a2dc97e59828d784eb1c7396d558ba8d303d5871f7560593f"
-    },
-    {
       "path": "assets/ui/skin/button_normal.png",
       "source_package": "kitchen_missing_assets_p0_v1",
       "source_file": "kitchen_missing_assets_p0_v1/ui/sprites/button_normal.png",
@@ -1423,6 +1399,38 @@
     }
   ],
   "derived": [
+    {
+      "path": "assets/kitchen/background/kitchen_background_panorama_2304x1024.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/background/kitchen_background_panorama_2304x1024.png",
+      "source_sha256": "a6ed6b638937005ea6380312ef0a9cdc1ae41108c1830f33d7fd65bbdf3129be",
+      "current_sha256": "a266fc817b032560467c44e1558a62ede357aac2e402778d4d89af3e53a26044",
+      "reason": "only lossless RGBA8 encoding; RGB unchanged"
+    },
+    {
+      "path": "assets/kitchen/background/kitchen_background_extend_left_384x1024.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/background/kitchen_background_extend_left_384x1024.png",
+      "source_sha256": "8fff99063a6caab7c0766540f19009c2c2622958df81293b9f7ee226dd65409a",
+      "current_sha256": "4158b0c1e2c4eec6369f1ee4496814499a85ebf266f9cf96b448d010ed3ecbc4",
+      "reason": "only lossless RGBA8 encoding; RGB unchanged"
+    },
+    {
+      "path": "assets/kitchen/background/kitchen_background_extend_right_384x1024.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/background/kitchen_background_extend_right_384x1024.png",
+      "source_sha256": "fbd1ffa72c4282d8e577bae2a391a1087af4d1de603c51be7ef7e6f0852e1f4c",
+      "current_sha256": "e5d43308d3cab2de00f42d1a73594785020d907fd205f58c637467e71010077c",
+      "reason": "only lossless RGBA8 encoding; RGB unchanged"
+    },
+    {
+      "path": "assets/kitchen/background/kitchen_background_main_1536x1024.png",
+      "source_package": "kitchen_missing_assets_p0_v1",
+      "source_file": "kitchen_missing_assets_p0_v1/background/kitchen_background_main_1536x1024.png",
+      "source_sha256": "2e76857b398ae90a2dc97e59828d784eb1c7396d558ba8d303d5871f7560593f",
+      "current_sha256": "185fbb1aac0789280ef4f4e65451eb84c671c5a54db4a94d77ce9a95392b2390",
+      "reason": "only lossless RGBA8 encoding; RGB unchanged"
+    },
     {
       "path": "i18n/ui.csv",
       "source_package": "fonts_and_voice_text_p0_v1",

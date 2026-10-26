@@ -23,8 +23,22 @@ const ACTION_LABELS := {"cut":"切一切", "pot":"入锅", "pan":"入锅", "oven
 const ACTION_ICONS := {"cut":"knife", "add_water":"water", "stir":"stir", "flip":"flip", "heat_small":"flame_low", "heat_medium":"flame_medium", "heat_high":"flame_high", "finish":"confirm", "takeout":"confirm", "return":"confirm"}
 const PHASE_LABELS := {"idle":"小小厨房", "ingredients":"选食材", "prep":"切一切", "vessel":"放进去", "heat":"选火候", "cooking":"慢慢做", "ready":"好香呀", "retry":"再试一次", "completed":"做好啦", "cancelled":"回餐厅"}
 const ACTION_COOLDOWN_SECONDS := 0.18
+const SIDE_TEXTURE_SIZE := Vector2(384, 1024)
+const SIDE_EDGE_SOURCE_WIDTH := 2.0
 
 var root_control: Control
+var screen_root: Control
+var screen_fill: ColorRect
+var side_left_clip: Control
+var side_right_clip: Control
+var side_left: TextureRect
+var side_right: TextureRect
+var side_left_outer_edge: TextureRect
+var side_right_outer_edge: TextureRect
+var header_fill: ColorRect
+var footer_fill: ColorRect
+var pause_full_shade: ColorRect
+var _layout: Dictionary = {}
 var cancel_button: Button
 var pause_button: Button
 var clear_button: Button
@@ -411,7 +425,7 @@ func _update_idle_guide(delta: float) -> void:
 		guide_icon.visible = false
 		return
 	guide_icon.texture = _t("finger_touch_%d" % (int(floor(_idle_elapsed * 1.2)) % 2))
-	guide_icon.position = target.global_position - root_control.global_position + Vector2(target.size.x - 38.0, -22.0)
+	guide_icon.position = root_control.get_global_transform_with_canvas().affine_inverse() * target.global_position + Vector2(target.size.x - 38.0, -22.0)
 	guide_icon.visible = guide_icon.texture != null
 
 
@@ -588,6 +602,68 @@ func _build() -> void:
 	if _built: return
 	_built = true
 	layer = 70
+	screen_root = Control.new()
+	screen_root.name = "KitchenScreenBackdrop"
+	screen_root.size = VIEW_SIZE
+	screen_root.mouse_filter = Control.MOUSE_FILTER_STOP
+	add_child(screen_root)
+	screen_fill = ColorRect.new()
+	screen_fill.color = Color("e9cc99")
+	screen_fill.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	screen_fill.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	screen_root.add_child(screen_fill)
+	# These are the outer slices of one 384 + 1536 + 384 panorama.  The slice
+	# itself stays authored-sized and receives the shared layout scale; its parent
+	# clips only the outer part when a side gap is narrower than the slice.
+	for spec: Dictionary in [
+		{"name":"KitchenExtendLeft", "path":"res://assets/kitchen/background/kitchen_background_extend_left_384x1024.png", "left":true},
+		{"name":"KitchenExtendRight", "path":"res://assets/kitchen/background/kitchen_background_extend_right_384x1024.png", "left":false},
+	]:
+		var clip := Control.new()
+		clip.name = str(spec.name) + "Clip"
+		clip.clip_contents = true
+		clip.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		screen_root.add_child(clip)
+		var outer_edge := TextureRect.new()
+		outer_edge.name = str(spec.name) + "OuterEdge"
+		var edge_texture := AtlasTexture.new()
+		edge_texture.atlas = load(str(spec.path)) as Texture2D
+		edge_texture.region = Rect2(0, 0, SIDE_EDGE_SOURCE_WIDTH, SIDE_TEXTURE_SIZE.y) if bool(spec.left) else Rect2(SIDE_TEXTURE_SIZE.x - SIDE_EDGE_SOURCE_WIDTH, 0, SIDE_EDGE_SOURCE_WIDTH, SIDE_TEXTURE_SIZE.y)
+		outer_edge.texture = edge_texture
+		outer_edge.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		outer_edge.stretch_mode = TextureRect.STRETCH_SCALE
+		outer_edge.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		outer_edge.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		clip.add_child(outer_edge)
+		var image := TextureRect.new()
+		image.name = str(spec.name)
+		image.texture = load(str(spec.path)) as Texture2D
+		image.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		image.stretch_mode = TextureRect.STRETCH_KEEP
+		image.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		image.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		clip.add_child(image)
+		if bool(spec.left):
+			side_left_clip = clip
+			side_left_outer_edge = outer_edge
+			side_left = image
+		else:
+			side_right_clip = clip
+			side_right_outer_edge = outer_edge
+			side_right = image
+	header_fill = ColorRect.new()
+	header_fill.color = Color("eee0bd")
+	header_fill.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	screen_root.add_child(header_fill)
+	footer_fill = ColorRect.new()
+	footer_fill.color = Color("eee0bd")
+	footer_fill.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	screen_root.add_child(footer_fill)
+	pause_full_shade = ColorRect.new()
+	pause_full_shade.color = Color(0.16, 0.19, 0.13, 0.55)
+	pause_full_shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	pause_full_shade.visible = false
+	screen_root.add_child(pause_full_shade)
 	root_control = Control.new()
 	root_control.size = VIEW_SIZE
 	root_control.mouse_filter = Control.MOUSE_FILTER_STOP
@@ -702,6 +778,56 @@ func _build() -> void:
 	completion_badge = _image(root_control, Vector2(712, 842), Vector2(112, 112))
 	completion_badge.texture = _t("completion")
 	completion_badge.visible = false
+	if not _layout.is_empty(): apply_layout(_layout)
+
+func apply_layout(layout: Dictionary) -> void:
+	_layout = layout.duplicate(true)
+	if screen_root == null or root_control == null: return
+	var viewport: Vector2 = layout.get("viewport", VIEW_SIZE)
+	var content: Rect2 = layout.get("content_rect", Rect2(Vector2.ZERO, VIEW_SIZE))
+	var scale: float = float(layout.get("scale", 1.0))
+	screen_root.size = viewport
+	root_control.position = content.position
+	root_control.scale = Vector2.ONE * scale
+	var room_top := content.position.y + 80.0 * scale
+	var room_height := SIDE_TEXTURE_SIZE.y * scale
+	_layout_side_extensions(viewport, content, room_top, room_height, scale)
+	header_fill.position = Vector2.ZERO
+	header_fill.size = Vector2(viewport.x, content.position.y + 84.0 * scale)
+	footer_fill.position = Vector2(0, content.end.y - 156.0 * scale)
+	footer_fill.size = Vector2(viewport.x, viewport.y - footer_fill.position.y)
+	pause_full_shade.position = Vector2.ZERO
+	pause_full_shade.size = viewport
+
+
+func _layout_side_extensions(viewport: Vector2, content: Rect2, room_top: float, room_height: float, scale: float) -> void:
+	var strip_width := SIDE_TEXTURE_SIZE.x * scale
+	var left_gap := maxf(0.0, content.position.x)
+	var right_gap := maxf(0.0, viewport.x - content.end.x)
+	if side_left_clip != null:
+		side_left_clip.position = Vector2(0, room_top)
+		side_left_clip.size = Vector2(left_gap, room_height)
+	if side_left != null:
+		side_left.size = SIDE_TEXTURE_SIZE
+		side_left.scale = Vector2.ONE * scale
+		# Anchor the panorama's source right edge to the central background.
+		side_left.position = Vector2(left_gap - strip_width, 0)
+	if side_left_outer_edge != null:
+		var left_extra := maxf(0.0, left_gap - strip_width)
+		side_left_outer_edge.position = Vector2.ZERO
+		side_left_outer_edge.size = Vector2(left_extra, room_height)
+	if side_right_clip != null:
+		side_right_clip.position = Vector2(content.end.x, room_top)
+		side_right_clip.size = Vector2(right_gap, room_height)
+	if side_right != null:
+		side_right.size = SIDE_TEXTURE_SIZE
+		side_right.scale = Vector2.ONE * scale
+		# Anchor the panorama's source left edge to the central background.
+		side_right.position = Vector2.ZERO
+	if side_right_outer_edge != null:
+		var right_extra := maxf(0.0, right_gap - strip_width)
+		side_right_outer_edge.position = Vector2(strip_width, 0)
+		side_right_outer_edge.size = Vector2(right_extra, room_height)
 
 func _art_path(kind: String, key: String) -> String:
 	return str(_art_overrides.get(key, ART_ROOT + kind + "/" + key + ".png"))
@@ -853,6 +979,7 @@ func _refresh() -> void:
 		step_icons[index].modulate = Color.WHITE if index == phase_step else Color(1, 1, 1, 0.35)
 		step_icons[index].visible = not recipe.is_empty()
 	pause_overlay.visible = paused
+	if pause_full_shade != null: pause_full_shade.visible = paused
 	clear_button.visible = _actions.has("clear") and not completed
 	clear_button.disabled = paused
 	var required: Array[String] = _strings(_state.get("required_ingredients", []))

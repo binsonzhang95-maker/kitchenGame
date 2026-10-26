@@ -15,6 +15,8 @@ const P0Assets = preload("res://p0_assets.gd")
 const Localization = preload("res://localization.gd")
 const RecipeCatalog = preload("res://recipe_catalog.gd")
 const AutoplayDriver = preload("res://autoplay.gd")
+const ResponsiveLayout = preload("res://responsive_layout.gd")
+const WideBackdrop = preload("res://wide_backdrop.gd")
 const SAVE_PATH := "user://restaurant_multi_save_v2.json"
 const INK := Color("574638")
 const GREEN := Color("627c60")
@@ -50,12 +52,15 @@ var sfx: Variant
 var toy_simulator: Variant
 var toy_simulator_enabled := false
 var completion_layer: CanvasLayer
+var completion_layout: Control
 var completion_card: Control
 var completion_dish: TextureRect
 var completion_tween: Tween
 var cooking_token: int = 0
 var selected_table: int = 1
 var room: Variant
+var wide_backdrop: Variant
+var responsive_layout: Dictionary = {}
 var clock: float = 0.0
 var cooldown: float = 0.0
 var save_clock: float = 0.0
@@ -123,9 +128,11 @@ func _ready() -> void:
 	add_child(sfx)
 	# Accept both editor arguments and `godot -- --toy-simulator`.
 	toy_simulator_enabled = OS.get_cmdline_args().has("--toy-simulator") or OS.get_cmdline_user_args().has("--toy-simulator")
+	wide_backdrop = WideBackdrop.new()
+	wide_backdrop.z_index = -10
+	add_child(wide_backdrop)
 	room = Room.new()
 	room.model = model
-	room.position = Vector2(0, 80)
 	room.selected_table = selected_table
 	room.table_selected.connect(_select_table)
 	add_child(room)
@@ -144,6 +151,8 @@ func _ready() -> void:
 	toy_simulator.command_requested.connect(_toy_command)
 	toy_simulator.event_requested.connect(_toy_event)
 	_build_completion_brief()
+	get_viewport().size_changed.connect(_apply_responsive_layout)
+	_apply_responsive_layout()
 	if not model.active_cooking.is_empty(): _restore_cooking()
 	_refresh()
 	if autoplay:
@@ -151,6 +160,33 @@ func _ready() -> void:
 		driver.app = self
 		add_child(driver)
 		model.set_deferred("auto_cook", true)
+
+func _apply_responsive_layout() -> void:
+	var viewport := get_viewport().get_visible_rect().size
+	responsive_layout = ResponsiveLayout.calculate(viewport, ResponsiveLayout.web_safe_insets(viewport))
+	_apply_responsive_layout_data()
+
+## Test-only injection: it exercises the same layout application as a viewport
+## resize without changing project/window state or any business data.
+func set_responsive_layout_for_test(viewport: Vector2, insets: Dictionary = {}) -> void:
+	responsive_layout = ResponsiveLayout.calculate(viewport, insets)
+	_apply_responsive_layout_data()
+
+func _apply_responsive_layout_data() -> void:
+	var content: Rect2 = responsive_layout.content_rect
+	var scale: float = responsive_layout.scale
+	if is_instance_valid(wide_backdrop): wide_backdrop.set_layout(responsive_layout)
+	if is_instance_valid(room):
+		room.position = content.position + Vector2(0, ResponsiveLayout.TOP_BAR) * scale
+		room.scale = Vector2.ONE * scale
+	if is_instance_valid(hud): hud.apply_layout(responsive_layout)
+	if is_instance_valid(cooking_view): cooking_view.apply_layout(responsive_layout)
+	if is_instance_valid(toy_simulator): toy_simulator.apply_layout(responsive_layout)
+	# Layout owns the outer transform; the inner card can pop without replacing
+	# safe-area scaling during the animation or a concurrent resize.
+	if completion_layout != null:
+		completion_layout.position = content.position + Vector2(634, 116) * scale
+		completion_layout.scale = Vector2.ONE * scale
 
 func set_locale(locale: String) -> bool:
 	if not Localization.set_locale(locale): return false
@@ -593,10 +629,17 @@ func _build_completion_brief() -> void:
 	completion_layer = CanvasLayer.new()
 	completion_layer.layer = 40
 	add_child(completion_layer)
+	completion_layout = Control.new()
+	completion_layout.name = "CompletionLayout"
+	completion_layout.position = Vector2(634, 116)
+	completion_layout.size = Vector2(268, 116)
+	completion_layout.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	completion_layer.add_child(completion_layout)
 	completion_card = Panel.new()
 	completion_card.theme = Localization.theme()
-	completion_card.position = Vector2(634, 116)
+	completion_card.position = Vector2.ZERO
 	completion_card.size = Vector2(268, 116)
+	completion_card.pivot_offset = completion_card.size * 0.5
 	completion_card.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var skin := StyleBoxFlat.new()
 	skin.bg_color = Color("fff5dc")
@@ -605,7 +648,7 @@ func _build_completion_brief() -> void:
 	skin.set_border_width_all(3)
 	skin.set_corner_radius_all(4)
 	completion_card.add_theme_stylebox_override("panel", skin)
-	completion_layer.add_child(completion_card)
+	completion_layout.add_child(completion_card)
 	completion_dish = TextureRect.new()
 	completion_dish.position = Vector2(18, 16)
 	completion_dish.size = Vector2(84, 84)
@@ -632,6 +675,7 @@ func _build_completion_brief() -> void:
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	completion_card.add_child(label)
 	completion_card.hide()
+	if not responsive_layout.is_empty(): _apply_responsive_layout()
 
 func _hide_completion_brief() -> void:
 	if completion_tween != null:

@@ -19,6 +19,13 @@ Tried and rejected: `stretch/aspect="expand"` alone. The HUD stretched to full w
 | iPhone SE / 8 | 16:9 ≈ 1.78 | 2048 x 1152 |
 | iPad | 4:3 = 1.33 | 1536 x 1152 (today's size) |
 
+## Implemented layout contract (local working tree, not a release)
+
+- The **1536 x 1152** composition remains the minimum design/safe area. `expand` exposes side space; it does not scale, crop, or move the authored tables and seats. At the 19.5:9 target this produces a **2496 x 1152** viewport. This preserves the full 16:9 phone and iPad seating composition instead of treating either as a crop target.
+- The restaurant and kitchen fill only the new side space with decorative existing-material extensions. The restaurant uses clean central wall/floor samples plus sparse plants, lamps and partitions; it does not add fake tables, routes, or tappable seating. The shared responsive layout also gives the host an optional safe-area bridge through `window.YggraSafeArea` in CSS pixels. A host-supplied numeric `0` is intentional and is not replaced by a notch fallback.
+- This is implementation and desktop-test documentation only. The real iOS/WebKit/TestFlight integration must still be revalidated by the app integration owner. Nothing here asserts that an export has been shipped or published.
+- The existing autoplay wire protocol is unchanged: it must post `ready` within 60 seconds and `tick:<n>` every 5 seconds.
+
 ## Layout today (from the code)
 
 - `game_hud.gd`: `SIZE = 1536 x 1152`.

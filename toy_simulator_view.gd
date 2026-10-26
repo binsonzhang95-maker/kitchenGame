@@ -13,6 +13,8 @@ const GREEN := Color("617c58")
 const PANEL_KEYS := ["stove_level", "oven_level", "oven_open", "vessel", "faucet_open"]
 
 var root: Control
+var screen_blocker: Control
+var _layout: Dictionary = {}
 var state_icon: TextureRect
 var state_label: Label
 var need_icon: TextureRect
@@ -95,6 +97,11 @@ func _build() -> void:
 	if root != null:
 		return
 	layer = 90
+	screen_blocker = Control.new()
+	screen_blocker.name = "ToySimulatorInputShield"
+	screen_blocker.size = VIEW_SIZE
+	screen_blocker.mouse_filter = Control.MOUSE_FILTER_STOP
+	add_child(screen_blocker)
 	root = Control.new()
 	root.name = "LocalToySimulator"
 	root.size = VIEW_SIZE
@@ -188,6 +195,17 @@ func _build() -> void:
 	feedback_badge = _label(panel, "", Vector2(44, 952), Vector2(18, 18), 15, Color("9f3d31"))
 	feedback_label = _label(panel, "", Vector2(66, 956), Vector2(454, 34), 17)
 	root.theme = Localization.theme()
+	if not _layout.is_empty(): apply_layout(_layout)
+
+func apply_layout(layout: Dictionary) -> void:
+	_layout = layout.duplicate(true)
+	if root == null: return
+	var viewport: Vector2 = layout.get("viewport", VIEW_SIZE)
+	var content: Rect2 = layout.get("content_rect", Rect2(Vector2.ZERO, VIEW_SIZE))
+	var scale: float = float(layout.get("scale", 1.0))
+	if screen_blocker != null: screen_blocker.size = viewport
+	root.position = content.position
+	root.scale = Vector2.ONE * scale
 
 func _box(fill: Color, border: Color, thickness: int) -> StyleBoxFlat:
 	var box := StyleBoxFlat.new()

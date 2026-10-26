@@ -12,7 +12,10 @@ var error_sent := false
 static func requested() -> bool:
 	if OS.get_cmdline_user_args().has("--autoplay") or OS.get_cmdline_args().has("--autoplay"):
 		return true
-	return OS.has_feature("web") and bool(JavaScriptBridge.eval("new URLSearchParams(window.location.search).has('autoplay')", true))
+	if not OS.has_feature("web"):
+		return false
+	var query_input := str(JavaScriptBridge.eval("new URLSearchParams(window.location.search).get('input') || ''", true))
+	return query_input != "device" and bool(JavaScriptBridge.eval("new URLSearchParams(window.location.search).has('autoplay')", true))
 
 
 func _process(delta: float) -> void:

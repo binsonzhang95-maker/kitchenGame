@@ -1,18 +1,24 @@
 extends RefCounted
 ## Runtime-wide restaurant geometry.  Every Model owns one of these; no layout
-## cache is shared between games.  Coordinates remain in the 1024-unit tall
-## world so responsive_layout can apply one uniform scale.
+## cache is shared between games. Coordinates use the full 1072-unit room
+## below the 80-unit HUD so the hall reaches the bottom safe edge.
 
-const HEIGHT := 1024.0
+const HEIGHT := 1072.0
+const LEGACY_HEIGHT := 1024.0
 const RENDER_SCALE := 0.75
 ## 24-unit cells keep a 4096-wide route search responsive while leaving more
 ## than four nodes between the closest table footprints.
 const CELL := 24
 const CLEARANCE := 2.0
+const ACTOR_GROUND_SIZE := Vector2(64, 32)
 const EDGE_MARGIN := 4.0
 const SEAT_RESERVATION_SIZE := Vector2(64, 32)
 const MIN_WIDTH := 1536.0
 const MAX_WIDTH := 4096.0
+const LAYOUT_VERSION := 2
+const REVISION_VERSION_FACTOR := 1000000
+const LEFT_STRIP := 388.0
+const RIGHT_STRIP := 336.0
 
 var SIZE := Vector2(MIN_WIDTH, HEIGHT)
 var COUNTER := Rect2()
@@ -20,6 +26,7 @@ var layout_width: float = MIN_WIDTH
 var revision: int = 1
 var _definitions: Array[Dictionary] = []
 var _obstacles: Array[Rect2] = []
+var _architecture: Array[Rect2] = []
 var _floor_regions: Array[Rect2] = []
 var _seat_regions: Array[Rect2] = []
 var _columns: int = 0
@@ -31,27 +38,39 @@ var _seat_nodes: Array = []
 
 
 func _init(width: float = MIN_WIDTH, layout_revision: int = 1) -> void:
-	if not valid_width(width) or layout_revision != revision_for_width(width):
+	if not valid_width(width) or (layout_revision != revision_for_width(width) and layout_revision != legacy_revision_for_width(width)):
 		width = MIN_WIDTH
 		layout_revision = revision_for_width(width)
 	layout_width = snappedf(width, 0.01)
 	revision = layout_revision
-	SIZE = Vector2(layout_width, HEIGHT)
-	_build()
+	SIZE = Vector2(layout_width, LEGACY_HEIGHT if is_legacy_revision(layout_width, revision) else HEIGHT)
+	_build_legacy() if is_legacy_revision(layout_width, revision) else _build()
 
 
 static func valid_width(width: float) -> bool:
 	return is_finite(width) and width >= MIN_WIDTH and width <= MAX_WIDTH
 
 
-static func revision_for_width(width: float) -> int:
-	# Layouts are entirely geometric; quantising to the persisted hundredth makes
-	# the revision reproducible and prevents a forged width/revision pairing.
+static func legacy_revision_for_width(width: float) -> int:
 	return int(roundi(snappedf(width, 0.01) * 100.0))
+
+
+static func revision_for_width(width: float) -> int:
+	# The version prefix distinguishes restored architecture from the open-floor
+	# V5 layout even when a save is loaded at exactly the same width.
+	return LAYOUT_VERSION * REVISION_VERSION_FACTOR + legacy_revision_for_width(width)
+
+
+static func is_legacy_revision(width: float, value: int) -> bool:
+	return valid_width(width) and value == legacy_revision_for_width(width)
 
 
 static func valid_revision(width: float, value: int) -> bool:
 	return valid_width(width) and value == revision_for_width(width)
+
+
+static func valid_saved_revision(width: float, value: int) -> bool:
+	return valid_revision(width, value) or is_legacy_revision(width, value)
 
 
 func table_definitions() -> Array[Dictionary]:
@@ -76,7 +95,16 @@ func seat_point(id: int) -> Vector2:
 func service_point(id: int) -> Vector2:
 	if id < 1 or id > 20:
 		return Vector2(-1, -1)
-	return table_center(id) + Vector2(84, 24)
+	var offset_x := 84.0
+	if id >= 15 and id <= 18 and not is_legacy_revision(layout_width, revision):
+		offset_x = 73.0
+	elif id >= 19 and not is_legacy_revision(layout_width, revision):
+		offset_x = 62.0
+	return table_center(id) + Vector2(offset_x, 24)
+
+
+func actor_ground_footprint(position: Vector2) -> Rect2:
+	return Rect2(position - ACTOR_GROUND_SIZE * 0.5, ACTOR_GROUND_SIZE)
 
 
 func seat_reservation(id: int) -> Rect2:
@@ -92,13 +120,13 @@ func worker_home(id: int) -> Vector2:
 
 
 func entrance_point() -> Vector2:
-	return Vector2(layout_width * 0.5, 1000)
+	return Vector2(layout_width * 0.5, 1000.0 if is_legacy_revision(layout_width, revision) else HEIGHT - 96)
 
 
 func queue_point(index: int) -> Vector2:
-	# Eight 96px-tall actors stand here.  Keeping their support line below the
-	# final table row prevents their sprites and hit targets from covering it.
-	return Vector2(layout_width * 0.5 - 126 + 36 * clampi(index, 0, 7), 985)
+	if is_legacy_revision(layout_width, revision):
+		return Vector2(layout_width * 0.5 - 126 + 36 * clampi(index, 0, 7), 985)
+	return Vector2(layout_width * 0.5 + 172 + 36 * clampi(index, 0, 7), HEIGHT - 110)
 
 
 func floor_regions() -> Array[Rect2]:
@@ -107,6 +135,25 @@ func floor_regions() -> Array[Rect2]:
 
 func obstacles() -> Array[Rect2]:
 	return _obstacles.duplicate()
+
+
+func architecture_obstacles() -> Array[Rect2]:
+	return _architecture.duplicate()
+
+
+func is_architecture_at(position: Vector2) -> bool:
+	for box: Rect2 in _architecture:
+		if _point_in_box(position, box):
+			return true
+	return false
+
+
+func left_strip_width() -> float:
+	return 155.0 if is_legacy_revision(layout_width, revision) else LEFT_STRIP
+
+
+func right_strip_width() -> float:
+	return 155.0 if is_legacy_revision(layout_width, revision) else RIGHT_STRIP
 
 
 func is_walkable(position: Vector2) -> bool:
@@ -176,43 +223,93 @@ func path_avoids_seats(start: Vector2, path: Array, seat_exceptions: Array[int] 
 func _build() -> void:
 	_definitions.clear()
 	_obstacles.clear()
+	_architecture.clear()
 	_floor_regions.clear()
 	_seat_regions.clear()
 	_seat_masks.clear()
 	_seat_nodes.clear()
-	# Five columns / four rows: private rooms left, twelve hall tables in the
-	# three middle columns, and hall/bar on the right. IDs never depend on width.
-	var xs: Array[float] = []
-	for column: int in range(5):
-		xs.append(lerpf(155.0, layout_width - 155.0, float(column) / 4.0))
-	var ys: Array[float] = [340.0, 490.0, 645.0, 800.0]
-	for row: int in range(4):
-		_definitions.append({"id": 15 + row, "zone": "private", "label": "包厢 %02d" % (row + 1), "center": Vector2(xs[0], ys[row])})
+	var extra := layout_width - MIN_WIDTH
+	var xs: Array[float] = [540.0 + extra * 0.2, 800.0 + extra * 0.5, 1060.0 + extra * 0.8]
+	var ys: Array[float] = [345.0, 475.0, 605.0, 735.0, 865.0]
 	var id := 1
-	for column: int in range(1, 4):
-		for row: int in range(4):
+	for row: int in range(ys.size()):
+		var count := 2 if row == ys.size() - 1 else 3
+		for column: int in range(count):
 			_definitions.append({"id": id, "zone": "hall", "label": "大厅 %02d" % id, "center": Vector2(xs[column], ys[row])})
 			id += 1
-	_definitions.append({"id": 13, "zone": "hall", "label": "大厅 13", "center": Vector2(xs[4], ys[0])})
-	_definitions.append({"id": 14, "zone": "hall", "label": "大厅 14", "center": Vector2(xs[4], ys[1])})
-	_definitions.append({"id": 19, "zone": "bar", "label": "吧台 01", "center": Vector2(xs[4], ys[2])})
-	_definitions.append({"id": 20, "zone": "bar", "label": "吧台 02", "center": Vector2(xs[4], ys[3])})
+	var private_centers: Array[Vector2] = [Vector2(175,170), Vector2(160,390), Vector2(145,615), Vector2(135,840)]
+	for index: int in range(private_centers.size()):
+		_definitions.append({"id": 15 + index, "zone": "private", "label": "包厢 %02d" % (index + 1), "center": private_centers[index]})
+	for index: int in range(2):
+		_definitions.append({"id": 19 + index, "zone": "bar", "label": "吧台 %02d" % (index + 1), "center": Vector2(layout_width - (184.0 if index == 0 else 164.0), 350.0 if index == 0 else 650.0)})
 	_definitions.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return int(a.id) < int(b.id))
 	COUNTER = Rect2(layout_width * 0.5 - 323.0, 176.0, 646.0, 78.0)
-	# The rendered wall and kitchen end at the counter's front edge (y=254).
-	# Actors may use only the restaurant floor below it, including the new
-	# entrance/queue strip through y=1008.
-	_floor_regions.append(Rect2(EDGE_MARGIN, 256.0, layout_width - EDGE_MARGIN * 2.0, 752.0))
+	var right_shift := layout_width - MIN_WIDTH
+	# The fixed side strips retain the original room and terrace floors. Only the
+	# clean central hall grows; openings are at least three 24-unit cells wide.
+	_floor_regions.assign([
+		Rect2(332, 254, layout_width - LEFT_STRIP - RIGHT_STRIP + 56, 694), Rect2(332, 150, 56, 798),
+		Rect2(layout_width * 0.5 - 60, HEIGHT - 124, 120, 108), Rect2(layout_width * 0.5 + 60, HEIGHT - 140, 430, 50),
+		Rect2(56, 134, 228, 84), Rect2(24, 346, 244, 90), Rect2(12, 572, 242, 94), Rect2(8, 802, 230, 100),
+		Rect2(284, 152, 104, 45), Rect2(268, 349, 120, 61), Rect2(254, 575, 134, 66), Rect2(238, 809, 150, 87),
+		Rect2(1280 + right_shift, 208, 208, 226), Rect2(1200 + right_shift, 432, 140, 102), Rect2(1310 + right_shift, 468, 184, 360),
+	])
+	# Shared architectural ground geometry mirrors the visible partitions, rail
+	# posts and front wall. Door/terrace/entrance gaps remain absent from it.
+	_architecture.assign([
+		Rect2(0, 222, 284, 20), Rect2(0, 440, 268, 22), Rect2(0, 670, 254, 21), Rect2(0, 906, 238, 16),
+		Rect2(284, 218, 48, 128), Rect2(268, 410, 64, 162), Rect2(254, 641, 78, 161),
+		Rect2(1200 + right_shift, 208, 24, 224), Rect2(1200 + right_shift, 534, 24, 400),
+		Rect2(1200 + right_shift, 208, 294, 20), Rect2(1470 + right_shift, 208, 24, 620), Rect2(1310 + right_shift, 808, 184, 20),
+		Rect2(LEFT_STRIP, HEIGHT - 90, layout_width * 0.5 - 60 - LEFT_STRIP, 90),
+		Rect2(layout_width * 0.5 + 60, HEIGHT - 90, layout_width * 0.5 - RIGHT_STRIP - 60, 90),
+	])
 	_obstacles.append(COUNTER.grow(CLEARANCE))
+	for box: Rect2 in _architecture:
+		_obstacles.append(_architecture_clearance(box))
+	for pot: Rect2 in [Rect2(60,130,48,28), Rect2(30,326,48,36), Rect2(12,548,48,36), Rect2(10,794,48,40), Rect2(1278+right_shift,174,54,40), Rect2(1422+right_shift,286,66,52), Rect2(1456+right_shift,782,38,46)]:
+		_obstacles.append(pot.grow(CLEARANCE))
+	_add_furniture_obstacles()
+
+
+func _build_legacy() -> void:
+	_definitions.clear()
+	_obstacles.clear()
+	_architecture.clear()
+	_floor_regions.clear()
+	_seat_regions.clear()
+	_seat_masks.clear()
+	_seat_nodes.clear()
+	var xs: Array[float] = []
+	for column: int in range(5): xs.append(lerpf(155.0, layout_width - 155.0, float(column) / 4.0))
+	var ys: Array[float] = [340.0, 490.0, 645.0, 800.0]
+	for row: int in range(4): _definitions.append({"id":15+row,"zone":"private","label":"包厢 %02d"%(row+1),"center":Vector2(xs[0],ys[row])})
+	var id := 1
+	for column: int in range(1,4):
+		for row: int in range(4): _definitions.append({"id":id,"zone":"hall","label":"大厅 %02d"%id,"center":Vector2(xs[column],ys[row])}); id += 1
+	_definitions.append({"id":13,"zone":"hall","label":"大厅 13","center":Vector2(xs[4],ys[0])})
+	_definitions.append({"id":14,"zone":"hall","label":"大厅 14","center":Vector2(xs[4],ys[1])})
+	_definitions.append({"id":19,"zone":"bar","label":"吧台 01","center":Vector2(xs[4],ys[2])})
+	_definitions.append({"id":20,"zone":"bar","label":"吧台 02","center":Vector2(xs[4],ys[3])})
+	_definitions.sort_custom(func(a:Dictionary,b:Dictionary)->bool:return int(a.id)<int(b.id))
+	COUNTER = Rect2(layout_width*0.5-323.0,176,646,78)
+	_floor_regions.append(Rect2(EDGE_MARGIN,256,layout_width-EDGE_MARGIN*2,LEGACY_HEIGHT-272))
+	_obstacles.append(COUNTER.grow(CLEARANCE))
+	_add_furniture_obstacles()
+
+
+func _architecture_clearance(box: Rect2) -> Rect2:
+	var margin := ACTOR_GROUND_SIZE * 0.5 + Vector2(CLEARANCE, CLEARANCE)
+	return Rect2(box.position - margin, box.size + margin * 2.0)
+
+
+func _add_furniture_obstacles() -> void:
 	for definition: Dictionary in _definitions:
 		var center: Vector2 = definition.center
 		_seat_regions.append(Rect2(seat_point(int(definition.id)) - SEAT_RESERVATION_SIZE * 0.5, SEAT_RESERVATION_SIZE))
 		var feet := Rect2(center + Vector2(-53, 18), Vector2(106, 28))
-		if definition.zone == "bar":
-			feet = Rect2(center + Vector2(-48, 24), Vector2(96, 44))
+		if definition.zone == "bar": feet = Rect2(center + Vector2(-48, 24), Vector2(96, 44))
 		_obstacles.append(feet.grow(CLEARANCE))
-	# Constructing/relayouting a model is cheap.  The per-layout navigation grid
-	# is built lazily by the first actual route request.
 
 
 func _build_grid() -> void:

@@ -702,7 +702,7 @@ func restore(data: Dictionary) -> bool:
 	if schema in [3, 4]:
 		if not candidate._relayout_runtime(receiving_width, false):
 			return false
-	elif not is_equal_approx(candidate.floor.layout_width, receiving_width):
+	elif candidate.floor.revision != FloorLayout.revision_for_width(candidate.floor.layout_width) or not is_equal_approx(candidate.floor.layout_width, receiving_width):
 		if not candidate._relayout_runtime(receiving_width):
 			return false
 	# Migration produces a different geometry.  Validate that actual target map
@@ -747,19 +747,18 @@ func _map_actor_position(actor: Dictionary, old_floor, destination: Vector2, sea
 	var old_position: Vector2 = actor.pos
 	if not old_floor.is_walkable(old_position):
 		return false
-	# The two 155px edge bands are anchored to their respective room edges.  In
-	# particular, return routes for the outer service columns use attachment
-	# points in these bands: scaling such a point through the middle span can put
-	# it outside the new floor (and beyond the deliberately bounded nearest-point
-	# fallback).  Only the central span is proportional.
-	var old_inner_left: float = 155.0
-	var old_inner_right: float = float(old_floor.layout_width) - 155.0
+	# Fixed architectural strips stay edge-anchored; only the hall span scales.
+	# This also maps old open-floor V5 saves with their historical 155px bands.
+	var old_inner_left: float = old_floor.left_strip_width()
+	var old_inner_right: float = float(old_floor.layout_width) - old_floor.right_strip_width()
+	var new_inner_left: float = floor.left_strip_width()
+	var new_inner_right: float = floor.layout_width - floor.right_strip_width()
 	var mapped_x: float = old_position.x
 	if old_position.x >= old_inner_right:
 		mapped_x = floor.layout_width - (float(old_floor.layout_width) - old_position.x)
 	elif old_position.x > old_inner_left:
 		var progress: float = inverse_lerp(old_inner_left, old_inner_right, old_position.x)
-		mapped_x = lerpf(old_inner_left, floor.layout_width - old_inner_left, progress)
+		mapped_x = lerpf(new_inner_left, new_inner_right, progress)
 	var mapped: Vector2 = Vector2(mapped_x, old_position.y)
 	var legal: Vector2 = floor.nearest_walkable_avoiding_seats(mapped, seat_exceptions)
 	if legal.x < 0.0:
@@ -944,9 +943,9 @@ func _read_snapshot(data: Dictionary) -> bool:
 			return false
 		var saved_width: float = float(data.layout_width)
 		var saved_revision: int = int(data.layout_revision)
-		if not FloorLayout.valid_revision(saved_width, saved_revision):
+		if not FloorLayout.valid_saved_revision(saved_width, saved_revision):
 			return false
-		floor = Floor.create(saved_width)
+		floor = FloorLayout.new(saved_width, saved_revision)
 	if schema in [4, SAVE_VERSION]:
 		if typeof(data.get("interactive_cooking")) != TYPE_BOOL or typeof(data.get("cooking_return_paused")) != TYPE_BOOL or not data.get("active_cooking") is Dictionary or not _integer(data.get("cooking_session_seq")) or not _integer(data.get("cooking_session_token")):
 			return false

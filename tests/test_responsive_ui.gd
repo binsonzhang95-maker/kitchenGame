@@ -35,6 +35,8 @@ func _run() -> void:
 	var content: Rect2 = app.responsive_layout.content_rect
 	_check(ResponsiveLayout.calculate(Vector2(6000, 1152)).world_size.x == 4096.0, "responsive contract caps the real world at 4096")
 	_check(app.room.position == content.position + Vector2(0, 80) * float(app.responsive_layout.scale), "room is transformed once from the shared content origin")
+	_check(app.responsive_layout.room_rect.end.y == content.end.y and app.responsive_layout.world_size.y == 1072.0, "removed bottom HUD space belongs to the hall")
+	_check(app.hud.design_root.get_node_or_null("BottomBar") == null, "bottom bar, help and global order control do not exist")
 	var floor: Variant = app.model.get("floor")
 	if floor == null:
 		# Batch A supplies the instance geometry.  Keep this B-only checkout
@@ -62,9 +64,17 @@ func _run() -> void:
 	var right_point: Vector2 = app.room.get_global_transform_with_canvas() * Vector2(right_table.center)
 	_check(not old_central.has_point(left_point) and not old_central.has_point(right_point), "outer table columns are outside the former centered 1536 scene")
 	_check(not old_central.has_point(app.room.get_global_transform_with_canvas() * Vector2(app.model.tables[14].center)) and not old_central.has_point(app.room.get_global_transform_with_canvas() * Vector2(app.model.tables[17].center)), "private tables 15 and 18 are outside the former centred room")
-	_check(not old_central.has_point(app.room.get_global_transform_with_canvas() * Vector2(app.model.tables[12].center)) and not old_central.has_point(app.room.get_global_transform_with_canvas() * Vector2(app.model.tables[19].center)), "right hall and bar tables are outside the former centred room")
+	_check(not old_central.has_point(app.room.get_global_transform_with_canvas() * Vector2(app.model.tables[19].center)), "bar tables stay in the restored right strip")
+	_check(old_central.has_point(app.room.get_global_transform_with_canvas() * Vector2(app.model.tables[12].center)), "hall table 13 stays in the expanding centre")
 	await _click_all_seated_tables("19.5:9 safe wide")
-	_check(app.hud.money_label.get_global_rect().position.x >= content.position.x and app.pause_button.get_global_rect().end.x <= content.end.x and app.hud.settings_button.position.x + app.hud.settings_button.size.x <= float(app.hud._world_width) and is_equal_approx(app.hud.order_button.position.x, (float(app.hud._world_width) - app.hud.order_button.size.x) * 0.5), "HUD edge and dynamic controls stay inside the horizontal safe area")
+	var selected_before_architecture: int = app.selected_table
+	for item: Dictionary in [{"name":"partition", "box":floor.architecture_obstacles()[0]}, {"name":"railing", "box":floor.architecture_obstacles()[7]}]:
+		var local_point: Vector2 = (item.box as Rect2).get_center()
+		_check(app.room._table_at_point(local_point) == 0, "visible %s is rejected before table picking" % item.name)
+		_click(app.room.get_global_transform_with_canvas() * local_point)
+		await process_frame
+		_check(app.selected_table == selected_before_architecture, "visible %s tap does not select a table" % item.name)
+	_check(app.hud.money_label.get_global_rect().position.x >= content.position.x and app.pause_button.get_global_rect().end.x <= content.end.x and app.hud.settings_button.position.x + app.hud.settings_button.size.x <= float(app.hud._world_width), "HUD edge controls stay inside the horizontal safe area")
 	await _set_test_viewport(Vector2i(1024, 768))
 	await _click_all_seated_tables("compact 4:3")
 	await _set_test_viewport(Vector2i(2048, 1152))

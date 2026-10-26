@@ -1,6 +1,7 @@
 extends SceneTree
 ## Pure model/geometry coverage for the real landscape map; no UI or saves.
 const Floor = preload("res://floor_plan.gd")
+const FloorLayout = preload("res://floor_layout.gd")
 const Model = preload("res://multi_model.gd")
 const Support = preload("res://tests/multi_test_support.gd")
 
@@ -18,32 +19,51 @@ func _check(value: bool, message: String) -> void:
 
 func _run() -> void:
 	var route_build_usec := 0
-	for width: float in [1536.0, 2560.0, 4096.0]:
+	var occupied_route_usec := 0
+	for width: float in [1536.0, 2496.0, 4096.0]:
 		var layout = Floor.create(width)
-		_check(layout.SIZE == Vector2(width, 1024), "world size %d" % width)
+		_check(layout.SIZE == Vector2(width, 1072), "world size %d" % width)
 		_check(layout.table_definitions().size() == 20, "twenty tables %d" % width)
+		_check(layout.architecture_obstacles().size() >= 10, "room/bar/front-wall obstacles exist %d" % width)
+		_check(layout.table_center(15).is_equal_approx(Vector2(175,170)) and is_equal_approx(layout.table_center(19).x, width - 184.0), "fixed side strips retain authored tables %d" % width)
+		for table_id: int in range(1, 21):
+			var definition: Dictionary = layout.table_definitions()[table_id - 1]
+			var footprint := Rect2(Vector2(definition.center) + Vector2(-53,18), Vector2(106,28))
+			if str(definition.zone) == "bar": footprint = Rect2(Vector2(definition.center) + Vector2(-48,24), Vector2(96,44))
+			for wall: Rect2 in layout.architecture_obstacles():
+				_check(not footprint.intersects(wall) and not layout.seat_reservation(table_id).intersects(wall), "table/actor ground footprint clears architecture %d/%d" % [width,table_id])
+			_check(_footprint_clears_architecture(layout, layout.service_point(table_id)), "service footprint clears architecture %d/%d" % [width, table_id])
+		var room_doors: Array[Vector2] = [Vector2(152,197), Vector2(349,410), Vector2(575,641), Vector2(809,896)]
 		var first_started := Time.get_ticks_usec()
 		var first_exceptions: Array[int] = [1]
 		var first_path: Array[Vector2] = layout.route_avoiding_seats(layout.entrance_point(), layout.seat_point(1), first_exceptions)
 		route_build_usec += Time.get_ticks_usec() - first_started
 		_check(not first_path.is_empty(), "first route builds lazily %d" % width)
+		var occupied_started := Time.get_ticks_usec()
 		for id: int in range(1, 21):
 			var exceptions: Array[int] = [id]
 			var entry: Array[Vector2] = layout.route_avoiding_seats(layout.entrance_point(), layout.seat_point(id), exceptions)
 			var service: Array[Vector2] = layout.route_avoiding_seats(layout.kitchen_point(), layout.service_point(id))
 			var return_path: Array[Vector2] = layout.route_avoiding_seats(layout.service_point(id), layout.worker_home(id % 2))
 			_check(not entry.is_empty() and layout.path_avoids_seats(layout.entrance_point(), entry.slice(1), exceptions), "entry path %d/%d" % [width, id])
+			if id >= 15 and id <= 18:
+				_check(_path_crosses_x_in_y(entry, 332.0, room_doors[id - 15]), "private route uses room opening %d/%d" % [width,id])
 			var leave: Array[Vector2] = layout.route_avoiding_seats(layout.seat_point(id), layout.entrance_point())
 			_check(not leave.is_empty() and layout.path_avoids_seats(layout.seat_point(id), leave.slice(1)), "leave path %d/%d" % [width, id])
 			_check(not service.is_empty() and layout.path_avoids_seats(layout.kitchen_point(), service.slice(1)), "service path %d/%d" % [width, id])
 			_check(not return_path.is_empty() and layout.path_avoids_seats(layout.service_point(id), return_path.slice(1)), "return path %d/%d" % [width, id])
+			_check(_path_footprints_clear(layout, layout.entrance_point(), entry) and _path_footprints_clear(layout, layout.seat_point(id), leave) and _path_footprints_clear(layout, layout.kitchen_point(), service) and _path_footprints_clear(layout, layout.service_point(id), return_path), "all moving footprints clear architecture %d/%d" % [width, id])
+		occupied_route_usec += Time.get_ticks_usec() - occupied_started
 		for queue_index: int in range(8):
 			_check(not layout.route_avoiding_seats(layout.entrance_point(), layout.queue_point(queue_index)).is_empty(), "queue path %d/%d" % [width, queue_index])
 		# Queue sprites are 96px high with their support near the bottom.  Neither
 		# their visible pixels nor their table click hit area reaches final row.
 		_check(layout.queue_point(0).y - 90.0 > layout.table_center(8).y + 82.0, "queue clears final-row visual and click target %d" % width)
+		_check(layout.segment_is_walkable(layout.entrance_point(), Vector2(width * 0.5, 934.0)), "doorway-to-hall segment has no invisible strip %d" % width)
+		_check(_path_crosses_y_in_x(first_path, 948.0, Vector2(width * 0.5 - 60.0, width * 0.5 + 60.0)), "entering route passes through visible doorway %d" % width)
 		_check(not layout.is_walkable(Vector2(width * 0.5, 180.0)) and layout.is_walkable(Vector2(width * 0.5, 257.0)), "wall/kitchen is not walkable %d" % width)
 	print("WIDE_V5_LAYOUT_FIRST_ROUTE_USEC total=%d widths=3" % route_build_usec)
+	print("WIDE_V5_OCCUPIED_ROUTE_USEC total=%d routes=240" % occupied_route_usec)
 	var one = Model.new(1536.0)
 	var two = Model.new(2560.0)
 	_check(not one.floor.table_center(1).is_equal_approx(two.floor.table_center(1)), "model floors are isolated")
@@ -55,6 +75,11 @@ func _run() -> void:
 	var unchanged: Dictionary = one.to_dict()
 	_check(one.relayout(1536.0) and Support.same(one.to_dict(), unchanged), "same-width relayout is an explicit no-op")
 	var snapshot: Dictionary = one.to_dict()
+	var old_v5: Dictionary = _freeze_open_floor_v5(snapshot)
+	var same_width_old = Model.new(1536.0)
+	_check(same_width_old.restore(old_v5) and same_width_old.floor.revision == FloorLayout.revision_for_width(1536.0), "old V5 same-width save validates then migrates")
+	var cross_width_old = Model.new(2496.0)
+	_check(cross_width_old.restore(old_v5) and is_equal_approx(cross_width_old.floor.layout_width, 2496.0), "old V5 cross-width save validates then migrates")
 	var reopened = Model.new(4096.0)
 	_check(reopened.restore(snapshot) and is_equal_approx(reopened.floor.layout_width, 4096.0), "V5 validates saved geometry then targets receiver width")
 	var forged: Dictionary = snapshot.duplicate(true)
@@ -103,6 +128,7 @@ func _run() -> void:
 	var cooking_before: Dictionary = cooking.active_cooking.duplicate(true)
 	_check(cooking.relayout(2560.0) and cooking.paused and cooking.active_cooking == cooking_before, "relayout preserves paused active cooking")
 	_test_moving_resize()
+	_test_active_old_v5_migration()
 	_test_edge_band_runtime_migration()
 	_test_genuine_v4_kitchen_migration(cooking)
 	_test_genuine_v4_claimed_task_migration()
@@ -156,17 +182,58 @@ func _test_moving_resize() -> void:
 	print("WIDE_V5_RELAYOUT_USEC total=%d changed_widths=4" % resize_usec)
 
 
+func _test_active_old_v5_migration() -> void:
+	var source = Model.new(1536.0)
+	var old = FloorLayout.new(1536.0, 153600)
+	_check(old.SIZE == Vector2(1536, 1024), "legacy V5 fixture freezes historical height")
+	_check(old.entrance_point().is_equal_approx(Vector2(768,1000)) and old.queue_point(0).is_equal_approx(Vector2(642,985)), "legacy V5 fixture freezes literal entrance and queue")
+	source.floor = old
+	for index: int in range(source.tables.size()):
+		var center := _historical_table_center(1536.0, index + 1)
+		source.tables[index].center = center
+	for index: int in range(source.workers.size()):
+		source.workers[index].pos = Vector2(592 + 64 * index, 278)
+	source.open_for_arrivals = false
+	source.auto_seat = false
+	var seated_id: int = source.spawn_customer("dog")
+	_check(seated_id > 0 and source.assign_next(1) and Support.until(source, func() -> bool: return source.customers[seated_id].state == "seated", 20.0), "old V5 fixture seats one guest")
+	var walking_id: int = source.spawn_customer("cat")
+	_check(walking_id > 0 and source.assign_next(15), "old V5 fixture starts walking guest")
+	var queued_id: int = source.spawn_customer("panda")
+	var departing_id: int = source.spawn_customer("otter")
+	source.customers[departing_id].patience = 0.05
+	source.tick(0.1)
+	# Literal 7595003 coordinates make this fixture independent of current accessors.
+	source.customers[seated_id].pos = Vector2(461.5,352)
+	source.customers[seated_id].path = []
+	source.customers[walking_id].pos = Vector2(768,1000)
+	source.customers[walking_id].path = old.route_avoiding_seats(Vector2(768,1000), Vector2(155,352), [15])
+	source.customers[queued_id].pos = Vector2(768,1000)
+	source.customers[queued_id].path = [Vector2(642,985)]
+	source.customers[departing_id].pos = Vector2(678,985)
+	source.customers[departing_id].path = [Vector2(768,1000)]
+	_check(source.customers[departing_id].state == "leaving" and source.validate_invariants().is_empty(), "literal queued/walking/departing old V5 fixture validates historically")
+	var snapshot: Dictionary = source.to_dict()
+	for width: float in [1536.0, 2496.0]:
+		var target = Model.new(width)
+		_check(target.restore(snapshot), "active old V5 restores at width %d" % width)
+		_check(target.customers[queued_id].state == "queued" and (target.customers[queued_id].pos as Vector2).is_equal_approx(target.floor.queue_point(0)), "old V5 queued guest is re-queued %d" % width)
+		_check(target.customers[walking_id].state == "walking" and target.tables[14].guest_id == walking_id, "old V5 walking reservation survives %d" % width)
+		_check(target.customers[departing_id].state == "leaving" and not target.customers[departing_id].path.is_empty(), "old V5 departing guest is rerouted %d" % width)
+		_check(target.customers[seated_id].state == "seated" and target.tables[0].guest_id == seated_id and target.tables[0].used, "old V5 seated guest/table state survives %d" % width)
+		_check(target.validate_invariants().is_empty(), "old V5 target geometry validates %d" % width)
+
+
 func _test_edge_band_runtime_migration() -> void:
-	# Tables 13/14/19/20 all service the rightmost fixed-inset column.  Exercise
-	# a real food task through delivery, then resize while its worker has just
-	# entered the return route's right-edge attachment band.
-	for table_id: int in [13, 14, 19, 20]:
+	# Only the restored terrace tables are right-edge anchored. Hall 13/14 now
+	# belong to the expanding three-column centre.
+	for table_id: int in [19, 20]:
 		var model = _right_edge_returning_fixture(table_id)
 		var worker: Dictionary = model.workers[0]
 		var right_offset: float = model.floor.layout_width - float((worker.pos as Vector2).x)
 		var tasks_before: Array = model.tasks.duplicate(true)
 		var clock_before: float = model.clock
-		_check(right_offset < 155.0, "right service return enters edge band %d" % table_id)
+		_check(right_offset < FloorLayout.RIGHT_STRIP, "right service return enters terrace band %d" % table_id)
 		for width: float in [4096.0, 1536.0, 2496.0]:
 			_check(model.relayout(width), "right edge return relayout accepts %d/%d" % [table_id, width])
 			worker = model.workers[0]
@@ -179,13 +246,10 @@ func _test_edge_band_runtime_migration() -> void:
 		worker = reopened.workers[0]
 		_check(is_equal_approx(reopened.floor.layout_width - float((worker.pos as Vector2).x), right_offset) and Support.same(reopened.tasks, tasks_before) and is_equal_approx(reopened.clock, clock_before), "right edge cross-width save keeps anchor and business state %d" % table_id)
 		_check(reopened.floor.path_avoids_seats(worker.pos, worker.path) and reopened.validate_invariants().is_empty(), "right edge restored return avoids seats %d" % table_id)
-	# This point is a normal walkable left-band attachment, rather than a seat
-	# support point (which must be moved a cell aside because its reservation is
-	# intentionally not exempt for a departing guest).  It covers the exact
-	# x <= 155 branch in both directions.
+	# Exercise a real private-room point inside the fixed left architecture.
 	var left_source = Floor.create(1536.0)
 	var left_target = Model.new(4096.0)
-	var left_actor: Dictionary = {"id": 99, "pos": Vector2(100.0, 300.0), "path": [], "route_blocked": false}
+	var left_actor: Dictionary = {"id": 99, "pos": Vector2(100.0, 170.0), "path": [], "route_blocked": false}
 	_check(left_source.is_walkable(left_actor.pos), "left edge fixture starts walkable")
 	_check(left_target._map_actor_position(left_actor, left_source, left_target.floor.entrance_point()), "left edge maps to wide floor")
 	_check(is_equal_approx(float((left_actor.pos as Vector2).x), 100.0) and left_target.floor.path_avoids_seats(left_actor.pos, left_actor.path), "left edge offset is unchanged on wide floor")
@@ -258,6 +322,67 @@ func _test_genuine_v4_claimed_task_migration() -> void:
 	_check(migrated.tasks.size() == 1 and migrated.tasks[0] == task_before and migrated.workers[0].state == "to_kitchen", "V4 claimed task identity/state survive")
 	_check(is_equal_approx(migrated.customers[1].patience, patience_before) and is_equal_approx(migrated.clock, clock_before), "V4 claimed task keeps patience and clock")
 	_check(migrated.validate_invariants().is_empty(), "V4 claimed task target geometry validates")
+
+
+func _freeze_open_floor_v5(snapshot: Dictionary) -> Dictionary:
+	var legacy := snapshot.duplicate(true)
+	var width := float(legacy.layout_width)
+	legacy.layout_revision = int(round(width * 100.0))
+	for index: int in range(legacy.tables.size()):
+		var center := _historical_table_center(width, index + 1)
+		legacy.tables[index].center = [center.x, center.y]
+	for index: int in range(legacy.workers.size()):
+		legacy.workers[index].pos = [width * 0.5 - 176 + 64 * index, 278]
+		legacy.workers[index].path = []
+	return legacy
+
+
+func _historical_table_center(width: float, id: int) -> Vector2:
+	var xs: Array[float] = [155.0, lerpf(155.0,width-155.0,0.25), lerpf(155.0,width-155.0,0.5), lerpf(155.0,width-155.0,0.75), width-155.0]
+	var ys: Array[float] = [340.0,490.0,645.0,800.0]
+	if id >= 15 and id <= 18: return Vector2(xs[0],ys[id-15])
+	if id <= 12: return Vector2(xs[1 + (id-1)/4],ys[(id-1)%4])
+	var right_row := id - 13 if id <= 14 else id - 17
+	return Vector2(xs[4],ys[right_row])
+
+
+func _footprint_clears_architecture(layout: Variant, point: Vector2) -> bool:
+	var footprint: Rect2 = layout.actor_ground_footprint(point)
+	for wall: Rect2 in layout.architecture_obstacles():
+		if footprint.intersects(wall): return false
+	return true
+
+
+func _path_footprints_clear(layout: Variant, start: Vector2, path: Array[Vector2]) -> bool:
+	var previous := start
+	for finish: Vector2 in path:
+		var steps := maxi(1, ceili(previous.distance_to(finish) / 8.0))
+		for step: int in range(steps + 1):
+			if not _footprint_clears_architecture(layout, previous.lerp(finish, float(step) / steps)): return false
+		previous = finish
+	return true
+
+
+func _path_crosses_x_in_y(path: Array[Vector2], x: float, y_range: Vector2) -> bool:
+	for index: int in range(1, path.size()):
+		var a := path[index - 1]
+		var b := path[index]
+		if (a.x - x) * (b.x - x) > 0.0 or is_equal_approx(a.x, b.x):
+			continue
+		var y := lerpf(a.y, b.y, inverse_lerp(a.x, b.x, x))
+		if y >= y_range.x and y <= y_range.y:
+			return true
+	return false
+
+
+func _path_crosses_y_in_x(path: Array[Vector2], y: float, x_range: Vector2) -> bool:
+	for index: int in range(1, path.size()):
+		var a := path[index - 1]
+		var b := path[index]
+		if (a.y - y) * (b.y - y) > 0.0 or is_equal_approx(a.y, b.y): continue
+		var x := lerpf(a.x, b.x, inverse_lerp(a.y, b.y, y))
+		if x >= x_range.x and x <= x_range.y: return true
+	return false
 
 
 func _freeze_v4_geometry(v5: Dictionary) -> Dictionary:

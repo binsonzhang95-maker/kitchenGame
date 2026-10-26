@@ -305,6 +305,16 @@ func _test_sync_freezes_live_visuals_and_guides_only_progress() -> void:
 		await process_frame
 		var flame_name := str({"small":"flame_low", "medium":"flame_medium", "high":"flame_high"}[level])
 		_expect(view.heat_icon.visible and view.heat_icon.texture != null and view.heat_icon.texture.resource_path.contains(flame_name) and view.heat_icon.texture != previous_flame, "heat " + level + " uses its own supplied flame texture")
+		_expect(view.heat_gauge.visible and str(view.heat_rows[["small", "medium", "high"].find(level)].label.text) == str({"small":"小火", "medium":"中火", "high":"大火"}[level]), "gauge shows heat " + level)
+		var visible_flames := 0
+		var flame_outside_live_ui := false
+		for node: Node in view.root_control.find_children("*", "TextureRect", true, false):
+			var image := node as TextureRect
+			if image.visible and image.texture != null and image.texture.resource_path.contains("flame_"):
+				visible_flames += 1
+				if image != view.heat_icon and not view.heat_gauge.is_ancestor_of(image):
+					flame_outside_live_ui = true
+		_expect(visible_flames == 4 and not flame_outside_live_ui, "heating shows flames only in the three-row gauge and under the pot")
 		previous_flame = view.heat_icon.texture
 	var live_heat := {"recipe_id":"soup", "phase":"cooking", "ingredients":["potato", "carrot"], "vessel":"pot", "heat_level":"medium", "paused":false, "actions":["clear", "cancel"]}
 	view.sync(live_heat, {"cooking_token":114})
@@ -316,10 +326,15 @@ func _test_sync_freezes_live_visuals_and_guides_only_progress() -> void:
 	var flame_alpha := view.heat_icon.modulate.a
 	await _sync_hold(view, paused_heat, 114)
 	_expect(view.heat_icon.visible and is_equal_approx(view.heat_icon.modulate.a, flame_alpha), "paused session sync preserves flame brightness without white flash")
+	var wrong_heat := live_heat.duplicate(true)
+	view.sync(wrong_heat, {"cooking_token":114, "input_source":"device", "current_heat_level":"small"})
+	_expect(view.heat_target_label.text == "需要中火" and view.heat_warning_label.text == "太小了", "gauge shows target and low-fire warning")
+	view.sync(wrong_heat, {"cooking_token":114, "input_source":"device", "current_heat_level":"high"})
+	_expect(view.heat_warning_label.text == "太大了", "gauge shows high-fire warning")
 	var heat_off := paused_heat.duplicate(true)
 	heat_off.phase = "heat"
-	view.sync(heat_off, {"cooking_token":114})
-	_expect(not view.heat_icon.visible and view.heat_icon.texture == null, "flame is absent while heat is off")
+	view.sync(heat_off, {"cooking_token":114, "input_source":"device", "current_heat_level":"off"})
+	_expect(not view.heat_icon.visible and view.heat_icon.texture == null and view.heat_gauge.visible and view.heat_warning_label.text == "火关了", "off state hides pot flame and clearly says fire is off")
 
 	var pan := {"recipe_id":"pan_fried_mushrooms", "phase":"cooking", "ingredients":["mushroom"], "vessel":"pan", "heat_level":"medium", "paused":false, "actions":["clear", "cancel"]}
 	view.sync(pan, {"cooking_token":115})

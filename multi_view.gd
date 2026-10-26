@@ -4,7 +4,7 @@ signal table_selected(id: int)
 const SCALE: float = 0.75
 const ROOT := "res://assets/"
 const ART_ROOT := "res://restaurant_art/"
-const BACKGROUND := ART_ROOT + "restaurant_empty_background.png"
+const BACKGROUND := ART_ROOT + "restaurant_open_background.png"
 const RECIPE_DISHES := {
 	"pumpkin_corn_soup": "food/dishes/pumpkin_corn_soup_32.png",
 	"pan_fried_mushrooms": "food/dishes/pan_seared_mushrooms_32.png",
@@ -154,33 +154,58 @@ func _tile_background(destination: Rect2, source: Rect2, tile: Vector2) -> void:
 			x += w
 		y += h
 
+func _draw_wall_piece(piece: Dictionary) -> void:
+	if bool(piece.get("tiled", false)):
+		_tile_background(piece.destination, piece.source, piece.tile)
+	else:
+		draw_texture_rect_region(background, piece.destination, piece.source)
+
+## One non-overlapping draw list for the facade. The middle is split vertically
+## only so its lower pixels can occlude actors without painting the wall twice.
+static func front_wall_draw_plan(size: Vector2) -> Array[Dictionary]:
+	var bottom_y := size.y - 124.0
+	var right_x := size.x - 336.0
+	var entrance := Rect2(size.x * 0.5 - 112.0, bottom_y, 224.0, 124.0)
+	return [
+		{"kind":"left_end", "layer":"background", "baseline":bottom_y, "destination":Rect2(0, bottom_y, 388, 124), "source":Rect2(0, 900, 388, 124)},
+		{"kind":"left_middle_top", "layer":"background", "baseline":bottom_y, "destination":Rect2(388, bottom_y, maxf(0, entrance.position.x - 388), 34), "source":Rect2(400, 900, 256, 34), "tile":Vector2(256, 34), "tiled":true},
+		{"kind":"entrance", "layer":"background", "baseline":bottom_y, "destination":entrance, "source":Rect2(656, 900, 224, 124)},
+		{"kind":"right_middle_top", "layer":"background", "baseline":bottom_y, "destination":Rect2(entrance.end.x, bottom_y, maxf(0, right_x - entrance.end.x), 34), "source":Rect2(880, 900, 256, 34), "tile":Vector2(256, 34), "tiled":true},
+		{"kind":"right_end", "layer":"background", "baseline":bottom_y, "destination":Rect2(right_x, bottom_y, 336, 124), "source":Rect2(1200, 900, 336, 124)},
+		{"kind":"left_middle_front", "layer":"foreground", "baseline":bottom_y, "destination":Rect2(388, bottom_y + 34, maxf(0, entrance.position.x - 388), 90), "source":Rect2(400, 934, 256, 90), "tile":Vector2(256, 90), "tiled":true},
+		{"kind":"right_middle_front", "layer":"foreground", "baseline":bottom_y, "destination":Rect2(entrance.end.x, bottom_y + 34, maxf(0, right_x - entrance.end.x), 90), "source":Rect2(880, 934, 256, 90), "tile":Vector2(256, 90), "tiled":true},
+	]
+
 func _draw_room_architecture(floor: Variant) -> void:
 	if background == null or floor == null:
 		return
 	var size: Vector2 = floor.SIZE
-	# Only clean wall/floor source regions are sampled.  In particular, never
-	# redraw the old baked private rooms, tables, or counter over live geometry.
+	var right_x := size.x - 336.0
+	# Start with clean authored floor/wall pixels, then restore the fixed original
+	# room and terrace strips without stretching any window, mat, plant or rail.
 	_tile_background(Rect2(Vector2.ZERO, size), Rect2(576, 384, 256, 192), Vector2(256, 192))
-	# Build the kitchen from the original upper-room illustration at its authored
-	# scale.  Continue its surroundings in two layers: the thin top timber and
-	# the clean wall beneath it.  Keeping the wall sample above y=96 prevents the
-	# sink, plate cabinet and plant from being tiled beside the live kitchen.
 	_tile_background(Rect2(0, 0, size.x, 16), Rect2(1080, 0, 40, 16), Vector2(40, 16))
 	_tile_background(Rect2(0, 16, size.x, 160), Rect2(1080, 16, 40, 80), Vector2(40, 80))
+	draw_texture_rect_region(background, Rect2(0, 0, 388, 900), Rect2(0, 0, 388, 900))
+	draw_texture_rect_region(background, Rect2(right_x, 0, 336, 900), Rect2(1200, 0, 336, 900))
+	# Widen the terrace gate for a 64x32 actor footprint; replace the removed
+	# rail pixels with the same authored floor tile used by the hall.
+	_tile_background(Rect2(right_x, 432, 24, 102), Rect2(576, 384, 24, 102), Vector2(24, 102))
+	# Every facade pixel comes from one shared plan, so the fixed ends, repeated
+	# bays and open entrance keep the same baseline as the room height changes.
+	for piece: Dictionary in front_wall_draw_plan(size):
+		if piece.layer == "background":
+			_draw_wall_piece(piece)
+	# Keep kitchen equipment, nearby back-wall windows and plants at native scale.
 	var kitchen_source := Rect2(416, 0, 704, 176)
 	var kitchen_destination := Rect2((size.x - kitchen_source.size.x) * 0.5, 0, kitchen_source.size.x, kitchen_source.size.y)
 	draw_texture_rect_region(background, kitchen_destination, kitchen_source)
-	var lamp_x := 96.0
-	while lamp_x < size.x - 32.0:
-		# Lamps are decorative wall props, never an overlay for the kitchen's
-		# curtain, shelving or equipment.  Test the full native prop bounds, not
-		# merely its origin, so a lamp cannot straddle the kitchen edge.
+	var lamp_x := 430.0
+	while lamp_x < right_x - 32.0:
 		var lamp_destination := Rect2(lamp_x, 102, 32, 48)
 		if not lamp_destination.intersects(kitchen_destination):
 			_art_prop("props/lamp.png", lamp_destination.position)
 		lamp_x += 264.0
-	# Do not place partitions or pots on the playable floor.  They have no
-	# navigation geometry, so even pretty room dividers would be dishonest here.
 
 func _draw_counter(counter: Rect2) -> void:
 	# Keep the counter's end caps at their native width; only the deliberately
@@ -416,9 +441,20 @@ func _draw() -> void:
 		_action_icon(table)
 
 func _foreground_architecture() -> void:
-	# No baked architectural foreground: it belonged to the former narrow map
-	# and would cover live guests or tables after a relayout.
-	pass
+	if background == null or _floor_instance() == null:
+		return
+	var width: float = _floor_instance().SIZE.x
+	var right_shift := width - 1536.0
+	# Original partition/rail pixels occlude actors whose feet are behind them.
+	for region: Rect2 in [Rect2(0,218,284,24), Rect2(0,436,268,26), Rect2(0,666,254,25), Rect2(0,901,238,13)]:
+		draw_texture_rect_region(background, region, region)
+	for source: Rect2 in [Rect2(1200,208,24,224), Rect2(1200,534,24,400), Rect2(1470,208,24,620), Rect2(1310,808,184,20)]:
+		draw_texture_rect_region(background, Rect2(source.position + Vector2(right_shift,0), source.size), source)
+	# Draw only the lower half of the shared facade plan after actors. Its upper
+	# half was drawn before them, so no wall pixel or plant is duplicated.
+	for piece: Dictionary in front_wall_draw_plan(_floor_instance().SIZE):
+		if piece.layer == "foreground":
+			_draw_wall_piece(piece)
 
 func _action_icon(table: Dictionary) -> void:
 	var action: String = model.table_action(int(table.id))
@@ -463,7 +499,8 @@ func _hit_walking_guest(guest: Dictionary, point: Vector2) -> bool:
 	return Rect2(origin, Vector2(128,128)*SCALE).has_point(point)
 
 func _table_at_point(point: Vector2) -> int:
-	if model == null or _hit_bubble(point):
+	var floor: Variant = _floor_instance()
+	if model == null or _hit_bubble(point) or (floor != null and floor.is_architecture_at(point)):
 		return 0
 	for guest: Dictionary in model.customers.values():
 		if guest.state in ["queued", "walking", "leaving"] and _hit_walking_guest(guest, point):

@@ -1,0 +1,210 @@
+{
+ "note": "UID = first 7 bytes as read by the main board OM9663 reader; old map keys carry an extra 8th byte. Verified on hardware 2026-10-15: 8 tags (pumpkin, carrot, green pepper, cucumber x2 each).",
+ "tags": {
+  "B1:5C:D2:0F:00:00:00": {
+   "name": "西瓜",
+   "verified_2026_10_15": false,
+   "old_map_key": "B15CD20F000000E4"
+  },
+  "66:4F:7C:A3:00:00:00": {
+   "name": "香蕉",
+   "verified_2026_10_15": false,
+   "old_map_key": "664F7CA3000000E4"
+  },
+  "01:02:D2:0F:00:00:00": {
+   "name": "苹果",
+   "verified_2026_10_15": false,
+   "old_map_key": "0102D20F000000E4"
+  },
+  "A1:C0:DB:0F:00:00:00": {
+   "name": "白菜",
+   "verified_2026_10_15": false,
+   "old_map_key": "A1C0DB0F000000E4"
+  },
+  "5A:75:70:05:25:41:89": {
+   "name": "洋葱",
+   "verified_2026_10_15": false,
+   "old_map_key": "5A757005254189E7"
+  },
+  "5A:25:91:05:25:41:89": {
+   "name": "洋葱",
+   "verified_2026_10_15": false,
+   "old_map_key": "5A259105254189E7"
+  },
+  "5A:E5:51:05:25:41:89": {
+   "name": "西瓜",
+   "verified_2026_10_15": false,
+   "old_map_key": "5AE55105254189E7"
+  },
+  "5A:85:59:05:25:41:89": {
+   "name": "西瓜",
+   "verified_2026_10_15": false,
+   "old_map_key": "5A855905254189E7"
+  },
+  "5A:35:61:05:25:41:89": {
+   "name": "西瓜",
+   "verified_2026_10_15": false,
+   "old_map_key": "5A356105254189E7"
+  },
+  "5A:45:89:05:25:41:89": {
+   "name": "青椒",
+   "verified_2026_10_15": true,
+   "old_map_key": "5A458905254189E7"
+  },
+  "5A:65:81:05:25:41:89": {
+   "name": "青椒",
+   "verified_2026_10_15": true,
+   "old_map_key": "5A658105254189E7"
+  },
+  "5A:55:86:05:25:41:89": {
+   "name": "香蕉",
+   "verified_2026_10_15": false,
+   "old_map_key": "5A558605254189E7"
+  },
+  "5A:65:7E:05:25:41:89": {
+   "name": "香蕉",
+   "verified_2026_10_15": false,
+   "old_map_key": "5A657E05254189E7"
+  },
+  "5A:55:88:05:25:41:89": {
+   "name": "蘑菇",
+   "verified_2026_10_15": false,
+   "old_map_key": "5A558805254189E7"
+  },
+  "5A:35:90:05:25:41:89": {
+   "name": "蘑菇",
+   "verified_2026_10_15": false,
+   "old_map_key": "5A359005254189E7"
+  },
+  "5A:75:77:05:25:41:89": {
+   "name": "西红柿",
+   "verified_2026_10_15": false,
+   "old_map_key": "5A757705254189E7"
+  },
+  "5A:75:6F:05:25:41:89": {
+   "name": "西红柿",
+   "verified_2026_10_15": false,
+   "old_map_key": "5A756F05254189E7"
+  },
+  "5A:65:80:05:25:41:89": {
+   "name": "黄瓜",
+   "verified_2026_10_15": true,
+   "old_map_key": "5A658005254189E7"
+  },
+  "5A:75:78:05:25:41:89": {
+   "name": "黄瓜",
+   "verified_2026_10_15": true,
+   "old_map_key": "5A757805254189E7"
+  },
+  "5A:35:4A:05:25:41:89": {
+   "name": "胡萝卜",
+   "verified_2026_10_15": true,
+   "old_map_key": "5A354A05254189E7"
+  },
+  "5A:75:76:05:25:41:89": {
+   "name": "胡萝卜",
+   "verified_2026_10_15": true,
+   "old_map_key": "5A757605254189E7"
+  },
+  "5A:95:69:05:25:41:89": {
+   "name": "玉米",
+   "verified_2026_10_15": false,
+   "old_map_key": "5A956905254189E7"
+  },
+  "5A:75:6D:05:25:41:89": {
+   "name": "玉米",
+   "verified_2026_10_15": false,
+   "old_map_key": "5A756D05254189E7"
+  },
+  "5A:45:8A:05:25:41:89": {
+   "name": "猕猴桃",
+   "verified_2026_10_15": false,
+   "old_map_key": "5A458A05254189E7"
+  },
+  "5A:25:92:05:25:41:89": {
+   "name": "猕猴桃",
+   "verified_2026_10_15": false,
+   "old_map_key": "5A259205254189E7"
+  },
+  "5A:35:8F:05:25:41:89": {
+   "name": "白菜",
+   "verified_2026_10_15": false,
+   "old_map_key": "5A358F05254189E7"
+  },
+  "5A:75:6E:05:25:41:89": {
+   "name": "白菜",
+   "verified_2026_10_15": false,
+   "old_map_key": "5A756E05254189E7"
+  },
+  "5A:65:7F:05:25:41:89": {
+   "name": "南瓜",
+   "verified_2026_10_15": true,
+   "old_map_key": "5A657F05254189E7"
+  },
+  "5A:55:87:05:25:41:89": {
+   "name": "南瓜",
+   "verified_2026_10_15": true,
+   "old_map_key": "5A558705254189E7"
+  },
+  "5A:35:49:05:25:41:89": {
+   "name": "橘子",
+   "verified_2026_10_15": false,
+   "old_map_key": "5A354905254189E7"
+  },
+  "5A:85:58:05:25:41:89": {
+   "name": "柠檬",
+   "verified_2026_10_15": false,
+   "old_map_key": "5A855805254189E7"
+  },
+  "5A:F5:50:05:25:41:89": {
+   "name": "苹果",
+   "verified_2026_10_15": false,
+   "old_map_key": "5AF55005254189E7"
+  },
+  "5A:95:68:05:25:41:89": {
+   "name": "梨",
+   "verified_2026_10_15": false,
+   "old_map_key": "5A956805254189E7"
+  },
+  "5A:75:79:05:25:41:89": {
+   "name": "盐",
+   "verified_2026_10_15": false,
+   "old_map_key": "5A757905254189E7"
+  },
+  "5A:85:8C:00:25:41:89": {
+   "name": "胡椒",
+   "verified_2026_10_15": false,
+   "old_map_key": "5A858C00254189E7"
+  },
+  "5A:35:8E:05:25:41:89": {
+   "name": "锅",
+   "verified_2026_10_15": false,
+   "old_map_key": "5A358E05254189E7"
+  },
+  "5A:35:4F:05:25:41:89": {
+   "name": "煎锅",
+   "verified_2026_10_15": false,
+   "old_map_key": "5A354F05254189E7"
+  },
+  "5A:25:66:05:25:41:89": {
+   "name": "衣服",
+   "verified_2026_10_15": false,
+   "old_map_key": "5A256605254189E7"
+  },
+  "5A:75:7C:05:25:41:89": {
+   "name": "衣服",
+   "verified_2026_10_15": false,
+   "old_map_key": "5A757C05254189E7"
+  },
+  "5A:75:74:05:25:41:89": {
+   "name": "衣服",
+   "verified_2026_10_15": false,
+   "old_map_key": "5A757405254189E7"
+  },
+  "5A:85:5E:05:25:41:89": {
+   "name": "衣服",
+   "verified_2026_10_15": false,
+   "old_map_key": "5A855E05254189E7"
+  }
+ }
+}

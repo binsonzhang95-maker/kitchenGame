@@ -106,7 +106,7 @@ func _finish(model, expected_coins: int) -> void:
 
 func _run() -> void:
 	_check(Model.SAVE_VERSION == 5, "current schema includes wide layout and interactive kitchen")
-	_check(Floor.create().SIZE == Vector2(1536, 1024), "new floor dimensions are active")
+	_check(Floor.create().SIZE == Vector2(1536, 1072), "new floor dimensions include the removed footer space")
 	_check(Floor.create().table_center(1) != OldFloor.table_center(1), "fixtures use a distinct old layout")
 	_test_queue_walking_and_cooking()
 	_test_unseated_departures()

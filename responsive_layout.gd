@@ -1,14 +1,14 @@
 extends RefCounted
 ## One coordinate contract for every game surface.
 ##
-## The authored vertical rhythm remains 1152 high (80px HUD, 1024px room,
-## 48px footer), but the room's *design width* follows the usable viewport.
+## The authored vertical rhythm remains 1152 high (80px HUD and 1072px room).
+## The room's *design width* follows the usable viewport.
 ## This is deliberately not a letterboxed 1536 scene: a wide display gives
 ## the model a wider world and the renderer/input use that same transform.
 
 const DESIGN_SIZE := Vector2(1536, 1152)
 const TOP_BAR := 80.0
-const BOTTOM_BAR := 48.0
+const ROOM_HEIGHT := DESIGN_SIZE.y - TOP_BAR
 const MIN_WORLD_WIDTH := 1536.0
 const MAX_WORLD_WIDTH := 4096.0
 
@@ -34,8 +34,8 @@ static func calculate(viewport: Vector2, requested_insets: Dictionary = {}) -> D
 		"safe_rect": usable,
 		"scale": scale,
 		"content_rect": content,
-		"room_rect": Rect2(content_origin + Vector2(0, TOP_BAR) * scale, Vector2(design_width, DESIGN_SIZE.y - TOP_BAR - BOTTOM_BAR) * scale),
-		"world_size": Vector2(design_width, DESIGN_SIZE.y - TOP_BAR - BOTTOM_BAR),
+		"room_rect": Rect2(content_origin + Vector2(0, TOP_BAR) * scale, Vector2(design_width, ROOM_HEIGHT) * scale),
+		"world_size": Vector2(design_width, ROOM_HEIGHT),
 	}
 
 ## Keeps the renderer, HUD and room transform attached to the width which the
@@ -56,8 +56,8 @@ static func with_world_width(layout: Dictionary, width: float) -> Dictionary:
 	var result := layout.duplicate(true)
 	result["scale"] = scale
 	result["content_rect"] = content
-	result["room_rect"] = Rect2(content.position + Vector2(0, TOP_BAR) * scale, Vector2(world_width, DESIGN_SIZE.y - TOP_BAR - BOTTOM_BAR) * scale)
-	result["world_size"] = Vector2(world_width, DESIGN_SIZE.y - TOP_BAR - BOTTOM_BAR)
+	result["room_rect"] = Rect2(content.position + Vector2(0, TOP_BAR) * scale, Vector2(world_width, ROOM_HEIGHT) * scale)
+	result["world_size"] = Vector2(world_width, ROOM_HEIGHT)
 	return result
 
 static func web_safe_insets(viewport: Vector2) -> Dictionary:

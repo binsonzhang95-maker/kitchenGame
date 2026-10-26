@@ -52,6 +52,10 @@ var missing_utensil: Label
 var preparation_icon: TextureRect
 var preparation_aux_icon: TextureRect
 var heat_icon: TextureRect
+var heat_gauge: Panel
+var heat_rows: Array[Dictionary] = []
+var heat_target_label: Label
+var heat_warning_label: Label
 var guide_icon: TextureRect
 var art_error_label: Label
 var progress_bar: ProgressBar
@@ -705,6 +709,7 @@ func _build() -> void:
 	preparation_aux_icon.visible = false
 	heat_icon = _image(root_control, Vector2(710, 788), Vector2(64, 64))
 	heat_icon.visible = false
+	_build_heat_gauge()
 	# Water is independent of the three ingredient slots, beside the cookware.
 	water_button = _button(root_control, "", Vector2(1104, 532), Vector2(144, 148), _emit_action.bind("add_water"), "加清水，不占食材位")
 	water_icon = _image(water_button, Vector2(24, 4), Vector2(96, 96))
@@ -801,6 +806,54 @@ func apply_layout(layout: Dictionary) -> void:
 	_relayout_action_buttons()
 
 
+func _build_heat_gauge() -> void:
+	heat_gauge = _panel(root_control, Vector2.ZERO, Vector2(340, 360), Color("4a3429"))
+	heat_gauge.add_theme_stylebox_override("panel", _style(Color("4a3429"), Color("ffd166"), 4))
+	heat_gauge.visible = false
+	heat_target_label = _label(heat_gauge, "", Vector2(16, 8), Vector2(308, 42), 28)
+	heat_target_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	heat_target_label.add_theme_color_override("font_color", Color("fff1c1"))
+	for index in range(3):
+		var level: String = ["small", "medium", "high"][index]
+		var row := _panel(heat_gauge, Vector2(16, 54 + index * 82), Vector2(308, 74), Color("332820"))
+		row.add_theme_stylebox_override("panel", _style(Color("332820"), Color("735744"), 2))
+		var icon := _image(row, Vector2(12, 1), Vector2(72, 72))
+		icon.texture = _texture(_art_path("icons", str({"small":"flame_low", "medium":"flame_medium", "high":"flame_high"}[level])))
+		var label := _label(row, str({"small":"小火", "medium":"中火", "high":"大火"}[level]), Vector2(100, 8), Vector2(190, 58), 30)
+		heat_rows.append({"level":level, "panel":row, "icon":icon, "label":label})
+	heat_warning_label = _label(heat_gauge, "", Vector2(16, 304), Vector2(308, 44), 28)
+	heat_warning_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+
+func _current_heat_level(target: String) -> String:
+	if str(_context.get("input_source", "screen")) == "screen":
+		return target
+	return str(_context.get("current_heat_level", "off"))
+
+func _refresh_heat_gauge(recipe: String, phase: String) -> void:
+	var heated := recipe in ["soup", "pumpkin_corn_soup", "stir_fry", "pan_fried_mushrooms"]
+	heat_gauge.visible = heated and phase in ["heat", "cooking", "ready"]
+	if not heat_gauge.visible:
+		return
+	var target := str(_state.get("heat_level", ""))
+	var current := _current_heat_level(target)
+	var names := {"small":"小火", "medium":"中火", "high":"大火"}
+	heat_target_label.text = "需要" + str(names.get(target, "选择火候")) if not target.is_empty() else "选择火候"
+	var order := {"small":0, "medium":1, "high":2}
+	var warning := ""
+	if current == "off":
+		warning = "火关了"
+	elif not target.is_empty() and current != target:
+		warning = "太小了" if int(order.get(current, 0)) < int(order.get(target, 0)) else "太大了"
+	heat_warning_label.text = warning
+	heat_warning_label.add_theme_color_override("font_color", Color("ff6b57") if not warning.is_empty() else Color("fff1c1"))
+	for row: Dictionary in heat_rows:
+		var selected: bool = str(row.level) == current
+		(row.panel as Panel).add_theme_stylebox_override("panel", _style(Color("7b3f24") if selected else Color("332820"), Color("ffd166") if selected else Color("735744"), 4 if selected else 2))
+		(row.icon as TextureRect).modulate = Color.WHITE if selected else Color(0.55, 0.50, 0.46, 0.45)
+		(row.label as Label).add_theme_color_override("font_color", Color("fff3bf") if selected else Color("9c8b7a"))
+		(row.label as Label).add_theme_constant_override("outline_size", 2 if selected else 0)
+		(row.label as Label).add_theme_color_override("font_outline_color", Color("3a2118"))
+
 func _layout_kitchen_controls() -> void:
 	var width := _design_width
 	var left_end := width * 0.25
@@ -843,7 +896,7 @@ func _layout_kitchen_controls() -> void:
 		art.size = appliance_size
 	preparation_icon.position = appliance_at + Vector2(320, 112)
 	preparation_aux_icon.position = appliance_at + Vector2(410, 168)
-	heat_icon.position = appliance_at + Vector2(224, 430)
+	heat_gauge.position = Vector2(right_start + (width - right_start - heat_gauge.size.x) * 0.5, 142)
 	feedback_icon.position = appliance_at + Vector2(208, 180)
 	guide_icon.position = appliance_at + Vector2(232, 86)
 	missing_utensil.position = appliance_at + Vector2(-72, 152)
@@ -1037,7 +1090,8 @@ func _refresh() -> void:
 		var stage_kind := "utensils" if stage_key in ["pot", "pan", "oven"] else ("ingredients" if stage_key in ["bread", "cheese", "coffee", "milk", "ice"] else "icons")
 		step_icons[index].texture = _t(stage_key) if stage_key in P0Assets.PATHS else _texture(_art_path(stage_kind, stage_key))
 		step_icons[index].modulate = Color.WHITE if index == phase_step else Color(1, 1, 1, 0.35)
-		step_icons[index].visible = not recipe.is_empty()
+		# The gauge and live flame under the vessel replace the old heat-step icon.
+		step_icons[index].visible = not recipe.is_empty() and not stage_key.begins_with("flame_")
 	pause_overlay.visible = paused
 	if pause_full_shade != null: pause_full_shade.visible = paused
 	clear_button.visible = _actions.has("clear") and not completed
@@ -1066,11 +1120,16 @@ func _refresh() -> void:
 	water_button.tooltip_text = _lt("kitchen_water_added_hint") if bool(_state.get("water_added", false)) else _lt("kitchen_water_add_hint")
 	if water_button.visible: water_icon.texture = _t("tap_open") if _water_flow_remaining > 0.0 else _t("tap_closed")
 	var heating := recipe in ["soup", "pumpkin_corn_soup", "stir_fry", "pan_fried_mushrooms"] and phase == "cooking"
+	var target_heat := str(_state.get("heat_level", ""))
+	var current_heat := _current_heat_level(target_heat)
 	if heat_icon != null:
-		var heat_level := str(_state.get("heat_level", ""))
-		var flame_key := str({"small":"flame_low", "medium":"flame_medium", "high":"flame_high"}.get(heat_level, ""))
+		var flame_key := str({"small":"flame_low", "medium":"flame_medium", "high":"flame_high"}.get(current_heat, ""))
+		var flame_size := float({"small":96, "medium":128, "high":160}.get(current_heat, 0))
+		heat_icon.size = Vector2.ONE * flame_size
+		heat_icon.position = _appliance_rect().position + Vector2(256.0 - flame_size * 0.5, 528.0 - flame_size)
 		heat_icon.texture = _texture(_art_path("icons", flame_key)) if heating and not flame_key.is_empty() else null
 		heat_icon.visible = heating and heat_icon.texture != null
+	_refresh_heat_gauge(recipe, phase)
 	var vessel: String = {"soup":"pot", "pumpkin_corn_soup":"pot", "stir_fry":"pan", "pan_fried_mushrooms":"pan", "bake":"oven", "drink":"cup"}.get(recipe, "pot")
 	var is_p0_recipe := recipe in ["pumpkin_corn_soup", "pan_fried_mushrooms", "bake", "drink"]
 	var p0_layers_active := _p0_recipe_layers(recipe, phase, selected, bool(_state.get("cut_done", false)), bool(_state.get("water_added", false)))
@@ -1130,9 +1189,12 @@ func _sync_actions(actions: Array[String], paused: bool, recipe: String) -> void
 			if action in ["pot", "pan", "oven"]: icon_key = action
 			if action in ["retry", "clear"]: icon_key = "reselect"
 			if not icon_key.is_empty():
-				var icon_size := Vector2(80, 80)
-				var icon := _image(button, (button.size - icon_size) * 0.5, icon_size)
+				var icon_size := Vector2(88, 88) if action.begins_with("heat_") else Vector2(80, 80)
+				var icon := _image(button, Vector2((button.size.x - icon_size.x) * 0.5, 6 if action.begins_with("heat_") else (button.size.y - icon_size.y) * 0.5), icon_size)
 				icon.texture = _t(icon_key) if icon_key in P0Assets.PATHS else _texture(_art_path("utensils" if action in ["pot", "pan", "oven"] else "icons", icon_key))
+				if action.begins_with("heat_"):
+					var heat_label := _label(button, title, Vector2(4, 88), Vector2(button.size.x - 8, 32), 28)
+					heat_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 				action_buttons[action] = button
 		# queue_free() keeps old controls in the tree until frame-end.  Hide the
 		# station immediately so a just-started cooking phase cannot flash the
@@ -1143,7 +1205,11 @@ func _sync_actions(actions: Array[String], paused: bool, recipe: String) -> void
 		else:
 			_relayout_action_buttons()
 	for action: Variant in action_buttons:
-		action_buttons[action].disabled = paused or _action_is_cooled(str(action))
+		var button: Button = action_buttons[action]
+		button.disabled = paused or _action_is_cooled(str(action))
+		if str(action).begins_with("heat_"):
+			var selected := str(action).trim_prefix("heat_") == _current_heat_level(str(_state.get("heat_level", "")))
+			button.add_theme_stylebox_override("normal", _style(Color("ffd166") if selected else PAPER, Color("b55232") if selected else EDGE, 4 if selected else 2))
 
 
 func _relayout_action_buttons() -> void:
@@ -1178,7 +1244,8 @@ func _relayout_action_buttons() -> void:
 	var padding := maxf(12.0, 6.0 / _layout_scale)
 	var surface_size := Vector2(bar_width + padding * 2.0, bar_height + padding * 2.0)
 	var station_x := right_start + (available_width + 48.0 - surface_size.x) * 0.5
-	var station_y := clampf(520.0 - surface_size.y * 0.5, 160.0, 960.0 - surface_size.y)
+	var station_y := 548.0 if heat_gauge != null and heat_gauge.visible else 520.0 - surface_size.y * 0.5
+	station_y = clampf(station_y, 160.0, 960.0 - surface_size.y)
 	action_bar.visible = true
 	action_bar.position = Vector2(station_x + padding, station_y + padding)
 	action_bar.size = Vector2(bar_width, bar_height)
@@ -1195,9 +1262,13 @@ func _relayout_action_buttons() -> void:
 		for child: Node in button.get_children():
 			if child is TextureRect:
 				var icon := child as TextureRect
-				var side := minf(80.0, minf(button.size.x - 24.0, button.size.y - 24.0))
-				icon.position = (button.size - Vector2.ONE * side) * 0.5
+				var is_heat := str(_shown_actions[index]).begins_with("heat_")
+				var side := minf(88.0 if is_heat else 80.0, minf(button.size.x - 24.0, button.size.y - (44.0 if is_heat else 24.0)))
+				icon.position = Vector2((button.size.x - side) * 0.5, 4.0 if is_heat else (button.size.y - side) * 0.5)
 				icon.size = Vector2.ONE * side
+			elif child is Label and str(_shown_actions[index]).begins_with("heat_"):
+				(child as Label).position = Vector2(4, button.size.y - 38)
+				(child as Label).size = Vector2(button.size.x - 8, 34)
 
 ## Test/integration lookup for actual pointer targets, including independent water.
 func button_for_action(action: String) -> Button:

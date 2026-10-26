@@ -115,15 +115,15 @@ func _has_action(action: String) -> bool:
 	return false
 
 func _capture_action_table() -> int:
-	if app.cooldown > 0.0 or app.model.paused or not _visible_quick_action_available(): return -1
-	# These have matching always-visible bottom actions; prefer the stable checkout phase.
+	if app.cooldown > 0.0 or app.model.paused: return -1
+	# Prefer checkout, then a table popup action; the removed global bottom bar is never required.
 	for action: String in ["pay", "order", "cook"]:
 		for table: Dictionary in app.model.tables:
 			if int(table.id) <= 6 and app.model.table_action(table.id) == action: return int(table.id)
 	return -1
 
 func _visible_quick_action_available() -> bool:
-	return not app.hud.order_button.disabled or not app.next_cook_button.disabled or not app.hud.pay_button.disabled
+	return app.primary.is_visible_in_tree() and not app.primary.disabled
 
 func _capture() -> void:
 	var error: Error = DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path("res://verification"))

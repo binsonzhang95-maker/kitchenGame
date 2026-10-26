@@ -354,7 +354,7 @@ func _refresh() -> void:
 	_locale_revision = Localization.revision()
 	root.theme = Localization.theme()
 	var connection := str(_adapter_state.get("connection", "disconnected"))
-	if connection != _previous_connection and connection != "aligning":
+	if connection != _previous_connection and connection == "disconnected":
 		state_icon.rotation = 0.0
 	_previous_connection = connection
 	state_icon.texture = _texture("res://assets/ui/toy/%s.png" % {"connected":"connected_64", "aligning":"connecting_64", "disconnected":"disconnected_64"}.get(connection, "disconnected_64"))

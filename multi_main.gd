@@ -15,6 +15,7 @@ const P0Assets = preload("res://p0_assets.gd")
 const Localization = preload("res://localization.gd")
 const RecipeCatalog = preload("res://recipe_catalog.gd")
 const AutoplayDriver = preload("res://autoplay.gd")
+const DeviceBridge = preload("res://device_bridge.gd")
 const ResponsiveLayout = preload("res://responsive_layout.gd")
 const FloorLayout = preload("res://floor_layout.gd")
 const WideBackdrop = preload("res://wide_backdrop.gd")
@@ -52,6 +53,9 @@ var input_adapter: Variant
 var sfx: Variant
 var toy_simulator: Variant
 var toy_simulator_enabled := false
+var device_mode := false
+var force_device_mode := false
+var device_bridge: Variant
 var completion_layer: CanvasLayer
 var completion_layout: Control
 var completion_card: Control
@@ -95,7 +99,8 @@ var pause_overlay: Panel
 var notice: String = "点客人确认菜品，再去小厨房亲手做一份。"
 
 func _ready() -> void:
-	var autoplay := force_autoplay or AutoplayDriver.requested()
+	device_mode = force_device_mode or DeviceBridge.requested()
+	var autoplay := not device_mode and (force_autoplay or AutoplayDriver.requested())
 	if autoplay:
 		# Demo mode is isolated from player input and the real save slot.
 		player_mode = false
@@ -127,6 +132,10 @@ func _ready() -> void:
 	music.set_paused(model.paused)
 	input_adapter = KitchenInputAdapter.new()
 	input_adapter.use_screen() # Restored games always begin as screen input.
+	if device_mode:
+		device_bridge = DeviceBridge.new()
+		device_bridge.app = self
+		add_child(device_bridge)
 	sfx = SFXController.new()
 	add_child(sfx)
 	# Accept both editor arguments and `godot -- --toy-simulator`.
@@ -188,7 +197,7 @@ func set_responsive_layout_for_test(viewport: Vector2, insets: Dictionary = {}) 
 	_apply_responsive_layout_data()
 
 func _apply_responsive_layout_data() -> void:
-	var world: Vector2 = responsive_layout.get("world_size", Vector2(ResponsiveLayout.MIN_WORLD_WIDTH, 1024))
+	var world: Vector2 = responsive_layout.get("world_size", Vector2(ResponsiveLayout.MIN_WORLD_WIDTH, ResponsiveLayout.ROOM_HEIGHT))
 	var requested_width := clampf(world.x, ResponsiveLayout.MIN_WORLD_WIDTH, ResponsiveLayout.MAX_WORLD_WIDTH)
 	# Geometry is model-owned.  Re-layout is transactional and only happens for
 	# a real world-width change, never as part of the gameplay frame loop.
@@ -209,7 +218,7 @@ func _apply_responsive_layout_data() -> void:
 		responsive_layout = ResponsiveLayout.with_world_width(responsive_layout, committed_width)
 	var content: Rect2 = responsive_layout.content_rect
 	var scale: float = responsive_layout.scale
-	world = responsive_layout.get("world_size", Vector2(committed_width, 1024))
+	world = responsive_layout.get("world_size", Vector2(committed_width, ResponsiveLayout.ROOM_HEIGHT))
 	if is_instance_valid(wide_backdrop): wide_backdrop.set_layout(responsive_layout)
 	if is_instance_valid(room):
 		room.position = responsive_layout.room_rect.position
@@ -283,7 +292,16 @@ func _cooking_view_context() -> Dictionary:
 	if cooking_session == null:
 		return {"cooking_token": -1}
 	var hold: String = _cooking_hold_reason()
-	return {"recipe_label": Localization.text(RecipeCatalog.name_key(cooking_session.recipe_id)), "table_label": Localization.text("restaurant_table_label", {"table":int(cooking_session.binding.table_id)}), "cooking_token": cooking_token, "visual_paused": cooking_session.paused or not hold.is_empty()}
+	var adapter_state: Dictionary = input_adapter.state()
+	var panel: Dictionary = adapter_state.get("panel", {})
+	return {
+		"recipe_label": Localization.text(RecipeCatalog.name_key(cooking_session.recipe_id)),
+		"table_label": Localization.text("restaurant_table_label", {"table":int(cooking_session.binding.table_id)}),
+		"cooking_token": cooking_token,
+		"visual_paused": cooking_session.paused or not hold.is_empty(),
+		"input_source": str(adapter_state.get("source", "screen")),
+		"current_heat_level": str(panel.get("stove_level", "off")),
+	}
 
 func _cooking_hold_reason() -> String:
 	if cooking_session == null or input_adapter == null: return ""
@@ -309,15 +327,6 @@ func _select_table(id: int) -> void:
 	if cooking_session != null: return
 	selected_table = clampi(id, 1, 20)
 	if is_instance_valid(hud): hud.select_table()
-	_refresh()
-
-func _focus_next_order() -> void:
-	if model.paused or hud.settings_root.visible or hud.debug_root.visible: return
-	for table: Dictionary in model.tables:
-		if model.table_action(table.id) in (["order", "cook"] if model.interactive_cooking else ["order"]):
-			_select_table(int(table.id))
-			return
-	notice = "客人会自己进来，坐好后再帮他们点单。"
 	_refresh()
 
 func _primary() -> void:
@@ -349,6 +358,7 @@ func _restore_cooking() -> bool:
 	# local toy authority without putting connection information in a save.
 	input_adapter.bind(str(cooking_token))
 	input_adapter.use_screen()
+	if is_instance_valid(device_bridge): device_bridge.kitchen_ready()
 	selected_table = int(restored.binding.table_id)
 	hud._selection_open = false
 	hud.settings_root.visible = false
@@ -736,7 +746,7 @@ func _show_completion_brief(recipe: String) -> void:
 	completion_tween = tween
 	tween.tween_property(completion_card, "scale", Vector2.ONE, 0.12).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 	tween.parallel().tween_property(completion_card, "modulate:a", 1.0, 0.06)
-	tween.tween_property(completion_card, "modulate:a", 0.0, 0.06).set_delay(0.22)
+	tween.tween_property(completion_card, "modulate:a", 0.0, 0.06).set_delay(0.12)
 	tween.finished.connect(func() -> void:
 		if completion_tween != tween: return
 		completion_card.hide()

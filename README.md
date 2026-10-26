@@ -33,7 +33,13 @@ godot --path . -- --toy-simulator
 
 模拟窗只发送卡片、物理控件和完整面板快照的语义事件；它不会直接做菜。连接后需明确提交快照以对齐。模拟 adapter 的 authority token、epoch 和序号不写入存档；Model 的业务字段 `cooking_session_token` 仍会保存，二者不是同一概念。
 
-中英文设置已实装；德语、法语、韩语和日语只保留未来语言栏位。未提供手机、Web、真机协议或配音。
+中英文设置已实装；德语、法语、韩语和日语只保留未来语言栏位，配音尚未提供。
+
+## 真机联动
+
+Web 导出使用 `index.html?input=device` 进入正常可玩模式，由宿主 app 调用 `window.YggraDevice.setLink("lan"|"cloud"|"offline")` 并通过 `window.YggraDevice.push(jsonArrayText)` 批量注入玩具 payload。设备模式优先于 `autoplay`；游戏会经 `window.YggraHost.postMessage` 回报 `link:aligning`、`link:connected` 和 `link:lost`。完整协议和 NFC/面板映射见 [`docs/device_link_api.md`](docs/device_link_api.md)。
+
+桌面本地模拟仍使用 `--toy-simulator`，不受真机模式影响。
 
 ## 测试
 
@@ -43,6 +49,8 @@ godot --path . -- --toy-simulator
 godot --headless --path . -s tests/test_localization.gd
 godot --path . -s tests/test_toy_view.gd
 godot --path . -s tests/test_toy_integration.gd
+godot --headless --path . -s tests/test_device_event_mapper.gd
+godot --headless --path . -s tests/test_device_replay.gd
 ```
 
 视觉证据保留在 `verification/` 白名单中，包括 `p0_toy_cn.png` 与 `p0_toy_en.png`。

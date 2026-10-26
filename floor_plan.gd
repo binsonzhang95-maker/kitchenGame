@@ -95,6 +95,14 @@ static func obstacles() -> Array[Rect2]:
 	return _obstacles.duplicate()
 
 
+static func left_strip_width() -> float:
+	return 388.0
+
+
+static func right_strip_width() -> float:
+	return 336.0
+
+
 static func is_walkable(position: Vector2) -> bool:
 	_ensure_layout()
 	if not is_finite(position.x) or not is_finite(position.y):

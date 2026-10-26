@@ -102,11 +102,9 @@ var debug_dispatch_button: Button
 var pause_icon: PixelIcon
 var money_label: Label
 var count_label: Label
-var help_label: Label
 var debug_title: Label
 var settings_save_label: Label
 var invite_button: Button
-var order_button: Button
 var pay_button: Button
 var menu_button: Button
 var language_button: Button
@@ -119,7 +117,6 @@ var settings_close_button: Button
 var _selection_open: bool = false
 var design_root: Control
 var full_top: ColorRect
-var full_bottom: ColorRect
 var _layout: Dictionary = {}
 var _world_width := SIZE.x
 
@@ -131,17 +128,12 @@ func setup(owner_app) -> void:
 	full_top.color = Color("eee0bd")
 	full_top.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(full_top)
-	full_bottom = ColorRect.new()
-	full_bottom.color = Color("eee0bd")
-	full_bottom.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(full_bottom)
 	design_root = Control.new()
 	design_root.name = "ResponsiveDesignRoot"
 	design_root.size = SIZE
 	design_root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(design_root)
 	_build_top()
-	_build_bottom()
 	_build_popup()
 	_build_settings()
 	_build_debug()
@@ -154,7 +146,7 @@ func apply_layout(layout: Dictionary) -> void:
 	var viewport: Vector2 = layout.get("viewport", SIZE)
 	var content: Rect2 = layout.get("content_rect", Rect2(Vector2.ZERO, SIZE))
 	var scale: float = float(layout.get("scale", 1.0))
-	var world: Vector2 = layout.get("world_size", Vector2(SIZE.x, 1024))
+	var world: Vector2 = layout.get("world_size", Vector2(SIZE.x, 1072))
 	_world_width = world.x
 	if design_root != null:
 		design_root.position = content.position
@@ -164,9 +156,6 @@ func apply_layout(layout: Dictionary) -> void:
 	if full_top != null:
 		full_top.position = Vector2.ZERO
 		full_top.size = Vector2(viewport.x, content.position.y + 80.0 * scale)
-	if full_bottom != null:
-		full_bottom.position = Vector2(0, content.end.y - 48.0 * scale)
-		full_bottom.size = Vector2(viewport.x, viewport.y - full_bottom.position.y)
 	for modal: Control in [settings_root, debug_root]:
 		if modal == null: continue
 		modal.size = viewport
@@ -189,20 +178,12 @@ func _reflow_wide_controls() -> void:
 	if design_root == null:
 		return
 	var top := design_root.get_node_or_null("TopBar") as Panel
-	var bottom := design_root.get_node_or_null("BottomBar") as Panel
 	if top != null:
 		top.size.x = _world_width
-	if bottom != null:
-		bottom.position.x = 0.0
-		bottom.size.x = _world_width
 	if app != null and app.pause_button != null:
 		app.pause_button.position.x = _world_width - 152.0
 	if settings_button != null:
 		settings_button.position.x = _world_width - 82.0
-	if help_label != null:
-		help_label.size.x = maxf(220.0, _world_width * 0.42)
-	if order_button != null:
-		order_button.position.x = _world_width * 0.5 - order_button.size.x * 0.5
 
 func _reflow_modal_cards() -> void:
 	if settings_root != null:
@@ -320,12 +301,6 @@ func _build_top() -> void:
 	pause_icon = _icon(app.pause_button, "pause", Vector2(14, 11), 30)
 	settings_button = _button(_design(), "", Vector2(1454, 14), Vector2(58, 52), toggle_settings, _tx("ui_settings"))
 	_icon(settings_button, "settings", Vector2(14, 11), 30)
-
-func _build_bottom() -> void:
-	var bottom := _panel(_design(), Vector2(0, 1104), Vector2(1536, 48), Color("eee0bd"))
-	bottom.name = "BottomBar"
-	help_label = _label(_design(), _tx("ui_order_help"), Vector2(26, 1114), Vector2(620, 28), 18, Color("7c6d51"))
-	order_button = _button(_design(), _tx("restaurant_action_order"), Vector2(696, 1108), Vector2(144, 40), app._focus_next_order, _tx("ui_focus_order_help"), "order")
 
 func _demand_icon(texture: Texture2D, at: Vector2, tip: String) -> TextureRect:
 	var icon := TextureRect.new()
@@ -554,7 +529,7 @@ func _debug_backdrop_input(event: InputEvent) -> void:
 
 func _popup_position(table: Dictionary) -> Vector2:
 	var center: Vector2 = app.room.get_global_transform_with_canvas() * Vector2(table.center)
-	var room_bounds: Rect2 = _layout.get("room_rect", Rect2(Vector2(0, 80), Vector2(1536, 1024)))
+	var room_bounds: Rect2 = _layout.get("room_rect", Rect2(Vector2(0, 80), Vector2(1536, 1072)))
 	var screen_scale := design_root.get_global_transform_with_canvas().get_scale().x if design_root != null else 1.0
 	var popup_screen_size := popup.size * screen_scale
 	# A 144 px control fits the 148 px gap between the hall's table bounds.
@@ -596,9 +571,7 @@ func refresh() -> void:
 	var action: String = model.table_action(app.selected_table)
 	money_label.text = str(model.coins)
 	count_label.text = "%d / %d" % [model.customers.size(), model.max_customers]
-	order_button.text = _tx("restaurant_action_order")
 	settings_button.tooltip_text = _tx("ui_settings")
-	order_button.tooltip_text = _tx("ui_focus_order_help")
 	app.music_button.tooltip_text = _tx("ui_music_toggle_help")
 	app.music_slider.tooltip_text = _tx("ui_music_volume")
 	app.dialogue_button.tooltip_text = _tx("ui_emotes", {"state":""})
@@ -676,7 +649,6 @@ func refresh() -> void:
 	var cooking: bool = int(model.chef.table_id) > 0
 	app.next_cook_button.disabled = player or model.paused or cooking or app.cooldown > 0 or not _has_action("cook")
 	invite_button.disabled = player or model.paused or app.cooldown > 0 or model.customers.size() >= model.max_customers or model.queue_ids().size() >= 8
-	order_button.disabled = model.paused or not (_has_action("order") or (model.interactive_cooking and _has_action("cook")))
 	debug_order_button.disabled = player or model.paused or app.cooldown > 0 or not _has_action("order")
 	pay_button.disabled = player or model.paused or app.cooldown > 0 or not _has_action("pay")
 	debug_dispatch_button.disabled = player or model.paused or app.cooldown > 0
@@ -700,14 +672,6 @@ func refresh() -> void:
 		app.order_buttons[i].text = _tx("ui_table_phase", {"table":_table_label(item), "phase":_phase_label(str(item.phase))})
 	var setting_status: String = app.notice if str(app.notice).begins_with("音乐设置") else app.save_label.text
 	settings_save_label.text = Localization.legacy_text(setting_status) + "\n" + _tx("ui_keyboard_hints")
-	if not app.save_allowed:
-		help_label.text = _tx("ui_save_protected_help")
-	elif str(app.save_label.text).contains("保存失败"):
-		help_label.text = _tx("ui_save_failed_help")
-	elif model.paused:
-		help_label.text = _tx("ui_rest_a_while")
-	else:
-		help_label.text = _tx("notice_focus_cooking") if model.interactive_cooking and _has_action("cook") else (_tx("ui_order_help") if _has_action("order") else _tx("notice_guests_arrive"))
 
 func _has_action(action: String) -> bool:
 	for table: Dictionary in app.model.tables:

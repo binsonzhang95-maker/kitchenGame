@@ -11,10 +11,14 @@ Written 2026-10-26. This replaces the earlier proposal to keep a centred 1536-wi
 
 ## Restaurant art and movement
 
-- The renderer samples only clean floor/wall pixels for expansion. It overlays a centred, authored-scale crop of the original kitchen upper wall (equipment, shelves and counter-back detail), then continues clean wall pixels at either side.
+- The restaurant uses fixed authored side strips and an expanding clean centre. The left `388` world units retain four full-height private rooms; the right `336` units retain the terrace/bar. Only the span between them grows from 1536 through 4096.
+- Tables 15–18 stay in the four left rooms at the original support points near `(175,170)`, `(160,390)`, `(145,615)` and `(135,840)`. Tables 19–20 alone occupy the right terrace at fixed offsets from the right edge. Hall tables 1–14 use the original three columns/five rows, with width growth distributed 20%/50%/80% across the columns.
+- `multi_view.gd` samples `restaurant_open_background.png` at native scale: fixed left-room and right-rail crops, repeated native window/wall bays, one centred green-curtain entrance crop, and the centred kitchen artwork. Windows, mats, plants and rails are never stretched. Nearest filtering remains authoritative and all source PNGs are RGBA.
+- The 646-unit counter remains centred at `y=176`. Back-wall windows/plants remain beside it. The entrance support point is centred at `(W/2,976)` and the queue occupies the intentionally unused bottom-right hall slot beginning at `(W/2+172,962)`. The central floor meets the entrance corridor at `y=948`, so there is no unwalkable seam in front of the curtain.
+- `floor_layout.gd` owns matching room passages, terrace opening, partitions, rails, front wall, plants, counter and furniture footprints. Room/terrace floors above `y=256` are explicit regions. Architecture is expanded by the moving animal's `64×32` ground footprint plus clearance for navigation; private-room service points and the visibly widened terrace gate match that clearance. Rendering, navigation, seat avoidance and pointer picking all consume this shared architecture, and foreground partition/rail/front-wall pixels draw after actors for occlusion.
+- `wide_backdrop.gd` remains a viewport-gutter underlay only. It never supplies playable rooms or business geometry.
 - The chef support point is derived from `floor.COUNTER` and placed behind its front edge. The counter foreground is drawn after the chef to hide the lower body. `kitchen_point()` remains a waiter handoff/navigation point and is not used to position the chef.
-- No partition, plant or other freestanding decorative object is placed in the walkable floor unless it also has shared floor obstacle geometry. In particular, the former central partitions at y=282/612 were removed; they cannot cover chairs, guests or be walked through.
-- The floor begins in front of the counter and ends at the entrance/queue region supplied by the model. Bottom art must preserve the entrance opening and never turn the final table or queue into a wall.
+- The layout revision now includes an architecture version as well as width. Old open-floor V5 snapshots use a frozen 1024-high snapshot with the historical `(W/2,1000)` entrance and `(W/2-126+36i,985)` queue for validation, then migrate transactionally even at the same width; frozen V3/V4 validation remains in `floor_plan.gd`.
 
 ## HUD, kitchen and safe areas
 

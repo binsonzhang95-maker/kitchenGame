@@ -1,6 +1,7 @@
 extends SceneTree
 
 const Layout = preload("res://responsive_layout.gd")
+const HallView = preload("res://multi_view.gd")
 var checks := 0
 var failures := 0
 
@@ -19,7 +20,8 @@ func _near(a: float, b: float) -> bool:
 func _run() -> void:
 	var ipad := Layout.calculate(Vector2(1536, 1152))
 	_check(ipad.content_rect == Rect2(Vector2.ZERO, Layout.DESIGN_SIZE), "4:3 retains the authored vertical rhythm")
-	_check(_near(float(ipad.scale), 1.0) and ipad.world_size == Vector2(1536, 1024), "4:3 uses the base world width")
+	_check(_near(float(ipad.scale), 1.0) and ipad.world_size == Vector2(1536, 1072), "4:3 gives the removed footer space to the room")
+	_check((ipad.room_rect as Rect2).end.y == ipad.content_rect.end.y and (ipad.room_rect as Rect2).size.y == 1072.0, "hall reaches the content bottom with no footer gap")
 	var sixteen_nine := Layout.calculate(Vector2(2048, 1152))
 	_check(sixteen_nine.content_rect == Rect2(Vector2.ZERO, Vector2(2048, 1152)) and _near(float(sixteen_nine.scale), 1.0), "16:9 uses all usable width")
 	_check(_near((sixteen_nine.world_size as Vector2).x, 2048.0), "16:9 world expands instead of centering a 1536 room")
@@ -51,6 +53,19 @@ func _run() -> void:
 	_check(_near(narrowed_content.size.x / 2496.0, narrowed_scale) and _near(narrowed_content.size.y / Layout.DESIGN_SIZE.y, narrowed_scale), "rejected wide world retains one uniform transform for render and clicks")
 	var again := Layout.calculate(Vector2(2496, 1152))
 	_check(again.content_rect == phone.content_rect and _near(float(again.scale), float(phone.scale)), "resize round-trip has no accumulated offset")
+	for width: float in [1536.0, 2496.0, 4096.0]:
+		var plan := HallView.front_wall_draw_plan(Vector2(width, Layout.ROOM_HEIGHT))
+		var baseline := Layout.ROOM_HEIGHT - 124.0
+		var kinds := {}
+		var overlaps := false
+		for index in range(plan.size()):
+			var piece: Dictionary = plan[index]
+			_check(_near(float(piece.baseline), baseline), "front wall %s shares the end-piece baseline at width %d" % [piece.kind, int(width)])
+			kinds[piece.kind] = true
+			for other_index in range(index):
+				if (piece.destination as Rect2).intersects(plan[other_index].destination as Rect2):
+					overlaps = true
+		_check(kinds.size() == plan.size() and not overlaps, "front wall draw list has no duplicate or overlapping piece at width %d" % int(width))
 	var invalid := Layout.calculate(Vector2(1536, 1152), {"left":99999, "right":-10, "top":NAN, "bottom":99999})
 	_check(float(invalid.safe_insets.left) <= 1536.0 * 0.45 and float(invalid.safe_insets.bottom) <= 1152.0 * 0.45, "invalid bridge insets are bounded")
 	print("RESPONSIVE_LAYOUT_TEST checks=%d failures=%d" % [checks, failures])

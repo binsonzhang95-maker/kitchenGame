@@ -5,7 +5,7 @@ extends SceneTree
 
 const CookingView = preload("res://cooking_view.gd")
 const DESIGNED_HEIGHT := 1152.0
-const ROOM_HEIGHT := 1024.0
+const ROOM_HEIGHT := 1072.0
 var view: CookingView
 var checks := 0
 var failures := 0
@@ -95,6 +95,17 @@ func _run() -> void:
 		view.apply_layout(_layout(Vector2(2048, 1152)))
 		await process_frame
 		_check_action_station(str(spec.recipe) + " " + str(spec.phase))
+	# Heat controls and the large gauge remain readable and disjoint at all supported aspect ratios.
+	for spec: Dictionary in [
+		{"name":"4:3", "viewport":Vector2(1536, 1152), "insets":{}},
+		{"name":"16:9", "viewport":Vector2(2048, 1152), "insets":{}},
+		{"name":"19.5:9", "viewport":Vector2(2496, 1152), "insets":{"left":150.0, "right":150.0, "bottom":60.0}},
+	]:
+		view.sync(_state("soup", "heat", ["heat_small", "heat_medium", "heat_high"]), {"cooking_token":4})
+		var heat_layout := _layout(spec.viewport, spec.insets)
+		view.apply_layout(heat_layout)
+		await process_frame
+		_check_heat_layout(str(spec.name), heat_layout)
 	# The overlay is a true root-sized shield after a full-width relayout.
 	view.sync(_state("soup", "heat", ["heat_medium"]), {"cooking_token":3, "visual_paused":true})
 	view.apply_layout(_layout(Vector2(2496, 1152), {"left":150.0, "right":150.0, "bottom":60.0}))
@@ -103,6 +114,23 @@ func _run() -> void:
 	await process_frame
 	print("PLAYABLE_KITCHEN_UI_TEST checks=%d failures=%d" % [checks, failures])
 	quit(0 if failures == 0 else 1)
+
+
+func _check_heat_layout(label: String, layout: Dictionary) -> void:
+	var gauge := view.heat_gauge.get_global_rect()
+	var safe: Rect2 = layout.safe_rect
+	_check(view.heat_gauge.visible and gauge.size.y >= safe.size.y * 0.30, label + " heat gauge spans at least 30 percent of safe height")
+	_check(not gauge.intersects(view.utensil_image.get_global_rect()), label + " gauge does not cover cookware")
+	for slot: Dictionary in view.ingredient_slots:
+		if (slot.button as Button).visible:
+			_check(not gauge.intersects((slot.button as Button).get_global_rect()), label + " gauge does not cover ingredients")
+	for action: Variant in view.action_buttons:
+		var button: Button = view.action_buttons[action]
+		_check(button.size.y >= 96.0 and not gauge.intersects(button.get_global_rect()), label + " heat button " + str(action) + " is tall and clear of gauge")
+	var buttons: Array = view.action_buttons.values()
+	for first in range(buttons.size()):
+		for second in range(first + 1, buttons.size()):
+			_check(not (buttons[first] as Button).get_global_rect().intersects((buttons[second] as Button).get_global_rect()), label + " heat buttons do not overlap")
 
 
 func _check_full_width(layout: Dictionary, label: String) -> void:

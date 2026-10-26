@@ -104,3 +104,11 @@ New art is generated at iPhone landscape proportions, so the game itself is wide
 - [ ] iPhone 16:9 and iPad 4:3 also look right (no clipped HUD, nothing under the notch you need to tap).
 - [ ] Autoplay test passes; `ready` arrives in the app (the walkthrough waits for it).
 - [ ] TestFlight build 4 installed and checked on a real iPhone.
+
+## Play level from the app (added 2026-10-26)
+
+Each toy in the app has a play level (age band). The app opens the game as `index.html?autoplay=1&level=2-4|4-6|6-8` (the demo game uses `4-6`). The game can read it with `JavaScriptBridge.eval("new URLSearchParams(location.search).get('level')")`. Suggested behaviour, matching the descriptions the app shows parents:
+- `2-4`: name the food. Tap or place a card, hear its name and sound; no timers, no failing.
+- `4-6`: simple recipes. 2–3 steps with voice help.
+- `6-8`: run the restaurant. Take orders, multi-step recipes, coins.
+Unknown or missing `level` means `4-6`.

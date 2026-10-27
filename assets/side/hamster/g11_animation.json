@@ -1,0 +1,845 @@
+{
+  "schema": "g11.side_animation.v1",
+  "source_schema": "actions",
+  "species": "hamster",
+  "frame_size": [
+    128,
+    128
+  ],
+  "pivot": [
+    64,
+    110
+  ],
+  "standing_pivot": [
+    64,
+    120
+  ],
+  "direction": "right",
+  "actions": {
+    "chat": {
+      "sheet": "chat.png",
+      "frames": 4,
+      "duration_ms": [
+        220,
+        220,
+        220,
+        220
+      ],
+      "loop": true,
+      "playback": "loop",
+      "bounds": [
+        [
+          16,
+          11,
+          112,
+          118
+        ],
+        [
+          16,
+          11,
+          112,
+          118
+        ],
+        [
+          16,
+          16,
+          111,
+          118
+        ],
+        [
+          16,
+          11,
+          112,
+          118
+        ]
+      ],
+      "frame_rects": [
+        {
+          "x": 0,
+          "y": 0,
+          "w": 128,
+          "h": 128,
+          "duration_ms": 220,
+          "file": "frames/chat_00.png",
+          "pivot": [
+            64,
+            110
+          ]
+        },
+        {
+          "x": 128,
+          "y": 0,
+          "w": 128,
+          "h": 128,
+          "duration_ms": 220,
+          "file": "frames/chat_01.png",
+          "pivot": [
+            64,
+            110
+          ]
+        },
+        {
+          "x": 256,
+          "y": 0,
+          "w": 128,
+          "h": 128,
+          "duration_ms": 220,
+          "file": "frames/chat_02.png",
+          "pivot": [
+            64,
+            110
+          ]
+        },
+        {
+          "x": 384,
+          "y": 0,
+          "w": 128,
+          "h": 128,
+          "duration_ms": 220,
+          "file": "frames/chat_03.png",
+          "pivot": [
+            64,
+            110
+          ]
+        }
+      ],
+      "pivot": [
+        64,
+        110
+      ],
+      "direction": "right",
+      "per_frame_pivot": [
+        [
+          64,
+          110
+        ],
+        [
+          64,
+          110
+        ],
+        [
+          64,
+          110
+        ],
+        [
+          64,
+          110
+        ]
+      ]
+    },
+    "complain": {
+      "sheet": "complain.png",
+      "frames": 4,
+      "duration_ms": [
+        220,
+        180,
+        260,
+        220
+      ],
+      "loop": false,
+      "playback": "once",
+      "bounds": [
+        [
+          16,
+          11,
+          112,
+          118
+        ],
+        [
+          16,
+          10,
+          111,
+          118
+        ],
+        [
+          15,
+          11,
+          112,
+          118
+        ],
+        [
+          16,
+          11,
+          112,
+          118
+        ]
+      ],
+      "frame_rects": [
+        {
+          "x": 0,
+          "y": 0,
+          "w": 128,
+          "h": 128,
+          "duration_ms": 220,
+          "file": "frames/complain_00.png",
+          "pivot": [
+            64,
+            110
+          ]
+        },
+        {
+          "x": 128,
+          "y": 0,
+          "w": 128,
+          "h": 128,
+          "duration_ms": 180,
+          "file": "frames/complain_01.png",
+          "pivot": [
+            64,
+            110
+          ]
+        },
+        {
+          "x": 256,
+          "y": 0,
+          "w": 128,
+          "h": 128,
+          "duration_ms": 260,
+          "file": "frames/complain_02.png",
+          "pivot": [
+            64,
+            110
+          ]
+        },
+        {
+          "x": 384,
+          "y": 0,
+          "w": 128,
+          "h": 128,
+          "duration_ms": 220,
+          "file": "frames/complain_03.png",
+          "pivot": [
+            64,
+            110
+          ]
+        }
+      ],
+      "pivot": [
+        64,
+        110
+      ],
+      "direction": "right",
+      "per_frame_pivot": [
+        [
+          64,
+          110
+        ],
+        [
+          64,
+          110
+        ],
+        [
+          64,
+          110
+        ],
+        [
+          64,
+          110
+        ]
+      ]
+    },
+    "drink": {
+      "sheet": "drink.png",
+      "frames": 4,
+      "duration_ms": [
+        240,
+        220,
+        420,
+        280
+      ],
+      "loop": false,
+      "playback": "once",
+      "bounds": [
+        [
+          18,
+          12,
+          109,
+          118
+        ],
+        [
+          14,
+          12,
+          113,
+          118
+        ],
+        [
+          13,
+          12,
+          115,
+          118
+        ],
+        [
+          18,
+          12,
+          109,
+          118
+        ]
+      ],
+      "frame_rects": [
+        {
+          "x": 0,
+          "y": 0,
+          "w": 128,
+          "h": 128,
+          "duration_ms": 240,
+          "file": "frames/drink_00.png",
+          "pivot": [
+            64,
+            110
+          ]
+        },
+        {
+          "x": 128,
+          "y": 0,
+          "w": 128,
+          "h": 128,
+          "duration_ms": 220,
+          "file": "frames/drink_01.png",
+          "pivot": [
+            64,
+            110
+          ]
+        },
+        {
+          "x": 256,
+          "y": 0,
+          "w": 128,
+          "h": 128,
+          "duration_ms": 420,
+          "file": "frames/drink_02.png",
+          "pivot": [
+            64,
+            110
+          ]
+        },
+        {
+          "x": 384,
+          "y": 0,
+          "w": 128,
+          "h": 128,
+          "duration_ms": 280,
+          "file": "frames/drink_03.png",
+          "pivot": [
+            64,
+            110
+          ]
+        }
+      ],
+      "pivot": [
+        64,
+        110
+      ],
+      "direction": "right",
+      "per_frame_pivot": [
+        [
+          64,
+          110
+        ],
+        [
+          64,
+          110
+        ],
+        [
+          64,
+          110
+        ],
+        [
+          64,
+          110
+        ]
+      ]
+    },
+    "eat": {
+      "sheet": "eat.png",
+      "frames": 4,
+      "duration_ms": [
+        260,
+        220,
+        360,
+        260
+      ],
+      "loop": true,
+      "playback": "loop",
+      "bounds": [
+        [
+          13,
+          19,
+          114,
+          118
+        ],
+        [
+          16,
+          19,
+          112,
+          118
+        ],
+        [
+          20,
+          19,
+          108,
+          118
+        ],
+        [
+          14,
+          19,
+          114,
+          118
+        ]
+      ],
+      "frame_rects": [
+        {
+          "x": 0,
+          "y": 0,
+          "w": 128,
+          "h": 128,
+          "duration_ms": 260,
+          "file": "frames/eat_00.png",
+          "pivot": [
+            64,
+            110
+          ]
+        },
+        {
+          "x": 128,
+          "y": 0,
+          "w": 128,
+          "h": 128,
+          "duration_ms": 220,
+          "file": "frames/eat_01.png",
+          "pivot": [
+            64,
+            110
+          ]
+        },
+        {
+          "x": 256,
+          "y": 0,
+          "w": 128,
+          "h": 128,
+          "duration_ms": 360,
+          "file": "frames/eat_02.png",
+          "pivot": [
+            64,
+            110
+          ]
+        },
+        {
+          "x": 384,
+          "y": 0,
+          "w": 128,
+          "h": 128,
+          "duration_ms": 260,
+          "file": "frames/eat_03.png",
+          "pivot": [
+            64,
+            110
+          ]
+        }
+      ],
+      "pivot": [
+        64,
+        110
+      ],
+      "direction": "right",
+      "per_frame_pivot": [
+        [
+          64,
+          110
+        ],
+        [
+          64,
+          110
+        ],
+        [
+          64,
+          110
+        ],
+        [
+          64,
+          110
+        ]
+      ],
+      "hands_foreground": [
+        "hands_foreground/eat_00.png",
+        "hands_foreground/eat_01.png",
+        "hands_foreground/eat_02.png",
+        "hands_foreground/eat_03.png"
+      ]
+    },
+    "happy": {
+      "sheet": "happy.png",
+      "frames": 4,
+      "duration_ms": [
+        200,
+        200,
+        240,
+        240
+      ],
+      "loop": false,
+      "playback": "once",
+      "bounds": [
+        [
+          16,
+          11,
+          112,
+          118
+        ],
+        [
+          16,
+          11,
+          112,
+          118
+        ],
+        [
+          16,
+          12,
+          112,
+          118
+        ],
+        [
+          16,
+          11,
+          112,
+          118
+        ]
+      ],
+      "frame_rects": [
+        {
+          "x": 0,
+          "y": 0,
+          "w": 128,
+          "h": 128,
+          "duration_ms": 200,
+          "file": "frames/happy_00.png",
+          "pivot": [
+            64,
+            110
+          ]
+        },
+        {
+          "x": 128,
+          "y": 0,
+          "w": 128,
+          "h": 128,
+          "duration_ms": 200,
+          "file": "frames/happy_01.png",
+          "pivot": [
+            64,
+            110
+          ]
+        },
+        {
+          "x": 256,
+          "y": 0,
+          "w": 128,
+          "h": 128,
+          "duration_ms": 240,
+          "file": "frames/happy_02.png",
+          "pivot": [
+            64,
+            110
+          ]
+        },
+        {
+          "x": 384,
+          "y": 0,
+          "w": 128,
+          "h": 128,
+          "duration_ms": 240,
+          "file": "frames/happy_03.png",
+          "pivot": [
+            64,
+            110
+          ]
+        }
+      ],
+      "pivot": [
+        64,
+        110
+      ],
+      "direction": "right",
+      "per_frame_pivot": [
+        [
+          64,
+          110
+        ],
+        [
+          64,
+          110
+        ],
+        [
+          64,
+          110
+        ],
+        [
+          64,
+          110
+        ]
+      ]
+    },
+    "seated_idle": {
+      "sheet": "seated_idle.png",
+      "frames": 2,
+      "duration_ms": [
+        600,
+        600
+      ],
+      "loop": true,
+      "playback": "loop",
+      "bounds": [
+        [
+          16,
+          12,
+          112,
+          118
+        ],
+        [
+          16,
+          12,
+          112,
+          118
+        ]
+      ],
+      "frame_rects": [
+        {
+          "x": 0,
+          "y": 0,
+          "w": 128,
+          "h": 128,
+          "duration_ms": 600,
+          "file": "frames/seated_idle_00.png",
+          "pivot": [
+            64,
+            110
+          ]
+        },
+        {
+          "x": 128,
+          "y": 0,
+          "w": 128,
+          "h": 128,
+          "duration_ms": 600,
+          "file": "frames/seated_idle_01.png",
+          "pivot": [
+            64,
+            110
+          ]
+        }
+      ],
+      "pivot": [
+        64,
+        110
+      ],
+      "direction": "right",
+      "per_frame_pivot": [
+        [
+          64,
+          110
+        ],
+        [
+          64,
+          110
+        ]
+      ]
+    },
+    "sit_down": {
+      "sheet": "sit_down.png",
+      "frames": 4,
+      "duration_ms": [
+        180,
+        220,
+        220,
+        300
+      ],
+      "loop": false,
+      "playback": "once",
+      "bounds": [
+        [
+          16,
+          8,
+          112,
+          120
+        ],
+        [
+          16,
+          7,
+          112,
+          119
+        ],
+        [
+          16,
+          12,
+          111,
+          118
+        ],
+        [
+          16,
+          12,
+          112,
+          118
+        ]
+      ],
+      "frame_rects": [
+        {
+          "x": 0,
+          "y": 0,
+          "w": 128,
+          "h": 128,
+          "duration_ms": 180,
+          "file": "frames/sit_down_00.png",
+          "pivot": [
+            64,
+            120
+          ]
+        },
+        {
+          "x": 128,
+          "y": 0,
+          "w": 128,
+          "h": 128,
+          "duration_ms": 220,
+          "file": "frames/sit_down_01.png",
+          "pivot": [
+            64,
+            110
+          ]
+        },
+        {
+          "x": 256,
+          "y": 0,
+          "w": 128,
+          "h": 128,
+          "duration_ms": 220,
+          "file": "frames/sit_down_02.png",
+          "pivot": [
+            64,
+            110
+          ]
+        },
+        {
+          "x": 384,
+          "y": 0,
+          "w": 128,
+          "h": 128,
+          "duration_ms": 300,
+          "file": "frames/sit_down_03.png",
+          "pivot": [
+            64,
+            110
+          ]
+        }
+      ],
+      "pivot": [
+        64,
+        110
+      ],
+      "direction": "right",
+      "per_frame_pivot": [
+        [
+          64,
+          120
+        ],
+        [
+          64,
+          110
+        ],
+        [
+          64,
+          110
+        ],
+        [
+          64,
+          110
+        ]
+      ]
+    },
+    "stand_up": {
+      "sheet": "stand_up.png",
+      "frames": 3,
+      "duration_ms": [
+        200,
+        200,
+        220
+      ],
+      "loop": false,
+      "playback": "once",
+      "bounds": [
+        [
+          16,
+          12,
+          112,
+          118
+        ],
+        [
+          19,
+          7,
+          109,
+          119
+        ],
+        [
+          16,
+          8,
+          112,
+          120
+        ]
+      ],
+      "frame_rects": [
+        {
+          "x": 0,
+          "y": 0,
+          "w": 128,
+          "h": 128,
+          "duration_ms": 200,
+          "file": "frames/stand_up_00.png",
+          "pivot": [
+            64,
+            110
+          ]
+        },
+        {
+          "x": 128,
+          "y": 0,
+          "w": 128,
+          "h": 128,
+          "duration_ms": 200,
+          "file": "frames/stand_up_01.png",
+          "pivot": [
+            64,
+            110
+          ]
+        },
+        {
+          "x": 256,
+          "y": 0,
+          "w": 128,
+          "h": 128,
+          "duration_ms": 220,
+          "file": "frames/stand_up_02.png",
+          "pivot": [
+            64,
+            120
+          ]
+        }
+      ],
+      "pivot": [
+        64,
+        110
+      ],
+      "direction": "right",
+      "per_frame_pivot": [
+        [
+          64,
+          110
+        ],
+        [
+          64,
+          110
+        ],
+        [
+          64,
+          120
+        ]
+      ]
+    }
+  }
+}

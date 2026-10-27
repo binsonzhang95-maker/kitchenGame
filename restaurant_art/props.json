@@ -122,6 +122,768 @@
         56
       ],
       "note": "Suggested engine scale 1.0; adjust layout anchors after scene placement, not exact collision data."
+    },
+    "menu_board": {
+      "size": [
+        160,
+        120
+      ],
+      "source_bbox": [
+        124,
+        237,
+        1337,
+        896
+      ],
+      "anchor_ground": [
+        80,
+        119
+      ],
+      "bounds": [
+        1,
+        1,
+        159,
+        119
+      ],
+      "anchor": [
+        80,
+        119
+      ],
+      "wall": true,
+      "footprint": null,
+      "collision": false,
+      "file": "props/menu_board.png"
+    },
+    "wall_frame_1": {
+      "size": [
+        64,
+        64
+      ],
+      "source_bbox": [
+        294,
+        302,
+        960,
+        968
+      ],
+      "anchor_ground": [
+        32,
+        63
+      ],
+      "bounds": [
+        1,
+        1,
+        63,
+        63
+      ],
+      "anchor": [
+        32,
+        63
+      ],
+      "wall": true,
+      "footprint": null,
+      "collision": false,
+      "file": "props/wall_frame_1.png"
+    },
+    "wall_frame_2": {
+      "size": [
+        64,
+        64
+      ],
+      "source_bbox": [
+        251,
+        268,
+        1003,
+        1002
+      ],
+      "anchor_ground": [
+        32,
+        63
+      ],
+      "bounds": [
+        1,
+        1,
+        63,
+        63
+      ],
+      "anchor": [
+        32,
+        63
+      ],
+      "wall": true,
+      "footprint": null,
+      "collision": false,
+      "file": "props/wall_frame_2.png"
+    },
+    "wall_frame_3": {
+      "size": [
+        64,
+        64
+      ],
+      "source_bbox": [
+        287,
+        290,
+        967,
+        948
+      ],
+      "anchor_ground": [
+        32,
+        63
+      ],
+      "bounds": [
+        1,
+        1,
+        63,
+        63
+      ],
+      "anchor": [
+        32,
+        63
+      ],
+      "wall": true,
+      "footprint": null,
+      "collision": false,
+      "file": "props/wall_frame_3.png"
+    },
+    "wall_shelf": {
+      "size": [
+        128,
+        64
+      ],
+      "source_bbox": [
+        346,
+        285,
+        1474,
+        663
+      ],
+      "anchor_ground": [
+        64,
+        63
+      ],
+      "bounds": [
+        1,
+        1,
+        127,
+        63
+      ],
+      "anchor": [
+        64,
+        63
+      ],
+      "wall": true,
+      "footprint": null,
+      "collision": false,
+      "file": "props/wall_shelf.png"
+    },
+    "pendant_lamp": {
+      "size": [
+        32,
+        96
+      ],
+      "source_bbox": [
+        131,
+        0,
+        593,
+        2146
+      ],
+      "anchor_ground": [
+        16,
+        95
+      ],
+      "bounds": [
+        0,
+        0,
+        32,
+        96
+      ],
+      "anchor": [
+        16,
+        95
+      ],
+      "wall": false,
+      "footprint": null,
+      "collision": false,
+      "ceiling": true,
+      "top_tile_height": 8,
+      "file": "props/pendant_lamp.png"
+    },
+    "rug_large": {
+      "size": [
+        256,
+        160
+      ],
+      "source_bbox": [
+        110,
+        146,
+        1476,
+        846
+      ],
+      "anchor_ground": [
+        128,
+        159
+      ],
+      "bounds": [
+        1,
+        1,
+        255,
+        159
+      ],
+      "anchor": [
+        128,
+        159
+      ],
+      "wall": false,
+      "footprint": [
+        0,
+        0,
+        256,
+        160
+      ],
+      "collision": false,
+      "file": "props/rug_large.png"
+    },
+    "rug_runner": {
+      "size": [
+        64,
+        64
+      ],
+      "source_bbox": [
+        0,
+        0,
+        1254,
+        1254
+      ],
+      "anchor_ground": [
+        32,
+        63
+      ],
+      "bounds": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "anchor": [
+        32,
+        63
+      ],
+      "wall": false,
+      "footprint": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "collision": false,
+      "tile_x": true,
+      "tile_y": true,
+      "file": "props/rug_runner.png"
+    },
+    "doormat": {
+      "size": [
+        128,
+        40
+      ],
+      "source_bbox": [
+        95,
+        112,
+        2077,
+        612
+      ],
+      "anchor_ground": [
+        64,
+        39
+      ],
+      "bounds": [
+        1,
+        1,
+        127,
+        39
+      ],
+      "anchor": [
+        64,
+        39
+      ],
+      "wall": false,
+      "footprint": [
+        0,
+        0,
+        128,
+        40
+      ],
+      "collision": false,
+      "file": "props/doormat.png"
+    },
+    "host_stand": {
+      "size": [
+        64,
+        96
+      ],
+      "source_bbox": [
+        163,
+        320,
+        887,
+        1338
+      ],
+      "anchor_ground": [
+        32,
+        95
+      ],
+      "bounds": [
+        1,
+        1,
+        63,
+        95
+      ],
+      "anchor": [
+        32,
+        95
+      ],
+      "wall": false,
+      "footprint": [
+        6,
+        65,
+        59,
+        95
+      ],
+      "collision": true,
+      "file": "props/host_stand.png"
+    },
+    "coat_rack": {
+      "size": [
+        40,
+        112
+      ],
+      "source_bbox": [
+        107,
+        88,
+        611,
+        1972
+      ],
+      "anchor_ground": [
+        20,
+        111
+      ],
+      "bounds": [
+        1,
+        1,
+        39,
+        111
+      ],
+      "anchor": [
+        20,
+        111
+      ],
+      "wall": false,
+      "footprint": [
+        3,
+        92,
+        38,
+        111
+      ],
+      "collision": true,
+      "file": "props/coat_rack.png"
+    },
+    "plant_big": {
+      "size": [
+        64,
+        128
+      ],
+      "source_bbox": [
+        27,
+        221,
+        860,
+        1649
+      ],
+      "anchor_ground": [
+        32,
+        127
+      ],
+      "bounds": [
+        1,
+        1,
+        63,
+        127
+      ],
+      "anchor": [
+        32,
+        127
+      ],
+      "wall": false,
+      "footprint": [
+        15,
+        103,
+        50,
+        127
+      ],
+      "collision": true,
+      "file": "props/plant_big.png"
+    },
+    "service_station": {
+      "size": [
+        96,
+        96
+      ],
+      "source_bbox": [
+        227,
+        232,
+        1040,
+        1032
+      ],
+      "anchor_ground": [
+        48,
+        95
+      ],
+      "bounds": [
+        1,
+        1,
+        95,
+        95
+      ],
+      "anchor": [
+        48,
+        95
+      ],
+      "wall": false,
+      "footprint": [
+        5,
+        66,
+        92,
+        95
+      ],
+      "collision": true,
+      "file": "props/service_station.png"
+    },
+    "bar_counter": {
+      "size": [
+        256,
+        112
+      ],
+      "source_bbox": [
+        59,
+        140,
+        1833,
+        657
+      ],
+      "anchor_ground": [
+        128,
+        111
+      ],
+      "bounds": [
+        1,
+        1,
+        255,
+        111
+      ],
+      "anchor": [
+        128,
+        111
+      ],
+      "wall": false,
+      "footprint": [
+        4,
+        76,
+        252,
+        111
+      ],
+      "collision": true,
+      "file": "props/bar_counter.png"
+    },
+    "wainscot": {
+      "file": "props/wainscot.png",
+      "size": [
+        64,
+        48
+      ],
+      "anchor_bottom_center": [
+        32,
+        47
+      ],
+      "wall": true,
+      "footprint": null,
+      "tile_axes": [
+        "x"
+      ]
+    },
+    "ceiling_beam": {
+      "file": "props/ceiling_beam.png",
+      "size": [
+        64,
+        24
+      ],
+      "anchor_bottom_center": [
+        32,
+        23
+      ],
+      "wall": true,
+      "footprint": null,
+      "tile_axes": [
+        "x"
+      ]
+    },
+    "window_curtain": {
+      "file": "props/window_curtain.png",
+      "size": [
+        96,
+        112
+      ],
+      "anchor_bottom_center": [
+        48,
+        111
+      ],
+      "wall": true,
+      "footprint": null,
+      "opening": [
+        8,
+        28,
+        80,
+        56
+      ],
+      "view_origin": [
+        8,
+        28
+      ]
+    },
+    "floor_border": {
+      "file": "props/floor_border.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor_bottom_center": [
+        16,
+        31
+      ],
+      "wall": false,
+      "footprint": [
+        0,
+        0,
+        32,
+        32
+      ],
+      "tile_axes": [
+        "x",
+        "y"
+      ]
+    },
+    "window_view_day": {
+      "file": "props/window_view_day.png",
+      "size": [
+        80,
+        56
+      ],
+      "anchor_bottom_center": [
+        40,
+        55
+      ],
+      "wall": true,
+      "footprint": null,
+      "placement": "Behind window_curtain at local [8,28]"
+    },
+    "floor_decal_1": {
+      "file": "props/floor_decal_1.png",
+      "size": [
+        64,
+        32
+      ],
+      "anchor_bottom_center": [
+        32,
+        31
+      ],
+      "wall": false,
+      "footprint": [
+        0,
+        0,
+        64,
+        32
+      ]
+    },
+    "floor_decal_2": {
+      "file": "props/floor_decal_2.png",
+      "size": [
+        64,
+        32
+      ],
+      "anchor_bottom_center": [
+        32,
+        31
+      ],
+      "wall": false,
+      "footprint": [
+        0,
+        0,
+        64,
+        32
+      ]
+    },
+    "floor_decal_3": {
+      "file": "props/floor_decal_3.png",
+      "size": [
+        64,
+        32
+      ],
+      "anchor_bottom_center": [
+        32,
+        31
+      ],
+      "wall": false,
+      "footprint": [
+        0,
+        0,
+        64,
+        32
+      ]
+    },
+    "floor_decal_4": {
+      "file": "props/floor_decal_4.png",
+      "size": [
+        64,
+        32
+      ],
+      "anchor_bottom_center": [
+        32,
+        31
+      ],
+      "wall": false,
+      "footprint": [
+        0,
+        0,
+        64,
+        32
+      ]
+    },
+    "table_vase_1": {
+      "file": "props/table_vase_1.png",
+      "size": [
+        16,
+        24
+      ],
+      "anchor_bottom_center": [
+        8,
+        23
+      ],
+      "wall": false,
+      "footprint": null,
+      "surface": "tabletop",
+      "floor_footprint": null
+    },
+    "table_vase_2": {
+      "file": "props/table_vase_2.png",
+      "size": [
+        16,
+        24
+      ],
+      "anchor_bottom_center": [
+        8,
+        23
+      ],
+      "wall": false,
+      "footprint": null,
+      "surface": "tabletop",
+      "floor_footprint": null
+    },
+    "table_vase_3": {
+      "file": "props/table_vase_3.png",
+      "size": [
+        16,
+        24
+      ],
+      "anchor_bottom_center": [
+        8,
+        23
+      ],
+      "wall": false,
+      "footprint": null,
+      "surface": "tabletop",
+      "floor_footprint": null
+    },
+    "table_vase_4": {
+      "file": "props/table_vase_4.png",
+      "size": [
+        16,
+        24
+      ],
+      "anchor_bottom_center": [
+        8,
+        23
+      ],
+      "wall": false,
+      "footprint": null,
+      "surface": "tabletop",
+      "floor_footprint": null
+    },
+    "tablecloth_1": {
+      "file": "props/tablecloth_1.png",
+      "size": [
+        140,
+        90
+      ],
+      "anchor_bottom_center": [
+        70,
+        89
+      ],
+      "wall": false,
+      "footprint": null,
+      "surface": "tabletop",
+      "floor_footprint": null,
+      "origin": [
+        0,
+        0
+      ],
+      "tabletop_center": [
+        70,
+        25
+      ],
+      "top_front_split_y": 44,
+      "registration": "Same 140x90 origin as original table_top; alpha clipped to original table_top; no legs."
+    },
+    "tablecloth_2": {
+      "file": "props/tablecloth_2.png",
+      "size": [
+        140,
+        90
+      ],
+      "anchor_bottom_center": [
+        70,
+        89
+      ],
+      "wall": false,
+      "footprint": null,
+      "surface": "tabletop",
+      "floor_footprint": null,
+      "origin": [
+        0,
+        0
+      ],
+      "tabletop_center": [
+        70,
+        25
+      ],
+      "top_front_split_y": 44,
+      "registration": "Same 140x90 origin as original table_top; alpha clipped to original table_top; no legs."
+    },
+    "tablecloth_3": {
+      "file": "props/tablecloth_3.png",
+      "size": [
+        140,
+        90
+      ],
+      "anchor_bottom_center": [
+        70,
+        89
+      ],
+      "wall": false,
+      "footprint": null,
+      "surface": "tabletop",
+      "floor_footprint": null,
+      "origin": [
+        0,
+        0
+      ],
+      "tabletop_center": [
+        70,
+        25
+      ],
+      "top_front_split_y": 44,
+      "registration": "Same 140x90 origin as original table_top; alpha clipped to original table_top; no legs."
     }
   },
   "atlas": {
@@ -136,5 +898,31 @@
       128
     ]
   },
-  "bar_layout_note": "Use high_table96px width plus two32px stools at left/right =160px, fits the roughly190px bar room before spacing. Table and stools should be separate nodes."
+  "bar_layout_note": "Use high_table96px width plus two32px stools at left/right =160px, fits the roughly190px bar room before spacing. Table and stools should be separate nodes.",
+  "g11_variant_aliases": {
+    "floor_decals.png": [
+      "floor_decal_1.png",
+      "floor_decal_2.png",
+      "floor_decal_3.png",
+      "floor_decal_4.png"
+    ],
+    "table_vase.png": [
+      "table_vase_1.png",
+      "table_vase_2.png",
+      "table_vase_3.png",
+      "table_vase_4.png"
+    ],
+    "tablecloth.png": [
+      "tablecloth_1.png",
+      "tablecloth_2.png",
+      "tablecloth_3.png"
+    ]
+  },
+  "g11_notes": [
+    "Built-in imagegen: one source per asset, 16 calls; nearest-neighbor resizing and binary alpha threshold only, plus permitted crop/mask registration and tile edge repair.",
+    "Tablecloth artwork intentionally surface-only, no overhang or legs.",
+    "Window view placed at [8,28,80,56] behind curtains; drawn curtains intentionally occlude sides of view. Frame is inset 16px vertically in 96x112 canvas.",
+    "Seam checks prove identical outermost boundary pixels, not perceptually perfect repeated grain.",
+    "Native 16x24 vases necessarily simplify source flower detail."
+  ]
 }

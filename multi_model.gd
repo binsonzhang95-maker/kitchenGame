@@ -6,7 +6,7 @@ const Floor = preload("res://floor_plan.gd")
 const FloorLayout = preload("res://floor_layout.gd")
 const CookingSession = preload("res://cooking_session.gd")
 const RecipeCatalog = preload("res://recipe_catalog.gd")
-const SAVE_VERSION: int = 5
+const SAVE_VERSION: int = 6
 ## Original public menu/API. A new model deliberately starts here.
 const RECIPE_IDS: Array[String] = ["soup", "stir_fry", "bake", "drink"]
 const CLASSIC_MENU: Array[String] = ["soup", "stir_fry", "bake", "drink"]
@@ -22,11 +22,13 @@ const V2_TABLE_CENTERS: Array[Vector2] = [
 ]
 const MEAL_PRICE: int = 38
 const SPECIES: Array[String] = ["cat", "dog", "panda", "raccoon", "red_panda", "squirrel", "hedgehog", "otter", "capybara", "koala", "deer", "sheep", "pig", "hamster", "penguin", "duck", "frog"]
+const COMPANION_SPECIES: Array[String] = ["cat", "dog", "panda", "capybara", "hamster"]
 const TABLE_PHASES: Array[String] = ["free", "reserved", "ordering", "awaiting_cook", "cooking", "food_ready", "serving_food", "waiting_drink", "serving_drink", "eating", "drinking", "checkout", "leaving", "dirty", "collecting", "wiping"]
 const CUSTOMER_STATES: Array[String] = ["queued", "walking", "seated", "leaving"]
 const WORKER_STATES: Array[String] = ["idle", "to_kitchen", "to_table", "working", "returning"]
 const WALK_SPEED: float = 217.5
 const WORK_SPEED: float = 262.5
+const STAND_DURATION: float = 0.66
 const ARRIVAL_INTERVAL: float = 8.0
 const QUEUE_LIMIT: int = 8
 
@@ -231,20 +233,77 @@ func queue_ids() -> Array[int]:
 
 
 func spawn_customer(species: String = "") -> int:
+	# Kept deterministic for every pre-G11 caller and test.
+	return _spawn_party(1, [species] if not species.is_empty() else [])
+
+
+func spawn_party(size: int = 0, species: Array = []) -> int:
+	if size == 0:
+		# Lower early levels deliberately reduce visual density: 55/35/10 rather
+		# than the normal 30/45/25 single/two/three split.
+		var roll: int = (next_customer_id * 37 + int(clock * 10.0)) % 100
+		if max_customers <= 4:
+			size = 1 if roll < 55 else (2 if roll < 90 else 3)
+		else:
+			size = 1 if roll < 30 else (2 if roll < 75 else 3)
+	return _spawn_party(size, species)
+
+
+func _spawn_party(size: int, species: Array) -> int:
 	if paused or customers.size() >= max_customers or queue_ids().size() >= QUEUE_LIMIT:
 		if not paused:
 			rejected += 1
 		return -1
-	if not species.is_empty() and species not in SPECIES:
+	if size < 1 or size > 3 or (not species.is_empty() and species.size() != size):
+		return -1
+	for index: int in range(species.size()):
+		if typeof(species[index]) != TYPE_STRING or (str(species[index]) not in (SPECIES if index == 0 else COMPANION_SPECIES)):
+			return -1
+	if _guest_actor_count() + size > 60:
+		rejected += 1
 		return -1
 	var id: int = next_customer_id
 	next_customer_id += 1
-	if species.is_empty():
-		species = SPECIES[(id - 1) % SPECIES.size()]
-	var guest: Dictionary = {"id": id, "species": species, "table_id": 0, "state": "queued", "pos": floor.entrance_point(), "path": [], "patience": 45.0, "paid": false, "timed_out": false, "created": clock, "route_blocked": false}
+	var leader_species: String = str(species[0]) if not species.is_empty() else SPECIES[(id - 1) % SPECIES.size()]
+	var companions: Array[Dictionary] = []
+	for member_index: int in range(1, size):
+		var companion_species: String = str(species[member_index]) if member_index < species.size() else COMPANION_SPECIES[(id + member_index - 1) % COMPANION_SPECIES.size()]
+		companions.append({"party_id": id, "member_index": member_index, "species": companion_species, "seat_index": member_index, "table_id": 0, "pos": floor.entrance_point() + Vector2(member_index * 10, 0), "path": [], "route_blocked": false, "arrival": 0.0, "stand_elapsed": 0.0, "transition": "", "transition_elapsed": 0.0, "departed": false})
+	var guest: Dictionary = {"id": id, "party_id": id, "party_size": size, "seat_index": 0, "companions": companions, "species": leader_species, "table_id": 0, "state": "queued", "pos": floor.entrance_point(), "path": [], "patience": 45.0, "paid": false, "timed_out": false, "created": clock, "route_blocked": false, "arrival": 0.0, "stand_elapsed": 0.0, "transition": "", "transition_elapsed": 0.0, "departed": false}
 	customers[id] = guest
-	_route_to(guest, floor.queue_point(queue_ids().size() - 1))
+	_route_party_to_queue(guest, queue_ids().size() - 1)
 	return id
+
+
+func _guest_actor_count() -> int:
+	var count := 0
+	for guest: Dictionary in customers.values():
+		count += 1 + (guest.get("companions", []) as Array).size()
+	return count
+
+
+func party_members(party_id: int) -> Array[Dictionary]:
+	if not customers.has(party_id):
+		return []
+	var guest: Dictionary = customers[party_id]
+	var result: Array[Dictionary] = [_member_view(guest, guest, 0)]
+	for companion: Dictionary in guest.get("companions", []):
+		# The public descriptor retains early arrivals until the full group exits.
+		result.append(_member_view(guest, companion, int(companion.member_index)))
+	return result
+
+
+func table_members(table_id: int) -> Array[Dictionary]:
+	var table := _table(table_id)
+	if not table.is_empty() and int(table.guest_id) > 0:
+		return party_members(int(table.guest_id))
+	var empty_members: Array[Dictionary] = []
+	return empty_members
+
+
+func _member_view(leader: Dictionary, actor: Dictionary, member_index: int) -> Dictionary:
+	var role := "back" if member_index == 0 else ("left" if member_index == 1 else "right")
+	return {"party_id": int(leader.id), "member_index": member_index, "seat_index": member_index, "seat_role": role, "species": str(actor.species), "state": str(leader.state), "pos": actor.pos, "path": actor.path.duplicate(), "arrival": float(actor.get("arrival", 0.0)), "stand_elapsed": float(actor.get("stand_elapsed", 0.0)), "transition": str(actor.get("transition", "")), "transition_elapsed": float(actor.get("transition_elapsed", 0.0)), "stand_duration": STAND_DURATION, "route_blocked": bool(actor.get("route_blocked", false)), "departed": bool(actor.get("departed", false))}
 
 
 func assign_next(table_id: int) -> bool:
@@ -255,18 +314,54 @@ func assign_next(table_id: int) -> bool:
 	if table.is_empty() or table.phase != "free" or ids.is_empty():
 		return false
 	var guest: Dictionary = customers[ids[0]]
+	if int(guest.get("party_size", 1)) > _table_capacity(table_id):
+		return false
+	# Plan every member against the same prospective reservation before changing
+	# any business state.  An unroutable side seat therefore cannot consume a
+	# table generation, reshuffle the queue, or strand a partial group.
+	var planned: Dictionary = _plan_party_seating(guest, table_id)
+	if planned.is_empty():
+		return false
 	table.generation = int(table.generation) + 1
-	table.guest_id = int(guest.id)
-	table.recipe_id = recipe_for_guest(int(guest.id))
+	table.guest_id = int(planned.id)
+	table.recipe_id = recipe_for_guest(int(planned.id))
 	table.used = false
 	_set_phase(table, "reserved")
-	guest.table_id = table_id
-	guest.state = "walking"
-	guest.patience = 120.0
-	_route_to(guest, floor.seat_point(table_id))
+	customers[int(planned.id)] = planned
 	next_table_cursor = table_id % tables.size()
 	_reflow_queue()
 	return true
+
+
+func _plan_party_seating(guest: Dictionary, table_id: int) -> Dictionary:
+	var planned: Dictionary = guest.duplicate(true)
+	planned.table_id = table_id
+	planned.state = "walking"
+	planned.patience = 120.0
+	planned.arrival = 0.0
+	planned.stand_elapsed = 0.0
+	planned.transition = ""
+	planned.transition_elapsed = 0.0
+	planned.departed = false
+	_route_to(planned, _seat_point(table_id, 0))
+	if bool(planned.route_blocked) or not _valid_actor_route(planned, _seat_point(table_id, 0)):
+		return {}
+	var companions: Array = planned.companions
+	for index: int in range(companions.size()):
+		var companion: Dictionary = companions[index]
+		companion.table_id = table_id
+		companion.arrival = 0.0
+		companion.stand_elapsed = 0.0
+		companion.transition = ""
+		companion.transition_elapsed = 0.0
+		companion.departed = false
+		var destination := _seat_point(table_id, int(companion.seat_index))
+		_route_to(companion, destination)
+		if bool(companion.route_blocked) or not _valid_actor_route(companion, destination):
+			return {}
+		companions[index] = companion
+	planned.companions = companions
+	return planned
 
 
 func table_action(table_id: int) -> String:
@@ -276,7 +371,7 @@ func table_action(table_id: int) -> String:
 	if table.is_empty():
 		return ""
 	match str(table.phase):
-		"free": return "assign" if not queue_ids().is_empty() else ""
+		"free": return "assign" if not queue_ids().is_empty() and int(customers[queue_ids()[0]].get("party_size", 1)) <= _table_capacity(table_id) else ""
 		"ordering": return "order" if float(table.elapsed) >= 0.92 else ""
 		"awaiting_cook": return "cook" if int(chef.table_id) == -1 else ""
 		"checkout": return "pay"
@@ -425,8 +520,10 @@ func _tick_step(delta: float) -> void:
 			if clock - float(customers[queue[0]].created) < 0.8:
 				break
 			if tables[index].phase == "free":
-				assign_next(int(tables[index].id))
-				break
+				# A too-small bar may reject the first queue party. Continue scanning
+				# for a compatible ordinary table; only a real assignment ends a turn.
+				if assign_next(int(tables[index].id)):
+					break
 	if auto_cook and not interactive_cooking:
 		cook_next()
 	if auto_dispatch:
@@ -440,7 +537,7 @@ func _tick_step(delta: float) -> void:
 		arrival_elapsed += delta
 		if arrival_elapsed >= ARRIVAL_INTERVAL:
 			arrival_elapsed -= ARRIVAL_INTERVAL
-			spawn_customer()
+			spawn_party()
 
 
 func _tick_customers(delta: float) -> void:
@@ -448,7 +545,10 @@ func _tick_customers(delta: float) -> void:
 		var guest: Dictionary = customers[id]
 		var table: Dictionary = _table(int(guest.table_id))
 		if guest.state == "leaving":
-			if _move_actor(guest, WALK_SPEED, delta):
+			var leader_departed := _move_departing_actor(guest, delta)
+			guest.departed = leader_departed
+			_tick_companions(guest, delta, "leaving")
+			if leader_departed and _party_departed(guest):
 				if not table.is_empty() and int(table.guest_id) == id:
 					table.guest_id = 0
 					if bool(table.used):
@@ -456,6 +556,8 @@ func _tick_customers(delta: float) -> void:
 					else:
 						_release_table(table)
 				_clear_legacy_route(guest)
+				for companion: Dictionary in guest.get("companions", []):
+					_clear_legacy_route(companion)
 				customers.erase(id)
 				_reflow_queue()
 			continue
@@ -467,11 +569,70 @@ func _tick_customers(delta: float) -> void:
 				continue
 		if guest.state == "queued":
 			_move_actor(guest, WALK_SPEED, delta)
-		elif guest.state == "walking" and _move_actor(guest, WALK_SPEED, delta):
-			guest.state = "seated"
-			guest.patience = 120.0
-			table.used = true
-			_set_phase(table, "ordering")
+			_tick_companions(guest, delta, "queued")
+		elif guest.state == "walking":
+			_move_actor(guest, WALK_SPEED, delta)
+			_tick_companions(guest, delta, "walking")
+			if _party_arrived(guest):
+				guest.state = "seated"
+				guest.patience = 120.0
+				_reset_party_arrival(guest)
+				table.used = true
+				_set_phase(table, "ordering")
+		elif guest.state == "seated":
+			guest.arrival = float(guest.arrival) + delta
+			_tick_companions(guest, delta, "seated")
+
+
+func _tick_companions(guest: Dictionary, delta: float, state: String) -> void:
+	var companions: Array = guest.get("companions", [])
+	for index: int in range(companions.size()):
+		var companion: Dictionary = companions[index]
+		if state == "leaving":
+			if not bool(companion.get("departed", false)) and _move_departing_actor(companion, delta):
+				companion.departed = true
+		elif state == "seated":
+			companion.arrival = float(companion.get("arrival", 0.0)) + delta
+		else:
+			_move_actor(companion, WALK_SPEED, delta)
+		companions[index] = companion
+	guest.companions = companions
+
+
+func _party_arrived(guest: Dictionary) -> bool:
+	if bool(guest.get("route_blocked", false)) or not guest.path.is_empty() or not (guest.pos as Vector2).is_equal_approx(_seat_point(int(guest.table_id), 0)):
+		return false
+	for companion: Dictionary in guest.get("companions", []):
+		if bool(companion.get("route_blocked", false)) or not companion.path.is_empty() or not (companion.pos as Vector2).is_equal_approx(_seat_point(int(guest.table_id), int(companion.seat_index))):
+			return false
+	return true
+
+
+func _reset_party_arrival(guest: Dictionary) -> void:
+	guest.arrival = 0.0
+	var companions: Array = guest.companions
+	for index: int in range(companions.size()):
+		var companion: Dictionary = companions[index]
+		companion.arrival = 0.0
+		companions[index] = companion
+	guest.companions = companions
+
+
+func _move_departing_actor(actor: Dictionary, delta: float) -> bool:
+	if str(actor.get("transition", "")) == "stand_up":
+		actor.transition_elapsed = minf(STAND_DURATION, float(actor.get("transition_elapsed", 0.0)) + delta)
+		actor.stand_elapsed = float(actor.transition_elapsed)
+		if float(actor.transition_elapsed) < STAND_DURATION:
+			return false
+		actor.transition = ""
+	return _move_actor(actor, WALK_SPEED, delta)
+
+
+func _party_departed(guest: Dictionary) -> bool:
+	for companion: Dictionary in guest.get("companions", []):
+		if not bool(companion.get("departed", false)):
+			return false
+	return true
 
 
 func _tick_tables(delta: float) -> void:
@@ -570,9 +731,24 @@ func _begin_leave(guest: Dictionary, timeout: bool) -> void:
 				if task.state == "claimed":
 					_cancel_worker(workers[int(task.worker_id)])
 				tasks.erase(task)
-		_set_phase(table, "leaving")
+	var was_seated: bool = guest.state == "seated"
+	_set_phase(table, "leaving")
 	guest.state = "leaving"
+	guest.departed = false
+	guest.transition = "stand_up" if was_seated else ""
+	guest.transition_elapsed = 0.0
+	guest.stand_elapsed = 0.0
 	_route_to(guest, floor.entrance_point())
+	var companions: Array = guest.get("companions", [])
+	for index: int in range(companions.size()):
+		var companion: Dictionary = companions[index]
+		companion.departed = false
+		companion.stand_elapsed = 0.0
+		companion.transition = "stand_up" if was_seated else ""
+		companion.transition_elapsed = 0.0
+		_route_to(companion, floor.entrance_point())
+		companions[index] = companion
+	guest.companions = companions
 	_reflow_queue()
 
 
@@ -597,6 +773,29 @@ func _route_to(actor: Dictionary, destination: Vector2) -> void:
 	# A freshly generated route is built against the current reservations, so it
 	# never needs the legacy compatibility exemption or future full-path scans.
 	_clear_legacy_route(actor)
+
+
+func _route_party_to_queue(guest: Dictionary, queue_index: int) -> void:
+	_route_to(guest, floor.queue_point(queue_index))
+	var companions: Array = guest.get("companions", [])
+	for index: int in range(companions.size()):
+		var companion: Dictionary = companions[index]
+		companion.table_id = 0
+		_route_to(companion, floor.queue_point(queue_index) + Vector2((index + 1) * 10, -18))
+		companions[index] = companion
+	guest.companions = companions
+
+
+func _route_party_to_seats(guest: Dictionary) -> void:
+	var table_id: int = int(guest.table_id)
+	_route_to(guest, _seat_point(table_id, 0))
+	var companions: Array = guest.get("companions", [])
+	for index: int in range(companions.size()):
+		var companion: Dictionary = companions[index]
+		companion.table_id = table_id
+		_route_to(companion, _seat_point(table_id, int(companion.seat_index)))
+		companions[index] = companion
+	guest.companions = companions
 
 
 func _move_actor(actor: Dictionary, speed: float, delta: float) -> bool:
@@ -629,17 +828,39 @@ func _move_actor(actor: Dictionary, speed: float, delta: float) -> bool:
 
 
 func _seat_exceptions_for(actor: Dictionary, destination: Vector2) -> Array[int]:
-	# Only a customer walking into its assigned support point may enter that
-	# reservation. A leaving customer retains table_id, so state is essential.
-	if actor.has("paid") and str(actor.get("state", "")) == "walking":
+	# Identity is structural, never inferred from business fields such as paid.
+	# This makes a forged companion incapable of gaining a leader seat or worker
+	# route key during restore validation.
+	if actor.has("party_id") and actor.has("seat_index") and actor.has("table_id"):
 		var table_id: int = int(actor.get("table_id", 0))
-		if table_id >= 1 and table_id <= tables.size() and destination.is_equal_approx(floor.seat_point(table_id)):
-			return [table_id]
+		var seat_index: int = int(actor.get("seat_index", -1))
+		var is_member: bool = (seat_index == 0 and actor.has("party_size") and int(actor.get("party_id", 0)) == int(actor.get("id", -1))) or (seat_index > 0 and actor.has("member_index") and int(actor.get("party_id", 0)) > 0)
+		if is_member and table_id >= 1 and table_id <= tables.size() and destination.is_equal_approx(_seat_point(table_id, seat_index)):
+			var seat_key := _seat_key(table_id, seat_index)
+			if seat_key > 0:
+				return [seat_key]
 	return []
 
 
 func _actor_route_key(actor: Dictionary) -> String:
-	return "customer:%d" % int(actor.id) if actor.has("paid") else "worker:%d" % int(actor.id)
+	if actor.has("party_id") and actor.has("seat_index"):
+		if int(actor.get("seat_index", -1)) == 0 and actor.has("party_size") and int(actor.get("party_id", 0)) == int(actor.get("id", -1)):
+			return "party:%d:0" % int(actor.party_id)
+		if int(actor.get("seat_index", -1)) > 0 and actor.has("member_index"):
+			return "party:%d:%d" % [int(actor.get("party_id", 0)), int(actor.member_index)]
+	return "worker:%d" % int(actor.id)
+
+
+func _table_capacity(table_id: int) -> int:
+	return 1 if floor == Floor else floor.table_capacity(table_id)
+
+
+func _seat_point(table_id: int, seat_index: int = 0) -> Vector2:
+	return Floor.seat_point(table_id) if floor == Floor else floor.seat_point(table_id, seat_index)
+
+
+func _seat_key(table_id: int, seat_index: int = 0) -> int:
+	return table_id if floor == Floor and seat_index == 0 else (-1 if floor == Floor else floor.seat_key(table_id, seat_index))
 
 
 func _mark_legacy_route(actor: Dictionary) -> void:
@@ -654,7 +875,7 @@ func _clear_legacy_route(actor: Dictionary) -> void:
 func _reflow_queue() -> void:
 	var ids: Array[int] = queue_ids()
 	for index: int in range(ids.size()):
-		_route_to(customers[ids[index]], floor.queue_point(index))
+		_route_party_to_queue(customers[ids[index]], index)
 
 
 func to_dict() -> Dictionary:
@@ -689,7 +910,7 @@ func restore(data: Dictionary) -> bool:
 		return _restore_v1(data)
 	if schema == 2:
 		return _restore_v2(data)
-	if schema not in [3, 4, SAVE_VERSION]:
+	if schema not in [3, 4, 5, SAVE_VERSION]:
 		return false
 	var receiving_width: float = floor.layout_width
 	var candidate = get_script().new()
@@ -796,14 +1017,14 @@ func _relocate_v2_actors() -> bool:
 				if table.is_empty():
 					return false
 				guest.pos = floor.entrance_point()
-				_route_to(guest, floor.seat_point(table_id))
+				_route_to(guest, _seat_point(table_id))
 			"seated":
 				if table.is_empty():
 					return false
-				guest.pos = floor.seat_point(table_id)
+				guest.pos = _seat_point(table_id)
 			"leaving":
 				# A guest may have reserved a table but timed out before sitting.
-				guest.pos = floor.seat_point(table_id) if not table.is_empty() and bool(table.used) else floor.queue_point(0)
+				guest.pos = _seat_point(table_id) if not table.is_empty() and bool(table.used) else floor.queue_point(0)
 				_route_to(guest, floor.entrance_point())
 	for index: int in range(workers.size()):
 		var worker: Dictionary = workers[index]
@@ -839,6 +1060,40 @@ func _relocate_v2_actors() -> bool:
 	return true
 
 
+func _relayout_companions(guest: Dictionary, previous_floor, preserve_runtime_position: bool) -> bool:
+	var companions: Array = guest.get("companions", [])
+	for index: int in range(companions.size()):
+		var companion: Dictionary = companions[index]
+		# A party is released only after every member reaches the entrance.  Do
+		# not turn an already-departed member back into a moving actor merely
+		# because the room geometry changed underneath the remaining party.
+		if bool(companion.get("departed", false)):
+			companion.pos = floor.entrance_point()
+			companion.path = []
+			companion.route_blocked = false
+			companions[index] = companion
+			continue
+		var destination: Vector2 = floor.entrance_point()
+		match str(guest.state):
+			"queued":
+				destination = floor.queue_point(queue_ids().find(int(guest.id))) + Vector2((index + 1) * 10, -18)
+			"walking", "seated":
+				destination = _seat_point(int(guest.table_id), int(companion.seat_index))
+		if str(guest.state) == "seated":
+			companion.pos = destination
+			companion.path = []
+			companion.route_blocked = false
+		elif preserve_runtime_position and not _map_actor_position(companion, previous_floor, destination, _seat_exceptions_for(companion, destination)):
+			return false
+		else:
+			if not preserve_runtime_position:
+				companion.pos = floor.entrance_point() if str(guest.state) == "walking" else destination
+			_route_to(companion, destination)
+		companions[index] = companion
+	guest.companions = companions
+	return true
+
+
 ## Geometry-only migration used by viewport changes and validated legacy loads.
 ## It intentionally never calls tick(), changes a phase, settles a ledger, or
 ## completes a cooking session.  Actor positions/routes are the only state
@@ -871,21 +1126,28 @@ func _relayout_runtime(width: float, preserve_runtime_position: bool = true) -> 
 			"walking":
 				if table.is_empty():
 					return false
-				if preserve_runtime_position and not _map_actor_position(guest, previous_floor, floor.seat_point(table_id), [table_id]):
+				if preserve_runtime_position and not _map_actor_position(guest, previous_floor, _seat_point(table_id), [_seat_key(table_id)]):
 					return false
 				elif not preserve_runtime_position:
 					guest.pos = floor.entrance_point()
-				_route_to(guest, floor.seat_point(table_id))
+				_route_to(guest, _seat_point(table_id))
 			"seated":
 				if table.is_empty():
 					return false
-				guest.pos = floor.seat_point(table_id)
+				guest.pos = _seat_point(table_id)
 			"leaving":
-				if preserve_runtime_position and not _map_actor_position(guest, previous_floor, floor.entrance_point()):
-					return false
-				elif not preserve_runtime_position:
-					guest.pos = floor.seat_point(table_id) if not table.is_empty() and bool(table.used) else floor.queue_point(0)
-				_route_to(guest, floor.entrance_point())
+				if bool(guest.get("departed", false)):
+					guest.pos = floor.entrance_point()
+					guest.path = []
+					guest.route_blocked = false
+				else:
+					if preserve_runtime_position and not _map_actor_position(guest, previous_floor, floor.entrance_point()):
+						return false
+					elif not preserve_runtime_position:
+						guest.pos = _seat_point(table_id) if not table.is_empty() and bool(table.used) else floor.queue_point(0)
+					_route_to(guest, floor.entrance_point())
+		if not _relayout_companions(guest, previous_floor, preserve_runtime_position):
+			return false
 	for index: int in range(workers.size()):
 		var worker: Dictionary = workers[index]
 		worker.path = []
@@ -938,15 +1200,19 @@ func relayout(width: float) -> bool:
 
 func _read_snapshot(data: Dictionary) -> bool:
 	var schema: int = int(data.get("version", 0))
-	if schema == SAVE_VERSION:
+	if schema in [5, SAVE_VERSION]:
 		if not _number(data.get("layout_width")) or not _integer(data.get("layout_revision")):
 			return false
 		var saved_width: float = float(data.layout_width)
 		var saved_revision: int = int(data.layout_revision)
-		if not FloorLayout.valid_saved_revision(saved_width, saved_revision):
+		# V5 has two frozen geometry families: the original open floor (rev1)
+		# and G10 (rev2).  A V6 party save is always G11 geometry (rev3), so
+		# neither schema may be relabelled into the other family.
+		var v5_historic_revision: bool = FloorLayout.is_legacy_revision(saved_width, saved_revision) or saved_revision == FloorLayout.g10_revision_for_width(saved_width)
+		if (schema == SAVE_VERSION and not FloorLayout.valid_revision(saved_width, saved_revision)) or (schema == 5 and not v5_historic_revision):
 			return false
 		floor = FloorLayout.new(saved_width, saved_revision)
-	if schema in [4, SAVE_VERSION]:
+	if schema in [4, 5, SAVE_VERSION]:
 		if typeof(data.get("interactive_cooking")) != TYPE_BOOL or typeof(data.get("cooking_return_paused")) != TYPE_BOOL or not data.get("active_cooking") is Dictionary or not _integer(data.get("cooking_session_seq")) or not _integer(data.get("cooking_session_token")):
 			return false
 	else:
@@ -976,7 +1242,7 @@ func _read_snapshot(data: Dictionary) -> bool:
 		if not raw is Dictionary or not _fields(raw, ["id", "guest_id", "generation"], ["elapsed", "ordered_at"], ["zone", "label", "phase"], ["food", "drink", "used"]) or not _vector(raw.get("center")):
 			return false
 		var item: Dictionary = raw.duplicate(true)
-		if schema in [4, SAVE_VERSION]:
+		if schema in [4, 5, SAVE_VERSION]:
 			if typeof(raw.get("recipe_id")) != TYPE_STRING:
 				return false
 		else:
@@ -991,7 +1257,29 @@ func _read_snapshot(data: Dictionary) -> bool:
 		var raw: Variant = data.customers[key]
 		if not raw is Dictionary or not _fields(raw, ["id", "table_id"], ["patience", "created"], ["species", "state"], ["paid", "timed_out", "route_blocked"]) or not _actor_fields(raw):
 			return false
+		if schema < SAVE_VERSION and (raw.has("party_id") or raw.has("party_size") or raw.has("seat_index") or raw.has("companions")):
+			return false
+		if schema == SAVE_VERSION and (not _only_fields(raw, ["id", "party_id", "party_size", "seat_index", "companions", "species", "table_id", "state", "pos", "path", "patience", "paid", "timed_out", "created", "route_blocked", "arrival", "stand_elapsed", "transition", "transition_elapsed", "departed"]) or not _party_fields(raw)):
+			return false
 		var item: Dictionary = _decode_actor(raw)
+		if schema < SAVE_VERSION:
+			item.party_id = int(key)
+			item.party_size = 1
+			item.seat_index = 0
+			item.companions = []
+			item.arrival = 0.0
+			item.stand_elapsed = 0.0
+			item.transition = ""
+			item.transition_elapsed = 0.0
+			item.departed = false
+		else:
+			_cast_integer_fields(item, ["party_id", "party_size", "seat_index"])
+			var decoded_companions: Array[Dictionary] = []
+			for companion_raw: Dictionary in raw.companions:
+				var companion := _decode_actor(companion_raw)
+				_cast_integer_fields(companion, ["party_id", "member_index", "seat_index"])
+				decoded_companions.append(companion)
+			item.companions = decoded_companions
 		_cast_integer_fields(item, ["id", "table_id"])
 		if int(item.id) != int(key) or decoded_customers.has(int(key)):
 			return false
@@ -1060,6 +1348,23 @@ func _read_snapshot(data: Dictionary) -> bool:
 			_mark_legacy_route(guest)
 		for worker: Dictionary in workers:
 			_mark_legacy_route(worker)
+	return true
+
+
+func _party_fields(raw: Dictionary) -> bool:
+	if not _integer(raw.get("party_id")) or not _integer(raw.get("party_size")) or not _integer(raw.get("seat_index")) or not raw.get("companions") is Array or not _number(raw.get("arrival")) or not _number(raw.get("stand_elapsed")) or typeof(raw.get("transition")) != TYPE_STRING or not _number(raw.get("transition_elapsed")) or typeof(raw.get("departed")) != TYPE_BOOL:
+		return false
+	if float(raw.arrival) < 0.0 or float(raw.stand_elapsed) < 0.0 or float(raw.transition_elapsed) < 0.0:
+		return false
+	if int(raw.party_id) != int(raw.id) or int(raw.party_size) < 1 or int(raw.party_size) > 3 or int(raw.seat_index) != 0 or raw.companions.size() != int(raw.party_size) - 1 or str(raw.transition) not in ["", "stand_up"]:
+		return false
+	var expected := 1
+	for companion_raw: Variant in raw.companions:
+		if not companion_raw is Dictionary or not _only_fields(companion_raw, ["party_id", "member_index", "seat_index", "table_id", "species", "pos", "path", "route_blocked", "arrival", "stand_elapsed", "transition", "transition_elapsed", "departed"]) or not _fields(companion_raw, ["party_id", "member_index", "seat_index", "table_id"], ["arrival", "stand_elapsed", "transition_elapsed"], ["species", "transition"], ["route_blocked", "departed"]) or not _actor_fields(companion_raw):
+			return false
+		if int(companion_raw.party_id) != int(raw.id) or int(companion_raw.member_index) != expected or int(companion_raw.seat_index) != expected or int(companion_raw.table_id) != int(raw.table_id) or str(companion_raw.species) not in COMPANION_SPECIES or str(companion_raw.transition) not in ["", "stand_up"]:
+			return false
+		expected += 1
 	return true
 
 
@@ -1183,6 +1488,13 @@ func _fields(data: Dictionary, integers: Array, numbers: Array, strings: Array, 
 	return true
 
 
+func _only_fields(data: Dictionary, allowed: Array[String]) -> bool:
+	for key: Variant in data:
+		if typeof(key) != TYPE_STRING or not allowed.has(str(key)):
+			return false
+	return true
+
+
 func _cast_integer_fields(data: Dictionary, keys: Array) -> void:
 	for key: String in keys:
 		data[key] = int(data[key])
@@ -1202,7 +1514,7 @@ func validate_invariants() -> Array[String]:
 		var session = CookingSession.new()
 		if cooking_session_token < 1 or cooking_session_token != cooking_session_seq or not interactive_cooking or not paused or not session.restore(active_cooking) or session.cancelled or not _cooking_binding_valid(session):
 			errors.append("Invalid active cooking session or order binding")
-	if max_customers < 1 or max_customers > 20 or customers.size() > 20 or queue_ids().size() > QUEUE_LIMIT:
+	if max_customers < 1 or max_customers > 20 or customers.size() > 20 or _guest_actor_count() > 60 or queue_ids().size() > QUEUE_LIMIT:
 		errors.append("Customer or queue capacity exceeded")
 	if coins != served * MEAL_PRICE or served != paid_ledger.size() + legacy_served or lost != lost_ledger.size() + legacy_lost:
 		errors.append("Revenue or completion ledger mismatch")
@@ -1246,6 +1558,23 @@ func validate_invariants() -> Array[String]:
 			errors.append("Cleanup lacks task")
 	for id: int in customers:
 		var guest: Dictionary = customers[id]
+		var party_companions: Array = guest.get("companions", [])
+		if int(guest.get("party_id", id)) != id or int(guest.get("party_size", 1)) < 1 or int(guest.get("party_size", 1)) > 3 or int(guest.get("seat_index", 0)) != 0 or party_companions.size() != int(guest.get("party_size", 1)) - 1:
+			errors.append("Invalid party shape %d" % id)
+		if not _valid_party_transition(guest, str(guest.get("state", ""))):
+			errors.append("Invalid leader transition %d" % id)
+		var companion_index := 1
+		for companion: Dictionary in party_companions:
+			if int(companion.get("party_id", 0)) != id or int(companion.get("member_index", 0)) != companion_index or int(companion.get("seat_index", 0)) != companion_index or int(companion.get("table_id", -1)) != int(guest.get("table_id", -2)) or str(companion.get("species", "")) not in COMPANION_SPECIES:
+				errors.append("Invalid companion identity %d/%d" % [id, companion_index])
+			if not _valid_party_transition(companion, str(guest.get("state", ""))):
+				errors.append("Invalid companion transition %d/%d" % [id, companion_index])
+			var companion_destination: Vector2 = floor.entrance_point()
+			if guest.state == "queued": companion_destination = floor.queue_point(queue_ids().find(id)) + Vector2(companion_index * 10, -18)
+			elif guest.state in ["walking", "seated"]: companion_destination = _seat_point(int(guest.table_id), companion_index)
+			if not _valid_actor_route(companion, companion_destination):
+				errors.append("Companion route crosses furniture %d/%d" % [id, companion_index])
+			companion_index += 1
 		if not bool(guest.paid) and not bool(guest.timed_out):
 			unresolved_guests += 1
 		if int(guest.id) != id or id >= next_customer_id or guest.species not in SPECIES or guest.state not in CUSTOMER_STATES or float(guest.patience) > 120.0:
@@ -1274,7 +1603,7 @@ func validate_invariants() -> Array[String]:
 		if guest.state == "queued":
 			destination = floor.queue_point(queue_ids().find(id))
 		elif guest.state in ["walking", "seated"]:
-			destination = floor.seat_point(int(guest.table_id))
+			destination = _seat_point(int(guest.table_id))
 		if not _valid_actor_route(guest, destination):
 			errors.append("Customer route crosses furniture or has wrong destination %d" % id)
 	if next_customer_id - 1 != served + lost + unresolved_guests:
@@ -1366,6 +1695,22 @@ func _valid_actor_route(actor: Dictionary, destination: Vector2) -> bool:
 	if not previous.is_equal_approx(destination):
 		return false
 	return _legacy_route_pending.has(_actor_route_key(actor)) or floor.path_avoids_seats(actor.pos, actor.path, exceptions)
+
+
+func _valid_party_transition(actor: Dictionary, state: String) -> bool:
+	if not _number(actor.get("arrival")) or not _number(actor.get("stand_elapsed")) or not _number(actor.get("transition_elapsed")) or typeof(actor.get("transition")) != TYPE_STRING or typeof(actor.get("departed")) != TYPE_BOOL:
+		return false
+	var transition := str(actor.transition)
+	var elapsed := float(actor.transition_elapsed)
+	var stand_elapsed := float(actor.stand_elapsed)
+	if float(actor.arrival) < 0.0 or stand_elapsed < 0.0 or elapsed < 0.0 or transition not in ["", "stand_up"] or elapsed > STAND_DURATION + 0.00001 or not is_equal_approx(stand_elapsed, elapsed):
+		return false
+	if state != "leaving":
+		return not bool(actor.departed) and transition == "" and is_zero_approx(elapsed) and is_zero_approx(stand_elapsed)
+	if bool(actor.departed):
+		return transition == "" and actor.path.is_empty() and not bool(actor.route_blocked) and (actor.pos as Vector2).is_equal_approx(floor.entrance_point())
+	# stand_up is only valid while leaving; a walking departure has no transition.
+	return true
 
 
 func save_to(path: String) -> Error:

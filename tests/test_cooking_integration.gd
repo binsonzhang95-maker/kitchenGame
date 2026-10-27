@@ -1,6 +1,7 @@
 extends SceneTree
 ## Isolated model/session contract checks. This test never opens the normal save.
 const Model = preload("res://multi_model.gd")
+const Floor = preload("res://floor_plan.gd")
 const Session = preload("res://cooking_session.gd")
 const Support = preload("res://tests/multi_test_support.gd")
 const CROSS_SAVE := "user://cooking_cross_process_test_v4.json"
@@ -195,13 +196,45 @@ func _test_atomic_restore_and_legacy() -> void:
 	for key: String in ["interactive_cooking", "active_cooking", "cooking_return_paused", "cooking_session_seq", "cooking_session_token"]:
 		legacy_v3.erase(key)
 	for table: Dictionary in legacy_v3.tables: table.erase("recipe_id")
+	for guest: Dictionary in legacy_v3.customers.values():
+		for key: String in ["party_id", "party_size", "seat_index", "companions", "arrival", "stand_elapsed", "transition", "transition_elapsed", "departed"]:
+			guest.erase(key)
+	_freeze_v3_geometry(legacy_v3)
 	var migrated = Model.new()
 	_expect(migrated.restore(legacy_v3), "real V3 schema loads")
 	migrated.enable_interactive_cooking()
 	_expect(migrated.tables[0].phase == "awaiting_cook" and int(migrated.chef.table_id) == -1 and not migrated.auto_cook, "legacy active timer becomes an uncompleted interactive order")
-	_expect(migrated.coins == legacy_model.coins and migrated.customers == legacy_model.customers, "V3 preserves economy and customers")
+	_expect(migrated.coins == legacy_model.coins and _legacy_customer_semantics(migrated.customers) == _legacy_customer_semantics(legacy_model.customers), "V3 preserves economy and customers")
 	_expect(migrated.validate_invariants().is_empty(), "migrated model valid")
 	completed_sections += 1
+
+
+func _legacy_customer_semantics(customers: Dictionary) -> Dictionary:
+	var result: Dictionary = customers.duplicate(true)
+	for guest: Dictionary in result.values():
+		for key: String in ["party_id", "party_size", "seat_index", "companions", "arrival", "stand_elapsed", "transition", "transition_elapsed", "departed", "pos", "path", "route_blocked"]:
+			guest.erase(key)
+	return result
+
+
+func _freeze_v3_geometry(snapshot: Dictionary) -> void:
+	for index: int in range(snapshot.tables.size()):
+		var center: Vector2 = Floor.table_center(index + 1)
+		snapshot.tables[index].center = [center.x, center.y]
+	for guest: Dictionary in snapshot.customers.values():
+		var table_id: int = int(guest.table_id)
+		if guest.state == "seated":
+			var seat: Vector2 = Floor.seat_point(table_id)
+			guest.pos = [seat.x, seat.y]
+			guest.path = []
+		elif guest.state == "queued":
+			var queue: Vector2 = Floor.queue_point(0)
+			guest.pos = [queue.x, queue.y]
+			guest.path = []
+	for index: int in range(snapshot.workers.size()):
+		var home: Vector2 = Floor.worker_home(index)
+		snapshot.workers[index].pos = [home.x, home.y]
+		snapshot.workers[index].path = []
 
 func _test_private_file_roundtrip() -> void:
 	var path: String = "user://cooking_integration_%d_%d.json" % [OS.get_process_id(), Time.get_ticks_usec()]

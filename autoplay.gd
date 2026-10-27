@@ -43,4 +43,4 @@ func _process(delta: float) -> void:
 	if spawn_clock >= 3.0:
 		spawn_clock -= 3.0
 		if app.model.customers.size() < 10:
-			app.model.spawn_customer()
+			app.model.spawn_party()

@@ -124,7 +124,11 @@ func _ready() -> void:
 	# while the runtime menu only chooses recipes for guests seated from now on.
 	model.set_order_menu(Model.P0_MENU if menu_kind == "p0" else Model.CLASSIC_MENU)
 	if not restored_save and seed_guests:
-		for i in range(3): model.spawn_customer()
+		# A fresh restaurant shows the supported side-view party art immediately.
+		# These are normal admissions, so queue routing remains model-owned.
+		model.spawn_party(1, ["cat"])
+		model.spawn_party(2, ["dog", "capybara"])
+		model.spawn_party(3, ["panda", "hamster", "cat"])
 	if player_mode:
 		model.enable_player_mode()
 		if interactive_cooking: model.enable_interactive_cooking()
@@ -502,8 +506,8 @@ func _dispatch() -> void:
 func _invite() -> void:
 	if player_mode: return
 	if model.paused or cooldown > 0: return
-	var id: int = model.spawn_customer()
-	notice = "新客人已到门口。" if id > 0 else "队列或在店人数已满，请先招待现有客人。"
+	var id: int = model.spawn_party()
+	notice = "新客人小组已到门口。" if id > 0 else "队列或在店人数已满，请先招待现有客人。"
 	cooldown = 0.3
 	_save()
 

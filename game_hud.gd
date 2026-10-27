@@ -420,7 +420,7 @@ func _build_debug() -> void:
 	var controls := _panel(_modal_content(debug_root), Vector2(24, 96), Vector2(524, 650), CREAM, true)
 	controls.name = "DebugControls"
 	_label(controls, "开发控制 · 玩家模式下只读", Vector2(20, 16), Vector2(484, 34), 21, GREEN)
-	invite_button = _button(controls, "迎客", Vector2(20, 76), Vector2(232, 44), app._invite, "开发测试：招呼一位新客人", "invite")
+	invite_button = _button(controls, "迎客", Vector2(20, 76), Vector2(232, 44), app._invite, "开发测试：招呼一组新客人", "invite")
 	debug_order_button = _button(controls, "批量点单", Vector2(272, 76), Vector2(232, 44), app._order_all, "开发测试：记录所有点单", "order")
 	app.next_cook_button = _button(controls, "做饭", Vector2(20, 138), Vector2(232, 44), app._cook_next, "开发测试：制作下一单", "cook")
 	pay_button = _button(controls, "收钱", Vector2(272, 138), Vector2(232, 44), app._pay_all, "开发测试：结账", "pay")

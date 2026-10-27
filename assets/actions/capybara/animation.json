@@ -245,6 +245,83 @@
           "file": "frames/happy_03.png"
         }
       ]
+    },
+    "chat": {
+      "sheet": "chat.png",
+      "frames": 4,
+      "duration_ms": [
+        220,
+        220,
+        220,
+        220
+      ],
+      "loop": true,
+      "playback": "loop",
+      "bounds": [
+        [
+          24,
+          17,
+          104,
+          110
+        ],
+        [
+          20,
+          18,
+          109,
+          110
+        ],
+        [
+          21,
+          18,
+          110,
+          110
+        ],
+        [
+          24,
+          18,
+          104,
+          110
+        ]
+      ],
+      "frame_rects": [
+        {
+          "x": 0,
+          "y": 0,
+          "w": 128,
+          "h": 128,
+          "duration_ms": 220,
+          "file": "frames/chat_00.png"
+        },
+        {
+          "x": 128,
+          "y": 0,
+          "w": 128,
+          "h": 128,
+          "duration_ms": 220,
+          "file": "frames/chat_01.png"
+        },
+        {
+          "x": 256,
+          "y": 0,
+          "w": 128,
+          "h": 128,
+          "duration_ms": 220,
+          "file": "frames/chat_02.png"
+        },
+        {
+          "x": 384,
+          "y": 0,
+          "w": 128,
+          "h": 128,
+          "duration_ms": 220,
+          "file": "frames/chat_03.png"
+        }
+      ],
+      "pivot": [
+        64,
+        110
+      ],
+      "direction": "front_down"
     }
   },
   "generation": "Built-in imagegen original articulated poses; Pillow alpha threshold, crop, nearest-neighbor scale, alignment and assembly only.",

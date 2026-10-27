@@ -6,8 +6,9 @@ extends RefCounted
 const HEIGHT := 1072.0
 const LEGACY_HEIGHT := 1024.0
 const RENDER_SCALE := 0.75
-## 24-unit cells keep a 4096-wide route search responsive while leaving more
-## than four nodes between the closest table footprints.
+## 24-unit cells keep wide-map routing bounded. G11's authored door lanes are
+## deliberately aligned to this grid; do not make a finer grid compensate for
+## a bad furniture placement.
 const CELL := 24
 const CLEARANCE := 2.0
 const ACTOR_GROUND_SIZE := Vector2(64, 32)
@@ -15,10 +16,15 @@ const EDGE_MARGIN := 4.0
 const SEAT_RESERVATION_SIZE := Vector2(64, 32)
 const MIN_WIDTH := 1536.0
 const MAX_WIDTH := 4096.0
-const LAYOUT_VERSION := 2
+## Revision 3 adds individual reservations for the two side seats.  Revision 2
+## is intentionally still constructible so V5 saves are validated against the
+## geometry that produced them before the model migrates them.
+const LAYOUT_VERSION := 3
+const G10_LAYOUT_VERSION := 2
 const REVISION_VERSION_FACTOR := 1000000
 const LEFT_STRIP := 388.0
 const RIGHT_STRIP := 336.0
+const G11DecorLayout = preload("res://g11_decor_layout.gd")
 
 var SIZE := Vector2(MIN_WIDTH, HEIGHT)
 var COUNTER := Rect2()
@@ -29,16 +35,19 @@ var _obstacles: Array[Rect2] = []
 var _architecture: Array[Rect2] = []
 var _floor_regions: Array[Rect2] = []
 var _seat_regions: Array[Rect2] = []
+var _seat_keys: Array[int] = []
+var _seat_lookup: Dictionary = {}
 var _columns: int = 0
 var _rows: int = 0
 var _walkable := PackedByteArray()
 var _neighbors: Array = []
 var _seat_masks: Dictionary = {}
 var _seat_nodes: Array = []
+var _decorations: Array[Dictionary] = []
 
 
 func _init(width: float = MIN_WIDTH, layout_revision: int = 1) -> void:
-	if not valid_width(width) or (layout_revision != revision_for_width(width) and layout_revision != legacy_revision_for_width(width)):
+	if not valid_width(width) or not valid_saved_revision(width, layout_revision):
 		width = MIN_WIDTH
 		layout_revision = revision_for_width(width)
 	layout_width = snappedf(width, 0.01)
@@ -61,6 +70,10 @@ static func revision_for_width(width: float) -> int:
 	return LAYOUT_VERSION * REVISION_VERSION_FACTOR + legacy_revision_for_width(width)
 
 
+static func g10_revision_for_width(width: float) -> int:
+	return G10_LAYOUT_VERSION * REVISION_VERSION_FACTOR + legacy_revision_for_width(width)
+
+
 static func is_legacy_revision(width: float, value: int) -> bool:
 	return valid_width(width) and value == legacy_revision_for_width(width)
 
@@ -70,7 +83,7 @@ static func valid_revision(width: float, value: int) -> bool:
 
 
 static func valid_saved_revision(width: float, value: int) -> bool:
-	return valid_revision(width, value) or is_legacy_revision(width, value)
+	return valid_revision(width, value) or value == g10_revision_for_width(width) or is_legacy_revision(width, value)
 
 
 func table_definitions() -> Array[Dictionary]:
@@ -84,21 +97,64 @@ func table_center(id: int) -> Vector2:
 	return _definitions[id - 1].center if id >= 1 and id <= _definitions.size() else Vector2(-1, -1)
 
 
-func seat_point(id: int) -> Vector2:
+func table_capacity(id: int) -> int:
 	if id < 1 or id > 20:
+		return 0
+	# Historical V5 layouts had one reservation per table. Keeping that fact in
+	# the geometry is what makes their validation meaningful before migration.
+	if revision != revision_for_width(layout_width):
+		return 1
+	return 1 if id >= 19 else 3
+
+
+func seat_key(id: int, seat_index: int = 0) -> int:
+	if id < 1 or id > 20 or seat_index < 0 or seat_index >= table_capacity(id):
+		return -1
+	# Back seats retain the historic 1..20 keys. Side seats cannot collide with
+	# that range; left is 21..40 and right is 41..60.
+	return id if seat_index == 0 else id + 20 * seat_index
+
+
+func seat_point(id: int, seat_index: int = 0) -> Vector2:
+	if seat_key(id, seat_index) < 0:
 		return Vector2(-1, -1)
 	# The bar stools are drawn one pixel higher than ordinary chairs.  This is
 	# the sprite support point used by both navigation and the renderer.
-	return table_center(id) + Vector2(0, 1 if id >= 19 else 12)
+	if seat_index == 0:
+		return table_center(id) + Vector2(0, 1 if id >= 19 else 12)
+	# G11 side sprites use a 110px pivot and their hand pixels occupy local
+	# y=63..102.  At .75 scale, y=+14 places those hands over the tabletop
+	# (rather than visibly above it).  These are support points, not artwork
+	# offsets; each remains a separate 64x32 reservation.
+	if revision == revision_for_width(layout_width) and id == 15 and seat_index == 1:
+		# The first private room's original pot leaves this asymmetric, proven
+		# support point as the only non-overlapping left chair placement.
+		return Vector2(88, 178)
+	var side_x := 72.0
+	return table_center(id) + Vector2(-side_x if seat_index == 1 else side_x, 14)
 
 
 func service_point(id: int) -> Vector2:
 	if id < 1 or id > 20:
 		return Vector2(-1, -1)
+	# G10 revision 2 and the historical revision 1 retain their literal
+	# definition/service behavior. Only the current G11 map has party-safe
+	# worker approach points.
+	if revision != revision_for_width(layout_width):
+		var historical_offset_x := 84.0
+		if not is_legacy_revision(layout_width, revision):
+			if id >= 15 and id <= 18:
+				historical_offset_x = 73.0
+			elif id >= 19:
+				historical_offset_x = 62.0
+		return table_center(id) + Vector2(historical_offset_x, 24)
+	if id >= 1 and id <= 14:
+		return table_center(id) + Vector2(84, 52)
 	var offset_x := 84.0
-	if id >= 15 and id <= 18 and not is_legacy_revision(layout_width, revision):
-		offset_x = 73.0
-	elif id >= 19 and not is_legacy_revision(layout_width, revision):
+	if id >= 15 and id <= 18:
+		# These are individually measured against each private-room doorway.
+		return [Vector2(312, 174), Vector2(312, 380), Vector2(312, 606), Vector2(312, 844)][id - 15]
+	elif id >= 19:
 		offset_x = 62.0
 	return table_center(id) + Vector2(offset_x, 24)
 
@@ -107,8 +163,28 @@ func actor_ground_footprint(position: Vector2) -> Rect2:
 	return Rect2(position - ACTOR_GROUND_SIZE * 0.5, ACTOR_GROUND_SIZE)
 
 
-func seat_reservation(id: int) -> Rect2:
-	return _seat_regions[id - 1] if id >= 1 and id <= _seat_regions.size() else Rect2()
+func seat_reservation(id: int, seat_index: int = 0) -> Rect2:
+	var key := seat_key(id, seat_index)
+	return _seat_regions[int(_seat_lookup[key])] if _seat_lookup.has(key) else Rect2()
+
+
+func family_table(id: int) -> Dictionary:
+	if id < 1 or id > _definitions.size():
+		return {}
+	var definition: Dictionary = _definitions[id - 1]
+	return {"id": id, "capacity": table_capacity(id), "zone": str(definition.zone), "center": definition.center, "offset": _table_visual_offset(id), "scale": 1.0}
+
+
+func table_visual(id: int) -> Dictionary:
+	return family_table(id)
+
+
+func _table_visual_offset(id: int) -> Vector2:
+	# This is visual-only data shared with the furniture footprint below. The
+	# first private table's visual feet are shifted up and left to stay inside
+	# the first room floor and meet its asymmetric left chair without changing
+	# that chair's collision support point.
+	return Vector2(-8, -4) if revision == revision_for_width(layout_width) and id == 15 else Vector2.ZERO
 
 
 func kitchen_point() -> Vector2:
@@ -126,11 +202,23 @@ func entrance_point() -> Vector2:
 func queue_point(index: int) -> Vector2:
 	if is_legacy_revision(layout_width, revision):
 		return Vector2(layout_width * 0.5 - 126 + 36 * clampi(index, 0, 7), 985)
-	return Vector2(layout_width * 0.5 + 172 + 36 * clampi(index, 0, 7), HEIGHT - 110)
+	# G11 parties stage two companions at +10/+20,-18 from this anchor.  At the
+	# narrowest width, the former +172 anchor put those companion ground slabs
+	# into the original right terrace fence.  This is deliberately revision-gated:
+	# G10 rev2 keeps its saved +172 queue geometry and rev1 returned above.
+	var base_x := layout_width * 0.5 + (112.0 if revision == revision_for_width(layout_width) else 172.0)
+	return Vector2(base_x + 36 * clampi(index, 0, 7), HEIGHT - 110)
 
 
 func floor_regions() -> Array[Rect2]:
 	return _floor_regions.duplicate()
+
+
+func decoration_definitions() -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	for item: Dictionary in _decorations:
+		result.append(item.duplicate(true))
+	return result
 
 
 func obstacles() -> Array[Rect2]:
@@ -195,8 +283,8 @@ func segment_avoids_seats(start: Vector2, finish: Vector2, seat_exceptions: Arra
 	if not segment_is_walkable(start, finish):
 		return false
 	var exceptions := _seat_exception_set(seat_exceptions)
-	for id: int in range(1, _seat_regions.size() + 1):
-		if not exceptions.has(id) and _segment_hits_box(start, finish, _seat_regions[id - 1]):
+	for seat_index: int in range(_seat_regions.size()):
+		if not exceptions.has(_seat_keys[seat_index]) and _segment_hits_box(start, finish, _seat_regions[seat_index]):
 			return false
 	return true
 
@@ -226,8 +314,11 @@ func _build() -> void:
 	_architecture.clear()
 	_floor_regions.clear()
 	_seat_regions.clear()
+	_seat_keys.clear()
+	_seat_lookup.clear()
 	_seat_masks.clear()
 	_seat_nodes.clear()
+	_decorations.clear()
 	var extra := layout_width - MIN_WIDTH
 	var xs: Array[float] = [540.0 + extra * 0.2, 800.0 + extra * 0.5, 1060.0 + extra * 0.8]
 	var ys: Array[float] = [345.0, 475.0, 605.0, 735.0, 865.0]
@@ -237,7 +328,10 @@ func _build() -> void:
 		for column: int in range(count):
 			_definitions.append({"id": id, "zone": "hall", "label": "大厅 %02d" % id, "center": Vector2(xs[column], ys[row])})
 			id += 1
-	var private_centers: Array[Vector2] = [Vector2(175,170), Vector2(160,390), Vector2(145,615), Vector2(135,840)]
+	# G11's private rooms use the reviewed party-safe anchors. Revision 2 stays
+	# frozen for migration validation.
+	var private_centers: Array[Vector2] = []
+	private_centers.assign([Vector2(188,164), Vector2(188,376), Vector2(116,606), Vector2(188,836)] if revision == revision_for_width(layout_width) else [Vector2(175,170), Vector2(160,390), Vector2(145,615), Vector2(135,840)])
 	for index: int in range(private_centers.size()):
 		_definitions.append({"id": 15 + index, "zone": "private", "label": "包厢 %02d" % (index + 1), "center": private_centers[index]})
 	for index: int in range(2):
@@ -270,6 +364,7 @@ func _build() -> void:
 	for pot: Rect2 in [Rect2(60,130,48,28), Rect2(30,326,48,36), Rect2(12,548,48,36), Rect2(10,794,48,40), Rect2(1278+right_shift,174,54,40), Rect2(1422+right_shift,286,66,52), Rect2(1456+right_shift,782,38,46)]:
 		_obstacles.append(pot.grow(CLEARANCE))
 	_add_furniture_obstacles()
+	_add_g11_decor_obstacles()
 
 
 func _build_legacy() -> void:
@@ -278,8 +373,11 @@ func _build_legacy() -> void:
 	_architecture.clear()
 	_floor_regions.clear()
 	_seat_regions.clear()
+	_seat_keys.clear()
+	_seat_lookup.clear()
 	_seat_masks.clear()
 	_seat_nodes.clear()
+	_decorations.clear()
 	var xs: Array[float] = []
 	for column: int in range(5): xs.append(lerpf(155.0, layout_width - 155.0, float(column) / 4.0))
 	var ys: Array[float] = [340.0, 490.0, 645.0, 800.0]
@@ -306,10 +404,30 @@ func _architecture_clearance(box: Rect2) -> Rect2:
 func _add_furniture_obstacles() -> void:
 	for definition: Dictionary in _definitions:
 		var center: Vector2 = definition.center
-		_seat_regions.append(Rect2(seat_point(int(definition.id)) - SEAT_RESERVATION_SIZE * 0.5, SEAT_RESERVATION_SIZE))
-		var feet := Rect2(center + Vector2(-53, 18), Vector2(106, 28))
+		for seat_index: int in range(table_capacity(int(definition.id))):
+			var key := seat_key(int(definition.id), seat_index)
+			_seat_lookup[key] = _seat_regions.size()
+			_seat_keys.append(key)
+			_seat_regions.append(Rect2(seat_point(int(definition.id), seat_index) - SEAT_RESERVATION_SIZE * 0.5, SEAT_RESERVATION_SIZE))
+		# All eighteen multi-person tables may render the larger G11 family art.
+		# Its visual origin is center-(100,32)*.75 and source feet are
+		# [10,65,190,109], giving this conservative raw ground slab.
+		var feet := Rect2(center + _table_visual_offset(int(definition.id)) + Vector2(-67.5, 24.75), Vector2(135, 33)) if table_capacity(int(definition.id)) > 1 else Rect2(center + Vector2(-53, 18), Vector2(106, 28))
 		if definition.zone == "bar": feet = Rect2(center + Vector2(-48, 24), Vector2(96, 44))
 		_obstacles.append(feet.grow(CLEARANCE))
+
+
+func _add_g11_decor_obstacles() -> void:
+	# G11 visual dressing belongs only to the current runtime revision.  Legacy
+	# V5 and frozen V4 geometry must remain byte-for-byte their historic maps.
+	if revision != revision_for_width(layout_width):
+		return
+	_decorations.assign(G11DecorLayout.build(layout_width))
+	for item: Dictionary in _decorations:
+		if bool(item.get("collision", false)):
+			var footprint: Rect2 = item.get("footprint", Rect2())
+			if footprint.size.x > 0.0 and footprint.size.y > 0.0:
+				_obstacles.append(_architecture_clearance(footprint))
 
 
 func _build_grid() -> void:
@@ -389,19 +507,20 @@ func _route_with_seats(start: Vector2, finish: Vector2, seat_exceptions: Array[i
 
 func _all_seat_ids() -> Array[int]:
 	var ids: Array[int] = []
-	for id: int in range(1, 21): ids.append(id)
+	for key: int in _seat_keys: ids.append(key)
 	return ids
 
 func _seat_exception_set(seat_exceptions: Array[int]) -> Dictionary:
 	var result := {}
-	for id: int in seat_exceptions:
-		if id >= 1 and id <= _seat_regions.size(): result[id] = true
+	for key: int in seat_exceptions:
+		if _seat_lookup.has(key): result[key] = true
 	return result
 
 func _contained_unexcepted_seats(position: Vector2, exceptions: Dictionary) -> Dictionary:
 	var result := {}
-	for id: int in range(1, _seat_regions.size() + 1):
-		if not exceptions.has(id) and _point_in_box(position, _seat_regions[id - 1]): result[id] = true
+	for index: int in range(_seat_regions.size()):
+		var key: int = _seat_keys[index]
+		if not exceptions.has(key) and _point_in_box(position, _seat_regions[index]): result[key] = true
 	return result
 
 func _seat_cache_key(exceptions: Dictionary) -> String:
@@ -414,9 +533,9 @@ func _seat_mask(key: String, exceptions: Dictionary) -> PackedByteArray:
 	_build_grid()
 	if _seat_masks.has(key): return _seat_masks[key]
 	var result: PackedByteArray = _walkable.duplicate()
-	for id: int in range(1, _seat_nodes.size() + 1):
-		if not exceptions.has(id):
-			for index: int in _seat_nodes[id - 1]:
+	for seat_index: int in range(_seat_nodes.size()):
+		if not exceptions.has(_seat_keys[seat_index]):
+			for index: int in _seat_nodes[seat_index]:
 				result[index] = 0
 	_seat_masks[key] = result
 	return result
@@ -458,8 +577,9 @@ func _fallback_exit_is_clear(start: Vector2, finish: Vector2, exceptions: Dictio
 	for box: Rect2 in _obstacles:
 		if _segment_hits_box(start, finish, box) and not _point_in_box(start, box):
 			return false
-	for id: int in range(1, _seat_regions.size() + 1):
-		if not exceptions.has(id) and _segment_hits_box(start, finish, _seat_regions[id - 1]) and not _point_in_box(start, _seat_regions[id - 1]):
+	for seat_index: int in range(_seat_regions.size()):
+		var key: int = _seat_keys[seat_index]
+		if not exceptions.has(key) and _segment_hits_box(start, finish, _seat_regions[seat_index]) and not _point_in_box(start, _seat_regions[seat_index]):
 			return false
 	return true
 
@@ -500,8 +620,9 @@ func _segment_walkable_with_exceptions(start: Vector2, finish: Vector2, exceptio
 
 func _segment_exits_reserved_seats(start: Vector2, finish: Vector2, exceptions: Dictionary, exit_ids: Dictionary) -> bool:
 	if not segment_is_walkable(start, finish): return false
-	for id: int in range(1, _seat_regions.size() + 1):
-		if not exceptions.has(id) and _segment_hits_box(start, finish, _seat_regions[id - 1]) and (not exit_ids.has(id) or _point_in_box(finish, _seat_regions[id - 1])):
+	for seat_index: int in range(_seat_regions.size()):
+		var key: int = _seat_keys[seat_index]
+		if not exceptions.has(key) and _segment_hits_box(start, finish, _seat_regions[seat_index]) and (not exit_ids.has(key) or _point_in_box(finish, _seat_regions[seat_index])):
 			return false
 	return true
 

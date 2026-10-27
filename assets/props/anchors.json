@@ -108,5 +108,187 @@
       23,
       14
     ]
+  },
+  "chair_side": {
+    "size": [
+      56,
+      80
+    ],
+    "source_bbox": [
+      193,
+      197,
+      870,
+      1267
+    ],
+    "anchor_ground": [
+      28,
+      79
+    ],
+    "bounds": [
+      1,
+      1,
+      55,
+      79
+    ],
+    "footprint": [
+      5,
+      58,
+      52,
+      79
+    ],
+    "seat_center": [
+      33,
+      48
+    ]
+  },
+  "table_family": {
+    "size": [
+      200,
+      110
+    ],
+    "source_bbox": [
+      29,
+      87,
+      1661,
+      837
+    ],
+    "anchor_ground": [
+      100,
+      109
+    ],
+    "bounds": [
+      1,
+      1,
+      199,
+      109
+    ],
+    "footprint": [
+      10,
+      65,
+      190,
+      109
+    ],
+    "top_front_split_y": 64,
+    "tabletop_center": [
+      100,
+      32
+    ],
+    "dish_anchor": [
+      100,
+      32
+    ],
+    "layering": "top/front use identical 200x110 canvas and origin, rows [0,64) and [64,110); alpha composite exactly reconstructs table_family. Back-to-front: chair, seated animal, table layers, hands_foreground, dish."
+  },
+  "dish_group": {
+    "size": [
+      56,
+      28
+    ],
+    "source_bbox": [
+      224,
+      208,
+      1550,
+      732
+    ],
+    "anchor_ground": [
+      28,
+      27
+    ],
+    "bounds": [
+      1,
+      1,
+      55,
+      27
+    ],
+    "footprint": null,
+    "surface_prop": true,
+    "anchor_place": [
+      28,
+      26
+    ]
+  },
+  "cup_side": {
+    "size": [
+      32,
+      32
+    ],
+    "source_bbox": [
+      382,
+      447,
+      963,
+      859
+    ],
+    "anchor_ground": [
+      16,
+      31
+    ],
+    "bounds": [
+      1,
+      1,
+      31,
+      31
+    ],
+    "footprint": null,
+    "surface_prop": true,
+    "anchor_place": [
+      16,
+      30
+    ]
+  },
+  "bench_queue": {
+    "size": [
+      160,
+      64
+    ],
+    "source_bbox": [
+      489,
+      122,
+      1494,
+      679
+    ],
+    "anchor_ground": [
+      80,
+      63
+    ],
+    "bounds": [
+      1,
+      1,
+      159,
+      63
+    ],
+    "footprint": [
+      7,
+      42,
+      153,
+      63
+    ]
+  },
+  "table_family_top": {
+    "size": [
+      200,
+      110
+    ],
+    "anchor_ground": [
+      100,
+      109
+    ],
+    "footprint": null,
+    "same_origin_as": "table_family",
+    "top_front_split_y": 64,
+    "render_layer_only": true
+  },
+  "table_family_front": {
+    "size": [
+      200,
+      110
+    ],
+    "anchor_ground": [
+      100,
+      109
+    ],
+    "footprint": null,
+    "same_origin_as": "table_family",
+    "top_front_split_y": 64,
+    "render_layer_only": true
   }
 }

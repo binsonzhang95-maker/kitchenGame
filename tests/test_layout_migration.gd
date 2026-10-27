@@ -57,6 +57,12 @@ func _semantic(snapshot: Dictionary) -> Dictionary:
 			var identity: int = int(table.guest_id) if int(table.guest_id) > 0 else int(table.id)
 			table.recipe_id = "" if table.phase == "free" else recipes[(identity - 1) % recipes.size()]
 	for guest: Dictionary in result.customers.values():
+		# V6 adds a size-one party envelope to every historical guest. It is
+		# structural migration data, not a changed V1/V2 business outcome.
+		# V6 also persists the party-visible stand transition; V1/V2 did not
+		# have an equivalent business state, so its default is structural only.
+		for key: String in ["party_id", "party_size", "seat_index", "companions", "arrival", "stand_elapsed", "transition", "transition_elapsed", "departed"]:
+			guest.erase(key)
 		for key: String in ["pos", "path", "route_blocked"]:
 			guest.erase(key)
 	for worker: Dictionary in result.workers:
@@ -79,7 +85,7 @@ func _migrate(old, label: String):
 		return null
 	_check(Support.same(source, before), label + " source snapshot is unchanged")
 	_check(Support.same(serialized, serialized_before), label + " caller's decoded V2 dictionary is unchanged")
-	_check(int(result.to_dict().version) == 5, label + " output schema is explicitly V5")
+	_check(int(result.to_dict().version) == 6, label + " output schema is explicitly V6")
 	_check(Support.same(_semantic(result.to_dict()), _semantic(source)), label + " business state, timers, patience and claims are unchanged")
 	_check(result.validate_invariants().is_empty(), label + " relocated actors and task references are valid")
 	for table: Dictionary in result.tables:
@@ -105,7 +111,7 @@ func _finish(model, expected_coins: int) -> void:
 
 
 func _run() -> void:
-	_check(Model.SAVE_VERSION == 5, "current schema includes wide layout and interactive kitchen")
+	_check(Model.SAVE_VERSION == 6, "current schema includes wide layout, interactive kitchen, and parties")
 	_check(Floor.create().SIZE == Vector2(1536, 1072), "new floor dimensions include the removed footer space")
 	_check(Floor.create().table_center(1) != OldFloor.table_center(1), "fixtures use a distinct old layout")
 	_test_queue_walking_and_cooking()
@@ -256,7 +262,7 @@ func _test_rejections_and_v1() -> void:
 	_check(target.restore(legacy), "existing completed V1 migration remains supported")
 	_check(target.coins == 76 and target.served == 2 and target.lost == 1 and target.paused, "V1 statistics and pause survive")
 	_check(is_equal_approx(target.floor.layout_width, 2560.0), "V1 migration preserves receiver layout width")
-	_check(int(target.to_dict().version) == 5, "V1 migration now writes V5")
+	_check(int(target.to_dict().version) == 6, "V1 migration now writes V6")
 	before = target.to_dict()
 	legacy.phase = "eating"
 	_check(not target.restore(legacy) and Support.same(target.to_dict(), before), "mid-service V1 remains explicitly rejected")

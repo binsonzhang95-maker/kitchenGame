@@ -4,6 +4,8 @@ signal table_selected(id: int)
 const SCALE: float = 0.75
 const ROOT := "res://assets/"
 const ART_ROOT := "res://restaurant_art/"
+const G11Art = preload("res://g11_art.gd")
+const G11DecorLayout = preload("res://g11_decor_layout.gd")
 const BACKGROUND := ART_ROOT + "restaurant_open_background.png"
 const RECIPE_DISHES := {
 	"pumpkin_corn_soup": "food/dishes/pumpkin_corn_soup_32.png",
@@ -16,6 +18,10 @@ const RECIPE_DISHES := {
 const DISH_ANCHOR := Vector2(16,30)
 const GENERIC_DISH_ANCHOR := Vector2(17,16)
 const FOOD_TABLE_ANCHOR := Vector2(45,-8)
+# The delivered front chat sheets sit lower than the legacy seated front art.
+# This is a presentation-only support adjustment in source pixels: retain each
+# action frame's canonical pivot and keep model-owned seat geometry unchanged.
+const FRONT_CHAT_POSE_OFFSET := Vector2(0,-24)
 var model: Variant
 var selected_table: int = 1
 var clock: float = 0.0
@@ -24,6 +30,8 @@ var textures: Dictionary = {}
 var background: Texture2D
 var action_metadata: Dictionary = {}
 var place_dish_anchor_cache: Dictionary = {}
+var decor_cache: Array[Dictionary] = []
+var decor_cache_key: String = ""
 
 func _ready() -> void:
 	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
@@ -46,6 +54,41 @@ func _art_prop(path: String, origin: Vector2) -> void:
 	if not textures.has(key): textures[key] = load(key)
 	var texture: Texture2D = textures[key] as Texture2D
 	if texture: draw_texture(texture, origin.round())
+
+func _res_prop(path: String, origin: Vector2, scale_factor: float = 1.0) -> void:
+	if not textures.has(path): textures[path] = load(path)
+	var texture: Texture2D = textures[path] as Texture2D
+	if texture:
+		draw_texture_rect(texture, Rect2(origin.round(), texture.get_size() * scale_factor), false)
+
+func _g11_decorations() -> Array[Dictionary]:
+	var floor: Variant = _floor_instance()
+	if floor == null:
+		return []
+	var key := "%s:%s:%s" % [str(floor.get_instance_id()), str(floor.get("revision")), str(floor.get("layout_width"))]
+	if key == decor_cache_key:
+		return decor_cache
+	if floor.has_method("decoration_definitions"):
+		var definitions: Variant = floor.decoration_definitions()
+		if definitions is Array:
+			decor_cache = definitions
+			decor_cache_key = key
+			return decor_cache
+	decor_cache = G11DecorLayout.build(float(floor.SIZE.x))
+	decor_cache_key = key
+	return decor_cache
+
+func _draw_g11_decor(layer: String) -> void:
+	for entry: Dictionary in _g11_decorations():
+		if str(entry.get("layer", "")) == layer:
+			_res_prop(str(entry.get("path", "")), Vector2(entry.get("position", Vector2.ZERO)), float(entry.get("scale", 1.0)))
+
+func _g11_object_hit(point: Vector2) -> bool:
+	for entry: Dictionary in _g11_decorations():
+		var footprint: Rect2 = entry.get("footprint", Rect2())
+		if bool(entry.get("collision", false)) and footprint.has_point(point):
+			return true
+	return false
 
 func _index(seconds: float, clip: Dictionary) -> int:
 	var durations: Array = clip.duration_ms
@@ -96,7 +139,7 @@ func food_render_plan(table: Dictionary, species: String = "", elapsed: float = 
 	# duplicating the production mapping or hard-coding animal-specific offsets.
 	var recipe_id: String = str(table.get("recipe_id",""))
 	var recipe_art: bool = RECIPE_DISHES.has(recipe_id)
-	var table_anchor: Vector2 = Vector2(table.center) + FOOD_TABLE_ANCHOR*SCALE
+	var table_anchor: Vector2 = _table_visual_center(table) if _family_table(table) else Vector2(table.center) + FOOD_TABLE_ANCHOR*SCALE
 	var dish_anchor: Vector2 = DISH_ANCHOR if recipe_art else GENERIC_DISH_ANCHOR
 	var plan: Dictionary = {
 		"texture_path": str(RECIPE_DISHES.get(recipe_id,"props/dish.png")),
@@ -224,6 +267,8 @@ func _floor() -> void:
 	if floor == null:
 		return
 	_draw_room_architecture(floor)
+	_draw_g11_decor("floor")
+	_draw_g11_decor("wall")
 	# The bear is live and anchored to the current counter/kitchen geometry.
 	var cooking: bool = int(model.chef.table_id) > 0
 	var bear_clip: Dictionary = _clip("bear","actions","cook") if cooking else _clip("bear","base","idle")
@@ -247,17 +292,90 @@ func _selection_halo(center: Vector2) -> void:
 	outline.append(outline[0])
 	draw_polyline(outline, Color(0.46,0.64,0.38,0.78), 2.0)
 
+func _table_capacity(table: Dictionary) -> int:
+	var floor: Variant = _floor_instance()
+	return int(floor.table_capacity(int(table.id))) if floor != null and floor.has_method("table_capacity") else 1
+
+func _family_table(table: Dictionary) -> bool:
+	# Capacity describes the available geometry, not the party currently dining.
+	# A free or solo table keeps the original compact top, front and cloth.
+	return table.zone != "bar" and _table_members(table).size() > 1
+
+func _table_visual_center(table: Dictionary) -> Vector2:
+	# Geometry owns this tiny art-only offset.  In particular, private table 15
+	# must use its shifted family-table feet while all actor supports remain at
+	# their separately routed seat points.
+	var center := Vector2(table.center)
+	var floor: Variant = _floor_instance()
+	if floor != null and floor.has_method("table_visual"):
+		var visual: Variant = floor.table_visual(int(table.id))
+		if visual is Dictionary:
+			center = Vector2(visual.get("center", center)) + Vector2(visual.get("offset", Vector2.ZERO))
+	return center
+
+func _table_members(table: Dictionary) -> Array[Dictionary]:
+	# Avoid querying the model's typed member API for the overwhelmingly common
+	# empty-table case. Apart from saving an allocation in every draw, this keeps
+	# the renderer independent of an implementation detail in that API's empty
+	# branch; a table without an owner cannot have visible members.
+	if int(table.get("guest_id", 0)) <= 0:
+		return []
+	if model != null and model.has_method("table_members"):
+		var members: Variant = model.table_members(int(table.id))
+		if members is Array:
+			return members
+	var guest: Dictionary = model.customers.get(table.guest_id, {})
+	return [{"party_id": int(table.guest_id), "member_index": 0, "seat_index": 0, "seat_role": "back", "species": str(guest.get("species", "")), "state": str(guest.get("state", "")), "pos": guest.get("pos", Vector2.ZERO), "path": guest.get("path", [])}] if not guest.is_empty() else []
+
+func _seat_point(table_id: int, seat_index: int) -> Vector2:
+	var floor: Variant = _floor_instance()
+	return floor.seat_point(table_id, seat_index) if floor != null else Vector2.ZERO
+
+func _draw_mirrored_prop(path: String, support: Vector2, anchor: Vector2, size: Vector2, mirrored: bool) -> void:
+	var texture: Texture2D = _tex(path)
+	if texture == null:
+		return
+	if not mirrored:
+		draw_texture_rect(texture, Rect2((support - anchor * SCALE).round(), size * SCALE), false)
+		return
+	draw_set_transform(support + Vector2(anchor.x * SCALE, -anchor.y * SCALE), 0.0, Vector2(-SCALE, SCALE))
+	draw_texture_rect(texture, Rect2(Vector2.ZERO, size), false)
+	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+
 func _chair(table: Dictionary) -> void:
 	if table.zone == "bar":
 		_art_prop("props/stool.png", table.center + Vector2(-16,-43))
-	else:
-		_prop("props/chair.png", table.center-Vector2(28,78)*SCALE)
+		return
+	var back_support := _seat_point(int(table.id), 0)
+	_draw_mirrored_prop("props/chair.png", back_support, Vector2(28, 79), Vector2(56, 80), false)
+	if not _family_table(table):
+		return
+	for seat_index: int in [1, 2]:
+		_draw_mirrored_prop("props/chair_side.png", _seat_point(int(table.id), seat_index), Vector2(28, 79), Vector2(56, 80), seat_index == 2)
 
-func _table(table: Dictionary) -> void:
+func _table_origin(table: Dictionary) -> Vector2:
+	var center := _table_visual_center(table) if _family_table(table) else Vector2(table.center)
+	return center - (Vector2(100, 32) if _family_table(table) else Vector2(70, 25)) * SCALE
+
+func _table_top(table: Dictionary) -> void:
 	if table.zone == "bar":
 		_art_prop("props/high_table.png", table.center + Vector2(-48,-42))
-	else:
-		_prop("props/table.png", table.center-Vector2(70,30)*SCALE)
+		return
+	_prop("props/table_family_top.png" if _family_table(table) else "props/table_top.png", _table_origin(table))
+	if not _family_table(table):
+		# Stable variants make ordinary legacy tables less repetitive without
+		# stretching a cloth over the native 200px family table.
+		_res_prop("res://restaurant_art/props/tablecloth_%d.png" % ((int(table.id) - 1) % 3 + 1), _table_origin(table), SCALE)
+
+func _table_front(table: Dictionary) -> void:
+	if table.zone != "bar":
+		_prop("props/table_family_front.png" if _family_table(table) else "props/table_front.png", _table_origin(table))
+
+func _table_vase(table: Dictionary) -> void:
+	if table.zone == "bar":
+		return
+	var variant := (int(table.id) * 17) % 4 + 1
+	_res_prop("res://restaurant_art/props/table_vase_%d.png" % variant, (_table_visual_center(table) if _family_table(table) else Vector2(table.center)) + Vector2(-7, -19))
 
 func _direction(actor: Dictionary) -> String:
 	var path: Array = actor.path
@@ -281,31 +399,126 @@ func _standing(actor: Dictionary, worker: bool = false) -> void:
 			clip = _clip(species,"actions","carry_walk_"+direction) if task.kind == "food" else _clip(species,"drinks","carry_drinks_"+direction)
 	_draw_clip(clip,point-Vector2(64,120)*SCALE,clock)
 
-func _seated(table: Dictionary, foreground: bool = false) -> void:
-	var guest: Dictionary = model.customers.get(table.guest_id,{})
-	if guest.is_empty() or guest.state != "seated": return
-	# The same support point is used by walking and seated sprites: no proxy jump.
-	var origin: Vector2 = Vector2(guest.pos)-Vector2(64,120)*SCALE
-	var clip: Dictionary = _clip(guest.species,"seating","sit_down")
-	var fixed: int = 3
-	var e: float = table.elapsed
-	if table.phase == "ordering" and e < 0.92:
-		fixed = -1
+func _member_chatting(table: Dictionary, member: Dictionary) -> bool:
+	var members := _table_members(table)
+	if members.size() < 2 or str(table.phase) not in ["ordering", "awaiting_cook", "cooking", "food_ready", "serving_food", "waiting_drink", "eating"]:
+		return false
+	var party_id := int(member.get("party_id", table.get("guest_id", 0)))
+	var speaker := (int(floorf(clock / 2.4)) + party_id) % members.size()
+	return int(member.get("member_index", 0)) == speaker
+
+func _member_seated_action(table: Dictionary, member: Dictionary) -> String:
+	# Transition fields come from the model and are the only authority for a
+	# departure pose. A timed-out queue or a cancelled in-flight worker never
+	# receives this field, so it continues to render as a walker.
+	if str(member.get("transition", "")) == "stand_up":
+		return "stand_up"
+	# Arrival begins only once every route has reached its physical support point.
+	# No camera/perspective offset is added here: the model owns both the clock and
+	# the position, and each party member starts at elapsed zero together.
+	if str(member.get("state", "")) == "seated" and float(member.get("arrival", 99.0)) < 0.92:
+		return "sit_down"
+	return G11Art.action_for_table(str(table.phase), float(table.elapsed), _member_chatting(table, member))
+
+func _draw_g11_frame(path: String, frame: Dictionary, support: Vector2, pivot: Vector2, mirrored: bool, single_frame: bool = false) -> void:
+	var texture: Texture2D = _tex(path)
+	if texture == null:
+		return
+	# Side bodies and hand overlays are individual 128px files.  Only the
+	# front-facing sheet clips use their atlas coordinates.
+	var source := Rect2(0, 0, float(frame.get("w", 128)), float(frame.get("h", 128))) if single_frame else Rect2(float(frame.get("x", 0)), float(frame.get("y", 0)), float(frame.get("w", 128)), float(frame.get("h", 128)))
+	if not mirrored:
+		draw_texture_rect_region(texture, Rect2((support - pivot * SCALE).round(), source.size * SCALE), source)
+		return
+	draw_set_transform(support + Vector2(pivot.x * SCALE, -pivot.y * SCALE), 0.0, Vector2(-SCALE, SCALE))
+	draw_texture_rect_region(texture, Rect2(Vector2.ZERO, source.size), source)
+	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+
+func _draw_side_member(table: Dictionary, member: Dictionary, foreground: bool) -> void:
+	var species := str(member.get("species", ""))
+	var action_name := _member_seated_action(table, member)
+	var manifest := G11Art.side_manifest(species)
+	var action := G11Art.side_action(species, action_name)
+	if manifest.is_empty() or action.is_empty():
+		return
+	var action_elapsed := float(table.elapsed)
+	if action_name == "sit_down":
+		action_elapsed = float(member.get("arrival", 0.0))
+	elif action_name == "stand_up":
+		action_elapsed = float(member.get("transition_elapsed", member.get("stand_elapsed", 0.0)))
+	# Looping clips may use a subtle party stagger.  One-shot sit/stand clips
+	# must start at frame zero together, or companions visibly pop into seats.
+	if bool(action.get("loop", false)):
+		action_elapsed += float(member.get("member_index", 0)) * 0.17
+	var index := G11Art.frame_index(action_elapsed, action)
+	var files: Array = action.get("hands_foreground", []) if foreground else action.get("frame_rects", [])
+	if index < 0 or index >= files.size():
+		return
+	var path := "side/%s/%s" % [species, str(files[index].get("file", ""))] if not foreground else "side/%s/%s" % [species, str(files[index])]
+	var frame: Dictionary = action.get("frame_rects", [])[index]
+	_draw_g11_frame(path, frame, Vector2(member.get("pos", Vector2.ZERO)), G11Art.frame_pivot(manifest, action, index), int(member.get("seat_index", 0)) == 2, true)
+
+func _front_member_clip(table: Dictionary, member: Dictionary) -> Dictionary:
+	var species := str(member.get("species", ""))
+	var action_name := _member_seated_action(table, member)
+	if action_name == "chat":
+		var chat := G11Art.front_action(species, "chat")
+		if not chat.is_empty():
+			return {"g11_front": true, "action": chat}
+	var clip: Dictionary = _clip(species, "seating", "sit_down")
+	# The delivered front atlas has sit_down but no stand_up.  Reuse its actual
+	# frames in reverse below; never look up an invented legacy clip.
+	if action_name == "stand_up":
+		pass
 	elif table.phase == "eating":
-		clip = _clip(guest.species,"actions","eat")
-		fixed = -1
+		clip = _clip(species, "actions", "eat")
 	elif table.phase == "drinking":
-		var drink: Dictionary = _clip(guest.species,"drinks","drink")
-		if e < float(drink.duration_total_ms)/1000.0:
+		var drink: Dictionary = _clip(species, "drinks", "drink")
+		if float(table.elapsed) < float(drink.duration_total_ms) / 1000.0:
 			clip = drink
-			fixed = -1
-	elif table.phase == "checkout" and e < 0.88:
-		clip = _clip(guest.species,"actions","happy")
-		fixed = -1
-	var i: int = fixed if fixed >= 0 else _index(e,clip)
-	if foreground:
-		if clip.foreground[i] != null: _prop(clip.foreground[i],origin)
-	else: _draw_clip(clip,origin,e,fixed)
+	elif table.phase == "checkout" and float(table.elapsed) < 0.88:
+		clip = _clip(species, "actions", "happy")
+	return clip
+
+func _front_member_frame_index(table: Dictionary, member: Dictionary, clip: Dictionary) -> int:
+	var action_name := _member_seated_action(table, member)
+	var elapsed := float(table.elapsed)
+	if action_name == "sit_down":
+		elapsed = float(member.get("arrival", 0.0))
+	elif action_name == "stand_up":
+		elapsed = float(member.get("transition_elapsed", member.get("stand_elapsed", 0.0)))
+		var frames: Array = clip.get("rects", [])
+		return maxi(0, frames.size() - 1 - _index(elapsed, clip))
+	if action_name == "seated_idle":
+		return maxi(0, (clip.get("rects", []) as Array).size() - 1)
+	return _index(elapsed, clip)
+
+func _seated(table: Dictionary, foreground: bool = false) -> void:
+	for member: Dictionary in _table_members(table):
+		if str(member.get("state", "")) != "seated" and str(member.get("transition", "")) != "stand_up":
+			continue
+		var side := int(member.get("seat_index", 0)) > 0 and G11Art.has_side_species(str(member.get("species", "")))
+		if side:
+			_draw_side_member(table, member, foreground)
+			continue
+		if foreground:
+			var normal_clip := _front_member_clip(table, member)
+			if not bool(normal_clip.get("g11_front", false)):
+				var normal_index := _front_member_frame_index(table, member, normal_clip)
+				var foregrounds: Array = normal_clip.get("foreground", [])
+				if normal_index >= 0 and normal_index < foregrounds.size() and foregrounds[normal_index] != null:
+					_prop(str(foregrounds[normal_index]), Vector2(member.get("pos", Vector2.ZERO)) - Vector2(64, 110) * SCALE)
+			continue
+		var clip := _front_member_clip(table, member)
+		if bool(clip.get("g11_front", false)):
+			var action: Dictionary = clip.action
+			var frame_index := G11Art.frame_index(float(table.elapsed), action)
+			var frames: Array = action.get("frame_rects", [])
+			if frame_index < frames.size():
+				_draw_g11_frame("actions/%s/chat.png" % str(member.species), frames[frame_index], Vector2(member.pos) + FRONT_CHAT_POSE_OFFSET * SCALE, G11Art.frame_pivot({}, action, frame_index), false)
+		else:
+			var fixed := _front_member_frame_index(table, member, clip)
+			_draw_clip(clip, Vector2(member.get("pos", Vector2.ZERO)) - Vector2(64, 110) * SCALE, 0.0, fixed)
 
 func _worker_task(worker: Dictionary) -> Dictionary:
 	for task in model.tasks:
@@ -331,7 +544,7 @@ func _stack(point: Vector2, table: Dictionary, species: String = "rabbit") -> vo
 		draw_texture_rect(_tex("cleanup/props/empty_cup.png"),Rect2(origin.round(),Vector2(cup_size[0],cup_size[1])*SCALE),false)
 
 func _table_items(table: Dictionary) -> void:
-	var c: Vector2 = table.center
+	var c := _table_visual_center(table) if _family_table(table) else Vector2(table.center)
 	var work: Dictionary = _work_for_table(table.id)
 	if table.phase in ["dirty","collecting","wiping"]:
 		var opacity: float = 1.0
@@ -360,11 +573,25 @@ func _table_items(table: Dictionary) -> void:
 				else: drink = true
 	if food:
 		var food_plan: Dictionary = table_food_render_plan(table)
+		# The mixed platter is neutral scenery; the ordered recipe remains the
+		# primary, truthful dish on top of it.
+		if _family_table(table) and _table_members(table).size() > 1:
+			_prop("props/dish_group.png", _table_visual_center(table) - Vector2(28, 19) * SCALE)
 		_prop(food_plan.texture_path,food_plan.table_origin)
 	var baked_cup: bool = false
 	if table.phase == "drinking":
-		var guest: Dictionary = model.customers.get(table.guest_id,{})
-		if not guest.is_empty(): baked_cup = table.elapsed < float(_clip(guest.species,"drinks","drink").duration_total_ms)/1000.0
+		for member: Dictionary in _table_members(table):
+			if int(member.get("seat_index", 0)) > 0 and G11Art.has_side_species(str(member.get("species", ""))):
+				var drink_action := G11Art.side_action(str(member.get("species", "")), "drink")
+				# The cup is baked only while that side member is genuinely playing
+				# the one-shot drink frames; leave the tabletop cup after it returns
+				# to idle instead of making it disappear for the whole phase.
+				if float(table.elapsed) < float(drink_action.get("duration_total_ms", 1160)) / 1000.0:
+					baked_cup = true
+					break
+		if not baked_cup:
+			var guest: Dictionary = model.customers.get(table.guest_id,{})
+			if not guest.is_empty(): baked_cup = table.elapsed < float(_clip(guest.species,"drinks","drink").duration_total_ms)/1000.0
 	if drink and not baked_cup: _prop("drinks/rabbit/cup.png",c+Vector2(-4,-24)*SCALE)
 
 func _working(worker: Dictionary) -> void:
@@ -373,7 +600,7 @@ func _working(worker: Dictionary) -> void:
 		_standing(worker,true)
 		return
 	var table: Dictionary = model.tables[int(task.table_id)-1]
-	var c: Vector2 = table.center
+	var c := _table_visual_center(table) if _family_table(table) else Vector2(table.center)
 	var species: String = worker.species
 	if task.kind == "clean":
 		var info: Dictionary = catalog.cleanup[species]
@@ -416,22 +643,32 @@ func _draw() -> void:
 	_floor()
 	var events: Array[Dictionary] = []
 	for t in model.tables:
-		events.append({"kind":"chair","y":float(t.center.y),"table":t})
-		events.append({"kind":"seated","y":_floor_instance().seat_point(int(t.id)).y,"table":t})
-		events.append({"kind":"table","y":float(t.center.y)+(68 if t.zone=="bar" else 45),"table":t})
-	for guest in model.customers.values():
-		if guest.state in ["queued","walking","leaving"]: events.append({"kind":"guest","y":float(guest.pos.y),"actor":guest})
+		events.append({"kind":"chair","y":float(t.center.y),"order":0,"table":t})
+		events.append({"kind":"seated","y":_floor_instance().seat_point(int(t.id)).y,"order":1,"table":t})
+		events.append({"kind":"table","y":float((_table_visual_center(t) if _family_table(t) else Vector2(t.center)).y)+(68 if t.zone=="bar" else 45),"order":3,"table":t})
+	for entry: Dictionary in _g11_decorations():
+		if str(entry.get("layer", "")) == "object":
+			var footprint: Rect2 = entry.get("footprint", Rect2(Vector2(entry.position), Vector2.ZERO))
+			events.append({"kind":"decor","y":footprint.end.y,"order":2,"entry":entry})
+	for party_id: Variant in model.customers:
+		var members: Array[Dictionary] = model.party_members(int(party_id)) if model.has_method("party_members") else [model.customers[party_id]]
+		for guest: Dictionary in members:
+			if str(guest.get("state", "")) in ["queued", "walking", "leaving"] and str(guest.get("transition", "")) != "stand_up":
+				events.append({"kind":"guest","y":float(Vector2(guest.get("pos", Vector2.ZERO)).y),"order":2,"actor":guest})
 	for worker in model.workers:
-		events.append({"kind":"worker","y":float(worker.pos.y)+60 if worker.state=="working" else float(worker.pos.y),"actor":worker})
-	events.sort_custom(func(a: Dictionary,b: Dictionary)->bool: return a.y < b.y)
+		events.append({"kind":"worker","y":float(worker.pos.y)+60 if worker.state=="working" else float(worker.pos.y),"order":2,"actor":worker})
+	events.sort_custom(func(a: Dictionary,b: Dictionary)->bool: return a.y < b.y if not is_equal_approx(a.y, b.y) else int(a.order) < int(b.order))
 	for event in events:
 		match event.kind:
 			"chair": _chair(event.table)
 			"seated": _seated(event.table)
 			"table":
-				_table(event.table)
-				_table_items(event.table)
+				_table_top(event.table)
+				_table_vase(event.table)
 				_seated(event.table,true)
+				_table_front(event.table)
+				_table_items(event.table)
+			"decor": _res_prop(str(event.entry.get("path", "")), Vector2(event.entry.get("position", Vector2.ZERO)), float(event.entry.get("scale", 1.0)))
 			"guest": _standing(event.actor)
 			"worker":
 				if event.actor.state=="working": _working(event.actor)
@@ -500,23 +737,30 @@ func _hit_walking_guest(guest: Dictionary, point: Vector2) -> bool:
 
 func _table_at_point(point: Vector2) -> int:
 	var floor: Variant = _floor_instance()
-	if model == null or _hit_bubble(point) or (floor != null and floor.is_architecture_at(point)):
+	if model == null or _hit_bubble(point) or _g11_object_hit(point) or (floor != null and floor.is_architecture_at(point)):
 		return 0
-	for guest: Dictionary in model.customers.values():
-		if guest.state in ["queued", "walking", "leaving"] and _hit_walking_guest(guest, point):
-			return 0
-	# Use the same origin and size as _seated(), including the higher bar seat.
+	for party_id: Variant in model.customers:
+		var members: Array[Dictionary] = model.party_members(int(party_id)) if model.has_method("party_members") else [model.customers[party_id]]
+		for guest: Dictionary in members:
+			if str(guest.get("state", "")) in ["queued", "walking", "leaving"] and _hit_walking_guest(guest, point):
+				return 0
 	for table: Dictionary in model.tables:
-		var guest: Dictionary = model.customers.get(table.guest_id, {})
-		if guest.is_empty() or guest.state != "seated":
-			continue
-		var origin: Vector2 = (Vector2(guest.pos)-Vector2(64,120)*SCALE).round()
-		if Rect2(origin, Vector2(128,128)*SCALE).has_point(point):
-			return int(table.id)
+		for member: Dictionary in _table_members(table):
+			if str(member.get("state", "")) != "seated" and str(member.get("transition", "")) != "stand_up":
+				continue
+			var origin: Vector2 = (Vector2(member.get("pos", Vector2.ZERO)) - Vector2(64, 110) * SCALE).round()
+			if Rect2(origin, Vector2(128,128) * SCALE).has_point(point):
+				return int(table.id)
 	var closest: int = 0
 	var distance: float = INF
 	for table: Dictionary in model.tables:
-		if Rect2(table.center-Vector2(66,82),Vector2(132,164)).has_point(point):
+		var visual_size := Vector2(96, 84) if table.zone == "bar" else (Vector2(200, 110) if _family_table(table) else Vector2(140, 90)) * SCALE
+		var visual_origin := Vector2(table.center) + Vector2(-48, -42) if table.zone == "bar" else _table_origin(table)
+		var table_hit := Rect2(visual_origin, visual_size).grow(10.0).has_point(point)
+		for seat_index: int in range(_table_capacity(table)):
+			if floor != null and floor.seat_reservation(int(table.id), seat_index).grow(12.0).has_point(point):
+				table_hit = true
+		if table_hit:
 			var candidate: float = point.distance_squared_to(table.center)
 			if candidate < distance:
 				distance = candidate

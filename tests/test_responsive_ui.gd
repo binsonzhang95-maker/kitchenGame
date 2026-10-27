@@ -48,6 +48,11 @@ func _run() -> void:
 	_check((floor.SIZE as Vector2).x > 1536.0, "wide viewport creates a real wider floor instance")
 	_check((floor.SIZE as Vector2).is_equal_approx(app.responsive_layout.world_size), "floor geometry and responsive world use the same width")
 	await _fill_all_tables()
+	await _check_phone_safe_layout(Vector2(956, 440), {"left":62.0, "right":62.0, "top":0.0, "bottom":21.0}, true, "956x440 host app")
+	await _check_phone_safe_layout(Vector2(844, 390), {"left":47.0, "right":47.0, "top":0.0, "bottom":21.0}, false, "844x390")
+	app.set_responsive_layout_for_test(viewport, insets)
+	await process_frame
+	content = app.responsive_layout.content_rect
 	if DisplayServer.get_name() != "headless":
 		await RenderingServer.frame_post_draw
 		_capture_viewport()
@@ -115,6 +120,31 @@ func _run() -> void:
 	await _cleanup()
 	print("RESPONSIVE_UI_TEST checks=%d failures=%d" % [checks, failures])
 	quit(0 if failures == 0 else 1)
+
+func _check_phone_safe_layout(viewport: Vector2, insets: Dictionary, host_app: bool, label: String) -> void:
+	app.set_responsive_layout_for_test(viewport, insets, host_app)
+	await process_frame
+	var safe: Rect2 = app.responsive_layout.safe_rect
+	var scale := float(app.responsive_layout.scale)
+	_check(app.wide_backdrop.coverage_rect() == Rect2(Vector2.ZERO, viewport), label + " backdrop covers every viewport pixel")
+	_check(app.hud.full_top.color == Color("d89555"), label + " top unsafe band uses the back-wall colour")
+	for table: Dictionary in app.model.tables:
+		var table_hit := Rect2(Vector2(table.center) - Vector2(66, 82), Vector2(132, 164))
+		var screen_hit: Rect2 = app.room.get_global_transform_with_canvas() * table_hit
+		_check(safe.grow(0.1).encloses(screen_hit), label + " table %d hit rect stays safe" % int(table.id))
+	for actor: Dictionary in app.model.customers.values() + app.model.workers:
+		var actor_hit := Rect2(Vector2(actor.pos) - Vector2(48, 90), Vector2(96, 96))
+		var screen_hit: Rect2 = app.room.get_global_transform_with_canvas() * actor_hit
+		_check(safe.grow(0.1).encloses(screen_hit), label + " actor hit rect stays safe")
+	for node: Node in app.hud.find_children("*", "Button", true, false):
+		var button := node as Button
+		if button != null and button.is_visible_in_tree():
+			_check(safe.grow(0.1).encloses(button.get_global_rect()), label + " visible HUD button stays safe: " + button.name)
+	if host_app:
+		var keep_out := Rect2(safe.position, Vector2(64, 64))
+		for control: Control in [app.hud.coin_icon, app.hud.money_label, app.hud.guest_icon, app.hud.count_label]:
+			_check(not keep_out.intersects(control.get_global_rect()), label + " HUD content avoids host close button")
+	_check(app.responsive_layout.room_rect.end.y <= safe.end.y + 0.1 and is_equal_approx(scale, safe.size.y / ResponsiveLayout.DESIGN_SIZE.y), label + " keeps height-derived uniform scale")
 
 func _click(point: Vector2) -> void:
 	for down: bool in [true, false]:

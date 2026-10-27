@@ -67,6 +67,7 @@ var ingredient_slots: Array[Dictionary] = []
 var step_icons: Array[TextureRect] = []
 var completion_badge: TextureRect
 var header_surface: Panel
+var _host_offset := 0.0
 var action_surface: Panel
 var pause_note: Panel
 var _design_width := VIEW_SIZE.x
@@ -785,6 +786,8 @@ func apply_layout(layout: Dictionary) -> void:
 	var content: Rect2 = layout.get("content_rect", Rect2(Vector2.ZERO, VIEW_SIZE))
 	var scale: float = maxf(0.01, float(layout.get("scale", 1.0)))
 	_layout_scale = scale
+	# The Yggra app overlays its close button over the top-left 64 CSS px.
+	_host_offset = 64.0 * float(layout.get("css_ratio", 1.0)) / scale if bool(layout.get("host_app", false)) else 0.0
 	# New responsive layouts expose the simulation width directly.  The fallback
 	# preserves the old 1536-wide tests and also makes hand-made test layouts
 	# useful before ResponsiveLayout has been updated.
@@ -910,8 +913,8 @@ func _layout_kitchen_controls() -> void:
 	# to the platform touch minimum after scaling down.
 	var header_touch := maxf(64.0, 44.0 / _layout_scale)
 	var header_gap := maxf(8.0, 8.0 / _layout_scale)
-	_layout_header_action(cancel_button, Vector2(24, 10), header_touch)
-	binding_label.position = Vector2(96, 18)
+	_layout_header_action(cancel_button, Vector2(24.0 + _host_offset, 10), header_touch)
+	binding_label.position = Vector2(96.0 + _host_offset, 18)
 	recipe_label.position = Vector2(maxf(280.0, width * 0.25), 14)
 	recipe_label.size = Vector2(maxf(260.0, width * 0.42), 56)
 	_layout_header_action(pause_button, Vector2(width - 24.0 - header_touch, 10), header_touch)

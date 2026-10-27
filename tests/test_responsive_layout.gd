@@ -2,6 +2,7 @@ extends SceneTree
 
 const Layout = preload("res://responsive_layout.gd")
 const HallView = preload("res://multi_view.gd")
+const WideBackdrop = preload("res://wide_backdrop.gd")
 var checks := 0
 var failures := 0
 
@@ -33,6 +34,20 @@ func _run() -> void:
 	_check(Rect2(protected.room_rect).end.y <= 1092.01, "all room tables stay above protected home area")
 	_check(Rect2(protected.content_rect).grow(0.1).encloses(protected.room_rect), "safe content encloses the complete room")
 	_check(absf((protected.world_size as Vector2).x - 2316.66) < 0.02, "safe horizontal width becomes model world width")
+	for spec: Dictionary in [
+		{"size":Vector2(956, 440), "insets":{"left":62.0, "right":62.0, "top":0.0, "bottom":21.0}, "name":"iPhone Pro Max"},
+		{"size":Vector2(844, 390), "insets":{"left":47.0, "right":47.0, "top":0.0, "bottom":21.0}, "name":"iPhone landscape"},
+	]:
+		var safe_phone := Layout.calculate(spec.size, spec.insets, true)
+		var backdrop := WideBackdrop.new()
+		backdrop.set_layout(safe_phone)
+		_check(backdrop.coverage_rect() == Rect2(Vector2.ZERO, spec.size), str(spec.name) + " architecture covers the full viewport")
+		_check((safe_phone.content_rect as Rect2).end.y == (safe_phone.safe_rect as Rect2).end.y, str(spec.name) + " playable world stops above the home indicator")
+		_check((safe_phone.safe_rect as Rect2).grow(0.1).encloses(safe_phone.room_rect as Rect2), str(spec.name) + " playable hall stays between side insets")
+		var bands := backdrop.architecture_rects()
+		_check(bands.size() == 3 and bands[0].size.x > 0.0 and bands[1].size.x > 0.0 and bands[2].size.y > 0.0, str(spec.name) + " has left, right and bottom architecture bands")
+		backdrop.free()
+	_check(Layout.query_has_host_app("?input=device&host=app") and not Layout.query_has_host_app("?input=device"), "host=app is independent of input=device")
 	for spec: Dictionary in [
 		{"size":Vector2(844, 390), "name":"844x390"},
 		{"size":Vector2(667, 375), "name":"667x375"},

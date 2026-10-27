@@ -141,7 +141,7 @@ func _ready() -> void:
 	# Accept both editor arguments and `godot -- --toy-simulator`.
 	toy_simulator_enabled = OS.get_cmdline_args().has("--toy-simulator") or OS.get_cmdline_user_args().has("--toy-simulator")
 	wide_backdrop = WideBackdrop.new()
-	wide_backdrop.z_index = -10
+	wide_backdrop.z_index = 20
 	add_child(wide_backdrop)
 	room = Room.new()
 	room.model = model
@@ -175,7 +175,7 @@ func _ready() -> void:
 
 func _apply_responsive_layout() -> void:
 	var viewport := get_viewport().get_visible_rect().size
-	responsive_layout = ResponsiveLayout.calculate(viewport, ResponsiveLayout.web_safe_insets(viewport))
+	responsive_layout = ResponsiveLayout.calculate(viewport, ResponsiveLayout.web_safe_insets(viewport), ResponsiveLayout.web_host_app(), ResponsiveLayout.web_css_ratio(viewport))
 	_apply_responsive_layout_data()
 
 ## Native browser/window resize events arrive in bursts.  Coalesce one burst
@@ -192,8 +192,8 @@ func _apply_queued_responsive_layout() -> void:
 
 ## Test-only injection: it exercises the same layout application as a viewport
 ## resize without changing project/window state or any business data.
-func set_responsive_layout_for_test(viewport: Vector2, insets: Dictionary = {}) -> void:
-	responsive_layout = ResponsiveLayout.calculate(viewport, insets)
+func set_responsive_layout_for_test(viewport: Vector2, insets: Dictionary = {}, host_app: bool = false) -> void:
+	responsive_layout = ResponsiveLayout.calculate(viewport, insets, host_app)
 	_apply_responsive_layout_data()
 
 func _apply_responsive_layout_data() -> void:

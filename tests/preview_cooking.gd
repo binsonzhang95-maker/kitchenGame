@@ -20,7 +20,14 @@ func _run() -> void:
 	# Lay out against the real requested preview viewport using production scaling.
 	await process_frame
 	var viewport := root.get_visible_rect().size
-	view.apply_layout(ResponsiveLayout.calculate(viewport))
+	var insets := _requested_insets()
+	if not insets.is_empty():
+		var render_size := Vector2(root.get_texture().get_width(), root.get_texture().get_height())
+		insets.left *= viewport.x / render_size.x
+		insets.right *= viewport.x / render_size.x
+		insets.top *= viewport.y / render_size.y
+		insets.bottom *= viewport.y / render_size.y
+	view.apply_layout(ResponsiveLayout.calculate(viewport, insets))
 	view.open(session, {"table_label":"1号桌"})
 	await process_frame
 	await RenderingServer.frame_post_draw
@@ -32,3 +39,12 @@ func _run() -> void:
 	pixels = null
 	await process_frame
 	quit(0 if error == OK else 1)
+
+func _requested_insets() -> Dictionary:
+	for argument: String in OS.get_cmdline_user_args():
+		if not argument.begins_with("--insets="):
+			continue
+		var parts := argument.trim_prefix("--insets=").split(",")
+		if parts.size() == 4:
+			return {"left":parts[0].to_float(), "right":parts[1].to_float(), "top":parts[2].to_float(), "bottom":parts[3].to_float()}
+	return {}

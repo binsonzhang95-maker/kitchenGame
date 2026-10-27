@@ -102,6 +102,8 @@ var debug_dispatch_button: Button
 var pause_icon: PixelIcon
 var money_label: Label
 var count_label: Label
+var coin_icon: PixelIcon
+var guest_icon: PixelIcon
 var debug_title: Label
 var settings_save_label: Label
 var invite_button: Button
@@ -125,7 +127,7 @@ func setup(owner_app) -> void:
 	Localization.initialize()
 	layer = 30
 	full_top = ColorRect.new()
-	full_top.color = Color("eee0bd")
+	full_top.color = Color("d89555")
 	full_top.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(full_top)
 	design_root = Control.new()
@@ -180,6 +182,12 @@ func _reflow_wide_controls() -> void:
 	var top := design_root.get_node_or_null("TopBar") as Panel
 	if top != null:
 		top.size.x = _world_width
+	var scale := maxf(0.0001, float(_layout.get("scale", 1.0)))
+	var host_offset := maxf(0.0, 64.0 * float(_layout.get("css_ratio", 1.0)) / scale - 32.0) if bool(_layout.get("host_app", false)) else 0.0
+	if coin_icon != null: coin_icon.position.x = 32.0 + host_offset
+	if money_label != null: money_label.position.x = 76.0 + host_offset
+	if guest_icon != null: guest_icon.position.x = 280.0 + host_offset
+	if count_label != null: count_label.position.x = 322.0 + host_offset
 	if app != null and app.pause_button != null:
 		app.pause_button.position.x = _world_width - 152.0
 	if settings_button != null:
@@ -289,11 +297,11 @@ func _button(parent: Node, content: String, at: Vector2, dimensions: Vector2, ca
 func _build_top() -> void:
 	var top := _panel(_design(), Vector2.ZERO, Vector2(1536, 80), Color("eee0bd"))
 	top.name = "TopBar"
-	_icon(_design(), "coin", Vector2(32, 23), 32)
+	coin_icon = _icon(_design(), "coin", Vector2(32, 23), 32)
 	money_label = _label(_design(), "0", Vector2(76, 18), Vector2(190, 44), 28)
 	money_label.tooltip_text = _tx("restaurant_coins_summary", {"coins":38, "served":1, "lost":0})
 	money_label.mouse_filter = Control.MOUSE_FILTER_PASS
-	_icon(_design(), "guest", Vector2(280, 25), 28)
+	guest_icon = _icon(_design(), "guest", Vector2(280, 25), 28)
 	count_label = _label(_design(), "", Vector2(322, 22), Vector2(160, 36), 22)
 	count_label.tooltip_text = _tx("ui_capacity", {"count":""})
 	count_label.mouse_filter = Control.MOUSE_FILTER_PASS

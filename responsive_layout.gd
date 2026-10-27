@@ -12,7 +12,7 @@ const ROOM_HEIGHT := DESIGN_SIZE.y - TOP_BAR
 const MIN_WORLD_WIDTH := 1536.0
 const MAX_WORLD_WIDTH := 4096.0
 
-static func calculate(viewport: Vector2, requested_insets: Dictionary = {}) -> Dictionary:
+static func calculate(viewport: Vector2, requested_insets: Dictionary = {}, host_app: bool = false, css_ratio: float = 1.0) -> Dictionary:
 	var screen := Vector2(maxf(1.0, viewport.x), maxf(1.0, viewport.y))
 	var safe := _sanitize_insets(screen, requested_insets)
 	var usable := Rect2(Vector2(safe.left, safe.top), screen - Vector2(safe.left + safe.right, safe.top + safe.bottom))
@@ -36,6 +36,9 @@ static func calculate(viewport: Vector2, requested_insets: Dictionary = {}) -> D
 		"content_rect": content,
 		"room_rect": Rect2(content_origin + Vector2(0, TOP_BAR) * scale, Vector2(design_width, ROOM_HEIGHT) * scale),
 		"world_size": Vector2(design_width, ROOM_HEIGHT),
+		"host_app": host_app,
+		# Logical (canvas) pixels per CSS px; the host keep-out is specified in CSS px.
+		"css_ratio": css_ratio if is_finite(css_ratio) and css_ratio > 0.0 else 1.0,
 	}
 
 ## Keeps the renderer, HUD and room transform attached to the width which the
@@ -59,6 +62,25 @@ static func with_world_width(layout: Dictionary, width: float) -> Dictionary:
 	result["room_rect"] = Rect2(content.position + Vector2(0, TOP_BAR) * scale, Vector2(world_width, ROOM_HEIGHT) * scale)
 	result["world_size"] = Vector2(world_width, ROOM_HEIGHT)
 	return result
+
+static func web_host_app() -> bool:
+	if not OS.has_feature("web"):
+		return false
+	return bool(JavaScriptBridge.eval("new URLSearchParams(window.location.search).get('host') === 'app'", true))
+
+## Logical canvas pixels per CSS px (the canvas follows devicePixelRatio on phones).
+static func web_css_ratio(viewport: Vector2) -> float:
+	if not OS.has_feature("web"):
+		return 1.0
+	var css_width := _finite_number(JavaScriptBridge.eval("window.innerWidth", true))
+	return viewport.x / css_width if css_width > 0.0 else 1.0
+
+static func query_has_host_app(query: String) -> bool:
+	for item: String in query.trim_prefix("?").split("&"):
+		var pair := item.split("=", true, 1)
+		if pair.size() == 2 and pair[0] == "host" and pair[1] == "app":
+			return true
+	return false
 
 static func web_safe_insets(viewport: Vector2) -> Dictionary:
 	if not OS.has_feature("web"):

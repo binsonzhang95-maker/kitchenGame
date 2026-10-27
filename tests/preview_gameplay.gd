@@ -43,6 +43,15 @@ func _run() -> void:
 	app.seed_guests = false
 	Engine.time_scale = 4.0
 	root.add_child(app)
+	var preview_insets := _requested_insets()
+	if not preview_insets.is_empty():
+		var logical_size := root.get_visible_rect().size
+		var render_size := Vector2(root.get_texture().get_width(), root.get_texture().get_height())
+		preview_insets.left *= logical_size.x / render_size.x
+		preview_insets.right *= logical_size.x / render_size.x
+		preview_insets.top *= logical_size.y / render_size.y
+		preview_insets.bottom *= logical_size.y / render_size.y
+		app.set_responsive_layout_for_test(logical_size, preview_insets)
 	if not app.model.customers.is_empty() or int(app.model.served) != 0:
 		_fail("preview did not begin with a fresh private restaurant")
 		return
@@ -98,6 +107,15 @@ func _run() -> void:
 				pay_hold_until = -1.0
 		else:
 			pay_hold_until = -1.0
+
+func _requested_insets() -> Dictionary:
+	for argument: String in OS.get_cmdline_user_args():
+		if not argument.begins_with("--insets="):
+			continue
+		var parts := argument.trim_prefix("--insets=").split(",")
+		if parts.size() == 4:
+			return {"left":parts[0].to_float(), "right":parts[1].to_float(), "top":parts[2].to_float(), "bottom":parts[3].to_float()}
+	return {}
 
 func _render_frame() -> void:
 	await process_frame
